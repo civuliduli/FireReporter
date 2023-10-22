@@ -10,16 +10,18 @@ import CoreLocation
 import FirebaseFirestore
 import Firebase
 import GoogleSignIn
-import FacebookCore
+import FBSDKLoginKit
 import FBSDKCoreKit
 
 
 
-class ProfileViewController: UIViewController {
+class ProfileViewController: UIViewController, LoginButtonDelegate {
+    
+    private let firebaseService = FirebaseService()
     
     var profileLabel = UILabel()
     var verifyAccountLabel = UILabel()
-    var verifyFacebook = UIButton()
+    var verifyFacebook = FBLoginButton()
     var verifyGoogle = UIButton()
     var verifyApple = UIButton()
     var verifyPhoneNumber = UIButton()
@@ -52,11 +54,12 @@ class ProfileViewController: UIViewController {
         verifyWithPhoneNumberButtonDesign()
         myReportsLabelDesign()
         setupTableUI()
+        
     }
     
     func getFireReports(){
         let db = Firestore.firestore()
-        db.collection("reports").whereField("uniqueIdentifier", isEqualTo: UIDevice.current.identifierForVendor!.uuidString).getDocuments { querrySnapshot, error in
+        db.collection("reports").getDocuments { querrySnapshot, error in
             guard let documents = querrySnapshot?.documents else {print("No Documents")
                 return}
             self.reportsArray = documents.map({ querryDocumentSnapshot in
@@ -89,54 +92,39 @@ class ProfileViewController: UIViewController {
         navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
-    @objc func setupFacebookVerification(error: Error!){
-        if let error = error {
-            print(error.localizedDescription)
-            return
+    func loginButton(_ loginButton: FBLoginButton, didCompleteWith result: LoginManagerLoginResult?, error: Error?) {
+        if error != nil {
+            self.present(Alert(text: "Auth Failed", message: error?.localizedDescription ?? "Auth error", confirmAction: [UIAlertAction(title: "OK", style: .default)], disableAction: []))
+        return
         }
-        let credential = FacebookAuthProvider.credential(withAccessToken: AccessToken.current!.tokenString)
-        Auth.auth().signIn(with: credential){(AuthDataResult, error) in
-            if let error = error{
-                print("Facebook authentication with Firebase error:", error)
-                return
+        if (AccessToken.current != nil) {
+            let credential = FacebookAuthProvider.credential(withAccessToken: AccessToken.current!.tokenString)
+            Auth.auth().signIn(with: credential) { (authResult, error) in
+                if let error = error {
+                    self.present(Alert(text: "Auth Error", message: error.localizedDescription, confirmAction: [UIAlertAction(title: "OK", style: .default)], disableAction: []))
+                    return
+                }
+                self.present(Alert(text: "Success", message: "User verified succesfully", confirmAction: [UIAlertAction(title: "OK", style: .default)], disableAction: []))
             }
-            print("Login success")
+        } else {
+            print("there is no token for the user")
         }
+    }
+
+    func loginButtonDidLogOut(_ loginButton: FBLoginButton) {
+       print("Logged out")
     }
     
-    @objc func setupGoogleVerification() async -> Bool{
-        guard let clientID = FirebaseApp.app()?.options.clientID else {
-            fatalError("No client ID found in Firebase configuration")
+    @objc func setupGoogleVerification() {
+        firebaseService.googleAuth {
+            self.present(Alert(text: "Authentication Cancelled", message: "", confirmAction: [UIAlertAction(title: "OK", style: .default)], disableAction: []))
+        } onSuccess: {
+            self.present(Alert(text: "Success", message: "You now are a WildFireReporter verified User", confirmAction: [UIAlertAction(title: "OK", style: .default)], disableAction: []))
+        } onAuthError: {
+            self.present(Alert(text: "Auth Error", message: "Please try again later", confirmAction: [UIAlertAction(title: "OK", style: .default)], disableAction: []))
         }
-        let config = GIDConfiguration(clientID: clientID)
-        GIDSignIn.sharedInstance.configuration = config
-        
-        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-              let window = windowScene.windows.first,
-              let rootViewController = window.rootViewController else {
-            print("there is no root view controller")
-            return false
-        }
-        do {
-          let userAuthentication = try await GIDSignIn.sharedInstance.signIn(withPresenting: rootViewController)
-            let user = userAuthentication.user
-            guard let idToken = user.idToken else {
-                throw AuthenticationError.authTokenError
-            }
-            let accessToken = user.accessToken
-            let credential = GoogleAuthProvider.credential(withIDToken: idToken.tokenString, accessToken:accessToken.tokenString)
-            let result = try await Auth.auth().signIn(with: credential)
-            let firebaseUser = result.user
-            print("User \(firebaseUser.uid) signed in with email \(firebaseUser.email ?? "unknown")")
-            return true
-        }
-        catch {
-            print(error.localizedDescription)
-//            errorMessage = error.localizedDescription
-            return false
-        }
-        return false
     }
+  
     
     func setupTableUI(){
         self.view.addSubview(tableView)
@@ -174,14 +162,17 @@ class ProfileViewController: UIViewController {
     }
     
     func verifyWithFacebookButtonDesign(){
-        verifyFacebook = UIButton()
+        verifyFacebook = FBLoginButton()
         verifyFacebook.translatesAutoresizingMaskIntoConstraints = false
         verifyFacebook.setTitle("Verify with Facebook", for: .normal)
         verifyFacebook.titleLabel?.font = UIFont.systemFont(ofSize: 24, weight: .regular)
         verifyFacebook.backgroundColor = .systemBlue
         verifyFacebook.layer.cornerRadius = 10
         verifyFacebook.center = self.view.center
-        verifyFacebook.addTarget(self, action: #selector(setupFacebookVerification), for: .touchUpInside)
+        verifyFacebook.delegate = self
+        verifyFacebook.permissions = ["public_profile","email"]
+//        verifyFacebook.addTarget(self, action:Selector(("setupFacebookVerification:")), for: UIControl.Event.touchUpInside)
+//        verifyFacebook.addTarget(self, action: #selector(setupFacebookVerification), for: .touchUpInside)
         view.addSubview(verifyFacebook)
         verifyFacebook.heightAnchor.constraint(equalToConstant: 55).isActive = true
         verifyFacebook.topAnchor.constraint(equalTo: verifyAccountLabel.bottomAnchor, constant: 40).isActive = true

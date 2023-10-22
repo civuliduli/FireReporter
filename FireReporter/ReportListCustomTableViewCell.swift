@@ -39,39 +39,35 @@ class ReportListCustomTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+   
+//    func convertBase64StringToImage (imageBase64String:String) -> UIImage {
+//        guard let imageData = Data(base64Encoded: imageBase64String) else { print("No image")
+//            return UIImage(named: "androidKiller")! }
+//        let image = UIImage(data: imageData)
+//        return image!
+////        let imageData = Data(base64Encoded: imageBase64String)
+////        let image = UIImage(data: imageData!)
+////        return image!
+//    }
     
-    func getDirectoryPath() -> String {
-        let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
-    let documentsDirectory = paths[0]
-        return documentsDirectory
+    func decodeBase64ToImage(base64String: String) -> UIImage? {
+        if let data = Data(base64Encoded: base64String, options: .ignoreUnknownCharacters) {
+            return UIImage(data: data)
+        }
+        return nil
     }
-    func convertBase64StringToImage (imageBase64String:String) -> UIImage {
-        let imageData = Data(base64Encoded: imageBase64String)
-        let image = UIImage(data: imageData!)
-        return image!
-    }
-    
-    func getImage(){
-//        let fileManager = FileManager.default
-//        let imagePAth = (self.getDirectoryPath() as NSString).appendingPathComponent(imageString)
-//        if fileManager.fileExists(atPath: imagePAth){
-//            self.fireImage.image = UIImage(contentsOfFile: imagePAth)
-//        }else{
-//            print("No Image")
-//            self.fireImage.image = UIImage(named: "androidKiller")
-//
-//        }
-    }
+ 
    
     
     func setupCell(image:String, descriptionLabel: String,latitude:Double, longitude:Double, date:Date){
         var dateString: String {
             let formatter = DateFormatter()
-            formatter.dateFormat = "EEEE, MMM d, yyyy hh:mm a"
+            formatter.dateFormat = "EEEE, MMM d, yyyy h:mm a"
             return formatter.string(from: date)
         }
 //        let mydecompressedImage = convertBase64StringToImage (imageBase64String:image)
-        fireImage.image = convertBase64StringToImage (imageBase64String:image)
+        fireImage.image = decodeBase64ToImage(base64String: image)
+//        fireImage.image = convertBase64StringToImage (imageBase64String:image)
 //        getImage()
         self.descriptionLabel.text = descriptionLabel
         self.latitudeData.text = String(latitude)

@@ -94,52 +94,27 @@ class FinalReportViewController: UIViewController {
         return img.jpegData(compressionQuality: 0.5)?.base64EncodedString() ?? ""
     }
     
-    func convertBase64StringToImage (imageBase64String:String) -> UIImage {
-        let imageData = Data(base64Encoded: imageBase64String)
-        let image = UIImage(data: imageData!)
-        return image!
+//    func convertBase64StringToImage (imageBase64String:String) -> UIImage {
+//        guard let imageData = Data(base64Encoded: imageBase64String) else { print("No image")
+//            return UIImage(named: "androidKiller")! }
+//        let image = UIImage(data: imageData)
+//        return image!
+//    }
+    
+    func decodeBase64ToImage(base64String: String) -> UIImage? {
+        if let data = Data(base64Encoded: base64String, options: .ignoreUnknownCharacters) {
+            return UIImage(data: data)
+        }
+        return nil
     }
     
-    
-//    func randomString(length: Int) -> String {
-//      let letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-//      return String((0..<length).map{ _ in letters.randomElement()! })
-//    }
-    
-//    func saveImageDocumentDirectory(){
-//        let fileManager = FileManager.default
-//        let myImage = randomString(length: 9)
-//        let paths = (NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0] as NSString).appendingPathComponent("\(myImage).jpg")
-//        
-//        guard let image = fireImage else {return}
-//        print(paths)
-//        imageURL = myImage + ".jpg"
-//        print(type(of: paths))
-//        let imageData = image.jpegData(compressionQuality: 0.5)
-//        fileManager.createFile(atPath: paths as String, contents: imageData, attributes: nil)
-//    }
-//    
-//    func getDirectoryPath() -> String {
-//        let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
-//    let documentsDirectory = paths[0] 
-//        return documentsDirectory
-//    }
-//    
     func getImage(){
-        let myDecompressedImage = convertBase64StringToImage (imageBase64String:imageURL)
+        let myDecompressedImage = decodeBase64ToImage(base64String: imageURL)
         fireImage = myDecompressedImage
-//        let fileManager = FileManager.default
-//        let imagePAth = (self.getDirectoryPath() as NSString).appendingPathComponent(imageURL)
-//        if fileManager.fileExists(atPath: imagePAth){
-//            fireImage = UIImage(contentsOfFile: imagePAth)
-//        }else{
-//            fireImage = UIImage(named: "androidKiller")
-//        }
     }
   
     
     @objc func sendReport(){
-//        saveImageDocumentDirectory()
         let myCompressedImage = convertImageToBase64String(img: (fireImage ?? UIImage(named: "androidKiller"))!)
         let db = Firestore.firestore()
         let fireReport = FireReportModel(description: descriptionTextField.text, id:0, lat: coordinates.latitude, long: coordinates.longitude, photo: myCompressedImage, timestamp: Date(), uniqueIdentifier: UIDevice.current.identifierForVendor!.uuidString)
@@ -191,21 +166,13 @@ class FinalReportViewController: UIViewController {
     
     func previewImageDesign(){
         previewImage = UIImageView()
-        previewImage.contentMode = .scaleAspectFill
-        previewImage.clipsToBounds = true
         previewImage.translatesAutoresizingMaskIntoConstraints = false
         previewImage.image = fireImage
-        previewImage.layer.cornerRadius = 10
         previewImage.isHidden = true
         previewImage.isUserInteractionEnabled = true
+        previewImage.frame = UIScreen.main.bounds
+        previewImage.contentMode = .scaleAspectFill
         self.view.addSubview(previewImage)
-        NSLayoutConstraint.activate([
-//            previewImage.heightAnchor.constraint(equalToConstant:200),
-            previewImage.bottomAnchor.constraint(equalTo: self.container.bottomAnchor),
-            previewImage.topAnchor.constraint(equalTo: self.container.topAnchor),
-            previewImage.leadingAnchor.constraint(equalTo: self.container.leadingAnchor),
-            previewImage.trailingAnchor.constraint(equalTo: self.container.trailingAnchor)
-        ])
     }
     
     func reportLabelDesign(){
