@@ -1,5 +1,5 @@
 //
-//  FireReportModel.swift
+//  FireReport.swift
 //  FireReporter
 //
 //  Created by Abdulla Civuli on 17.10.23.
@@ -8,14 +8,16 @@
 import Foundation
 import Firebase
 
-struct FireReportModel : Codable {
-    var description:String?
-    var id: Int
+struct FireReport : Codable {
+    var id: String
+    var uniqueIdentifier: String
+    var photo: String?
     var lat: Double
     var long: Double
-    var photo: String?
+    var description:String?
     var date: Date
-    var uniqueIdentifier: String
+    var address: String?
+    var likes: Int
  
     
     var dictionary: [String: Any] {
@@ -26,11 +28,13 @@ struct FireReportModel : Codable {
                 "photo": photo ?? "",
 //                "date": date,
                 "uniqueIdentifier": uniqueIdentifier,
-                "description": description ?? ""
+                "description": description ?? "",
+                "address": address ?? "",
+                "likes":likes
         ]
        }
     
-    init(description: String? = nil, id: Int, lat: Double = 0.00, long: Double = 0.00, photo: String, timestamp: Date, uniqueIdentifier:String) {
+    init(description: String? = nil, id: String, lat: Double = 0.00, long: Double = 0.00, photo: String, timestamp: Date, uniqueIdentifier:String, address:String?, likes:Int) {
         self.description = description
         self.id = id
         self.lat = lat
@@ -38,6 +42,8 @@ struct FireReportModel : Codable {
         self.photo = photo
         self.date = timestamp
         self.uniqueIdentifier = uniqueIdentifier
+        self.address = address
+        self.likes = likes
     }
     
     enum CodingKeys: CodingKey {
@@ -48,17 +54,21 @@ struct FireReportModel : Codable {
         case photo
         case date
         case uniqueIdentifier
+        case address
+        case likes
     }
     
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.description = try container.decodeIfPresent(String.self, forKey: .description)
-        self.id = try container.decode(Int.self, forKey: .id)
+        self.id = try container.decode(String.self, forKey: .id)
         self.lat = try container.decode(Double.self, forKey: .lat)
         self.long = try container.decode(Double.self, forKey: .long)
         self.photo = try container.decodeIfPresent(String.self, forKey: .photo)
         self.date = try container.decode(Date.self, forKey: .date)
         self.uniqueIdentifier = try container.decode(String.self, forKey: .uniqueIdentifier)
+        self.address = try container.decode(String.self, forKey: .address)
+        self.likes = try container.decode(Int.self, forKey: .likes)
     }
     
     func encode(to encoder: Encoder) throws {
@@ -70,5 +80,7 @@ struct FireReportModel : Codable {
         try container.encodeIfPresent(self.photo, forKey: .photo)
         try container.encode(self.date.timeIntervalSince1970, forKey: .date)
         try container.encode(self.uniqueIdentifier, forKey: .uniqueIdentifier)
+        try container.encode(self.address, forKey: .address)
+        try container.encode(self.likes, forKey: .address)
     }
 }

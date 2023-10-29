@@ -3,9 +3,11 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>1085677958508-26s4o06eik6cqlvbldmjkroun1urnn8m.apps.googleusercontent.com</string>
+	<string>1085677958508-ud635u938t0ts9dluejtks3i1soi7uuf.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.1085677958508-26s4o06eik6cqlvbldmjkroun1urnn8m</string>
+	<string>com.googleusercontent.apps.1085677958508-ud635u938t0ts9dluejtks3i1soi7uuf</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>1085677958508-najoq4o1jfuu4scrkork4fakvqpg54fr.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
 	<string>AIzaSyBRVEMZuph0tz8cx22o3SftRyRf6aPXi28</string>
 	<key>GCM_SENDER_ID</key>
@@ -13,7 +15,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>example.com.FireReporter</string>
+	<string>example.com.FireReporter1</string>
 	<key>PROJECT_ID</key>
 	<string>wildfire-ff3a0</string>
 	<key>STORAGE_BUCKET</key>
@@ -29,6 +31,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:1085677958508:ios:d58cdb4e981aea10acaf49</string>
+	<string>1:1085677958508:ios:0fd39c10a9554fd6acaf49</string>
 </dict>
 </plist>
