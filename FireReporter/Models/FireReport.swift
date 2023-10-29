@@ -18,6 +18,7 @@ struct FireReport : Codable {
     var date: Date
     var address: String?
     var likes: Int
+    var users: [User]
  
     
     var dictionary: [String: Any] {
@@ -30,11 +31,11 @@ struct FireReport : Codable {
                 "uniqueIdentifier": uniqueIdentifier,
                 "description": description ?? "",
                 "address": address ?? "",
-                "likes":likes
+                "likes":likes,
         ]
        }
     
-    init(description: String? = nil, id: String, lat: Double = 0.00, long: Double = 0.00, photo: String, timestamp: Date, uniqueIdentifier:String, address:String?, likes:Int) {
+    init(description: String? = nil, id: String, lat: Double = 0.00, long: Double = 0.00, photo: String, timestamp: Date, uniqueIdentifier:String, address:String?, likes:Int, users: [User]) {
         self.description = description
         self.id = id
         self.lat = lat
@@ -44,6 +45,7 @@ struct FireReport : Codable {
         self.uniqueIdentifier = uniqueIdentifier
         self.address = address
         self.likes = likes
+        self.users = users
     }
     
     enum CodingKeys: CodingKey {
@@ -56,6 +58,7 @@ struct FireReport : Codable {
         case uniqueIdentifier
         case address
         case likes
+        case users
     }
     
     init(from decoder: Decoder) throws {
@@ -69,6 +72,7 @@ struct FireReport : Codable {
         self.uniqueIdentifier = try container.decode(String.self, forKey: .uniqueIdentifier)
         self.address = try container.decode(String.self, forKey: .address)
         self.likes = try container.decode(Int.self, forKey: .likes)
+        self.users = try container.decode([User].self, forKey: .users)
     }
     
     func encode(to encoder: Encoder) throws {
@@ -82,5 +86,6 @@ struct FireReport : Codable {
         try container.encode(self.uniqueIdentifier, forKey: .uniqueIdentifier)
         try container.encode(self.address, forKey: .address)
         try container.encode(self.likes, forKey: .address)
+        try container.encode(self.users, forKey:.users)
     }
 }

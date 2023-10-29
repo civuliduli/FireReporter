@@ -6,3 +6,9 @@
 //
 
 import Foundation
+
+
+struct User: Codable {
+    var userID: String?
+    var votedFor:Bool?
+}

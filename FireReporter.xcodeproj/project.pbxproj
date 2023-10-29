@@ -8,10 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		6F187F322AD4A891005B40B7 /* FireReporter + UIColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F187F312AD4A891005B40B7 /* FireReporter + UIColor.swift */; };
+		6F1A75552AE8778E007C9029 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F1A75542AE8778E007C9029 /* ProfileViewModel.swift */; };
+		6F1A75572AE9064B007C9029 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F1A75562AE9064B007C9029 /* GoogleService-Info.plist */; };
 		6F1DD2002AD054BD00226345 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F1DD1FF2AD054BD00226345 /* MapViewController.swift */; };
 		6F1DD2042AD204FD00226345 /* FireReporter + UIAlertControllerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F1DD2032AD204FD00226345 /* FireReporter + UIAlertControllerExtension.swift */; };
 		6F1DD2062AD2051000226345 /* UIAlertModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F1DD2052AD2051000226345 /* UIAlertModel.swift */; };
-		6F22DF2B2AE5405E0099632A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F22DF2A2AE5405D0099632A /* GoogleService-Info.plist */; };
 		6F252CC52AE2889700BE8439 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 6F252CC42AE2889700BE8439 /* GoogleSignIn */; };
 		6F252CC72AE2889700BE8439 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 6F252CC62AE2889700BE8439 /* GoogleSignInSwift */; };
 		6F252CCC2AE2CC3600BE8439 /* FacebookCore in Frameworks */ = {isa = PBXBuildFile; productRef = 6F252CCB2AE2CC3600BE8439 /* FacebookCore */; };
@@ -21,13 +22,15 @@
 		6F3D9F722AD5F52C0056F4C5 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3D9F712AD5F52C0056F4C5 /* ProfileViewController.swift */; };
 		6F3D9F742AD5F5580056F4C5 /* ReportListCustomTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3D9F732AD5F5580056F4C5 /* ReportListCustomTableViewCell.swift */; };
 		6F4BA4282ADF390A00D736BE /* FireReporter + Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4BA4272ADF390A00D736BE /* FireReporter + Date.swift */; };
+		6F7E79D62AE9C75E00B12C51 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7E79D52AE9C75E00B12C51 /* User.swift */; };
 		6F927C1F2ADB21DA000FD630 /* FinalReportViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F927C1E2ADB21DA000FD630 /* FinalReportViewModel.swift */; };
 		6F927C212ADB2551000FD630 /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F927C202ADB2551000FD630 /* MapViewModel.swift */; };
+		6F99E86B2AEBF06000ABA7A0 /* FacebookShare in Frameworks */ = {isa = PBXBuildFile; productRef = 6F99E86A2AEBF06000ABA7A0 /* FacebookShare */; };
 		6FC4BA1A2ADFCB25001F28AA /* FireReporter + UIImageToString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FC4BA192ADFCB25001F28AA /* FireReporter + UIImageToString.swift */; };
 		6FCE0EF82AE26EBC00FE3159 /* UserReportedLocationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCE0EF72AE26EBC00FE3159 /* UserReportedLocationsViewController.swift */; };
 		6FE3FB7D2ADDDF9A00F39F10 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 6FE3FB7C2ADDDF9A00F39F10 /* FirebaseAuth */; };
 		6FE3FB7F2ADDDF9A00F39F10 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 6FE3FB7E2ADDDF9A00F39F10 /* FirebaseFirestore */; };
-		6FE3FB832ADE717000F39F10 /* FireReportModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE3FB822ADE717000F39F10 /* FireReportModel.swift */; };
+		6FE3FB832ADE717000F39F10 /* FireReport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE3FB822ADE717000F39F10 /* FireReport.swift */; };
 		6FE9013D2ACC51FC00984C73 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE9013C2ACC51FC00984C73 /* AppDelegate.swift */; };
 		6FE9013F2ACC51FC00984C73 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE9013E2ACC51FC00984C73 /* SceneDelegate.swift */; };
 		6FE901412ACC51FC00984C73 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE901402ACC51FC00984C73 /* CameraViewController.swift */; };
@@ -60,21 +63,23 @@
 
 /* Begin PBXFileReference section */
 		6F187F312AD4A891005B40B7 /* FireReporter + UIColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FireReporter + UIColor.swift"; sourceTree = "<group>"; };
+		6F1A75542AE8778E007C9029 /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
+		6F1A75562AE9064B007C9029 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		6F1DD1FF2AD054BD00226345 /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		6F1DD2032AD204FD00226345 /* FireReporter + UIAlertControllerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FireReporter + UIAlertControllerExtension.swift"; sourceTree = "<group>"; };
 		6F1DD2052AD2051000226345 /* UIAlertModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIAlertModel.swift; sourceTree = "<group>"; };
-		6F22DF2A2AE5405D0099632A /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		6F252CD32AE4040A00BE8439 /* FirebaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseService.swift; sourceTree = "<group>"; };
 		6F3D9F6E2AD59AC80056F4C5 /* CameraViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewModel.swift; sourceTree = "<group>"; };
 		6F3D9F712AD5F52C0056F4C5 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		6F3D9F732AD5F5580056F4C5 /* ReportListCustomTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportListCustomTableViewCell.swift; sourceTree = "<group>"; };
 		6F4BA4272ADF390A00D736BE /* FireReporter + Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FireReporter + Date.swift"; sourceTree = "<group>"; };
+		6F7E79D52AE9C75E00B12C51 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		6F8D50562AE48A480075104F /* FireReporter.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FireReporter.entitlements; sourceTree = "<group>"; };
 		6F927C1E2ADB21DA000FD630 /* FinalReportViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinalReportViewModel.swift; sourceTree = "<group>"; };
 		6F927C202ADB2551000FD630 /* MapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewModel.swift; sourceTree = "<group>"; };
 		6FC4BA192ADFCB25001F28AA /* FireReporter + UIImageToString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FireReporter + UIImageToString.swift"; sourceTree = "<group>"; };
 		6FCE0EF72AE26EBC00FE3159 /* UserReportedLocationsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserReportedLocationsViewController.swift; sourceTree = "<group>"; };
-		6FE3FB822ADE717000F39F10 /* FireReportModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireReportModel.swift; sourceTree = "<group>"; };
+		6FE3FB822ADE717000F39F10 /* FireReport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireReport.swift; sourceTree = "<group>"; };
 		6FE901392ACC51FC00984C73 /* FireReporter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FireReporter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6FE9013C2ACC51FC00984C73 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6FE9013E2ACC51FC00984C73 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -103,6 +108,7 @@
 				6FE3FB7F2ADDDF9A00F39F10 /* FirebaseFirestore in Frameworks */,
 				6F252CC52AE2889700BE8439 /* GoogleSignIn in Frameworks */,
 				6F252CC72AE2889700BE8439 /* GoogleSignInSwift in Frameworks */,
+				6F99E86B2AEBF06000ABA7A0 /* FacebookShare in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -155,8 +161,25 @@
 			isa = PBXGroup;
 			children = (
 				6F3D9F712AD5F52C0056F4C5 /* ProfileViewController.swift */,
+				6F1A75542AE8778E007C9029 /* ProfileViewModel.swift */,
 			);
 			path = Profile;
+			sourceTree = "<group>";
+		};
+		6F7E79D42AE9C74100B12C51 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				6FE3FB822ADE717000F39F10 /* FireReport.swift */,
+				6F7E79D52AE9C75E00B12C51 /* User.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		6F99E8692AEBF06000ABA7A0 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		6FB1024D2AD02EC700289D09 /* Map */ = {
@@ -183,6 +206,7 @@
 				6FE901522ACC51FF00984C73 /* FireReporterTests */,
 				6FE9015C2ACC51FF00984C73 /* FireReporterUITests */,
 				6FE9013A2ACC51FC00984C73 /* Products */,
+				6F99E8692AEBF06000ABA7A0 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -212,9 +236,9 @@
 				6F252CD22AE4038100BE8439 /* NetworkService */,
 				6F3D9F732AD5F5580056F4C5 /* ReportListCustomTableViewCell.swift */,
 				6FEDE2BD2ACF018400D77FE2 /* NavigationController.swift */,
-				6FE3FB822ADE717000F39F10 /* FireReportModel.swift */,
+				6F7E79D42AE9C74100B12C51 /* Models */,
 				6FE901472ACC51FE00984C73 /* LaunchScreen.storyboard */,
-				6F22DF2A2AE5405D0099632A /* GoogleService-Info.plist */,
+				6F1A75562AE9064B007C9029 /* GoogleService-Info.plist */,
 				6FE901452ACC51FE00984C73 /* Assets.xcassets */,
 				6FE9014A2ACC51FE00984C73 /* Info.plist */,
 			);
@@ -279,6 +303,7 @@
 				6F252CC62AE2889700BE8439 /* GoogleSignInSwift */,
 				6F252CCB2AE2CC3600BE8439 /* FacebookCore */,
 				6F252CCD2AE2CC3600BE8439 /* FacebookLogin */,
+				6F99E86A2AEBF06000ABA7A0 /* FacebookShare */,
 			);
 			productName = FireReporter;
 			productReference = 6FE901392ACC51FC00984C73 /* FireReporter.app */;
@@ -374,7 +399,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6FE901492ACC51FE00984C73 /* LaunchScreen.storyboard in Resources */,
-				6F22DF2B2AE5405E0099632A /* GoogleService-Info.plist in Resources */,
+				6F1A75572AE9064B007C9029 /* GoogleService-Info.plist in Resources */,
 				6FE901462ACC51FE00984C73 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -403,12 +428,14 @@
 				6F3D9F742AD5F5580056F4C5 /* ReportListCustomTableViewCell.swift in Sources */,
 				6FE901412ACC51FC00984C73 /* CameraViewController.swift in Sources */,
 				6F3D9F722AD5F52C0056F4C5 /* ProfileViewController.swift in Sources */,
-				6FE3FB832ADE717000F39F10 /* FireReportModel.swift in Sources */,
+				6FE3FB832ADE717000F39F10 /* FireReport.swift in Sources */,
 				6FE9013D2ACC51FC00984C73 /* AppDelegate.swift in Sources */,
 				6F1DD2062AD2051000226345 /* UIAlertModel.swift in Sources */,
+				6F1A75552AE8778E007C9029 /* ProfileViewModel.swift in Sources */,
 				6F252CD42AE4040A00BE8439 /* FirebaseService.swift in Sources */,
 				6FE9013F2ACC51FC00984C73 /* SceneDelegate.swift in Sources */,
 				6F927C1F2ADB21DA000FD630 /* FinalReportViewModel.swift in Sources */,
+				6F7E79D62AE9C75E00B12C51 /* User.swift in Sources */,
 				6F187F322AD4A891005B40B7 /* FireReporter + UIColor.swift in Sources */,
 				6F3D9F6F2AD59AC80056F4C5 /* CameraViewModel.swift in Sources */,
 				6FE901752ACCAAA700984C73 /* TabBarViewController.swift in Sources */,
@@ -589,7 +616,7 @@
 				CODE_SIGN_ENTITLEMENTS = FireReporter/FireReporter.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = CY5R568WQP;
+				DEVELOPMENT_TEAM = DLFLF8ZQDD;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FireReporter/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "In order to take images and report fire abuses";
@@ -605,7 +632,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_BUNDLE_IDENTIFIER = example.com.FireReporter;
+				PRODUCT_BUNDLE_IDENTIFIER = example.com.FireReporter1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -621,7 +648,7 @@
 				CODE_SIGN_ENTITLEMENTS = FireReporter/FireReporter.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = CY5R568WQP;
+				DEVELOPMENT_TEAM = DLFLF8ZQDD;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FireReporter/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "In order to take images and report fire abuses";
@@ -637,7 +664,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_BUNDLE_IDENTIFIER = example.com.FireReporter;
+				PRODUCT_BUNDLE_IDENTIFIER = example.com.FireReporter1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -772,7 +799,7 @@
 			repositoryURL = "https://github.com/facebook/facebook-ios-sdk";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 14.1.0;
+				minimumVersion = 16.0.0;
 			};
 		};
 		6FE3FB7B2ADDDF9A00F39F10 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
@@ -805,6 +832,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6F252CCA2AE2CC3600BE8439 /* XCRemoteSwiftPackageReference "facebook-ios-sdk" */;
 			productName = FacebookLogin;
+		};
+		6F99E86A2AEBF06000ABA7A0 /* FacebookShare */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6F252CCA2AE2CC3600BE8439 /* XCRemoteSwiftPackageReference "facebook-ios-sdk" */;
+			productName = FacebookShare;
 		};
 		6FE3FB7C2ADDDF9A00F39F10 /* FirebaseAuth */ = {
 			isa = XCSwiftPackageProductDependency;

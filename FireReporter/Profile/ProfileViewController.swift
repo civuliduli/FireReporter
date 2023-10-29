@@ -9,25 +9,34 @@ import UIKit
 import CoreLocation
 import FirebaseFirestore
 import Firebase
-import GoogleSignIn
 import FBSDKLoginKit
-import FBSDKCoreKit
+import AuthenticationServices
+import CryptoKit
 
 
-
-class ProfileViewController: UIViewController, LoginButtonDelegate {
+class ProfileViewController: UIViewController {
     
     private let firebaseService = FirebaseService()
     
     var profileLabel = UILabel()
     var verifyAccountLabel = UILabel()
-    var verifyFacebook = FBLoginButton()
+    var verifyFacebook = UIButton()
     var verifyGoogle = UIButton()
     var verifyApple = UIButton()
-    var verifyPhoneNumber = UIButton()
     var myReports = UILabel()
-    
-    var reportsArray = [FireReportModel]()
+    var usernameLabel = UILabel()
+    var verificationBadge = UIImageView()
+    var verificationInfo = UILabel()
+    var infoBadge = UIImageView()
+    var signOutButton = UIButton()
+    var horizontalStack = UIStackView()
+    let scrollView = UIScrollView()
+    var container = UIView()
+    let verticalStack = UIStackView()
+    let badgeStack = UIStackView()
+    let usernameProfileStack = UIStackView()
+    private var currentNonce:String?
+    var reportsArray = [FireReport]()
     
     private let tableView: UITableView = {
         let tableView = UITableView()
@@ -43,45 +52,27 @@ class ProfileViewController: UIViewController, LoginButtonDelegate {
         self.tableView.delegate = self
         self.tableView.dataSource = self
         UITabBar.appearance().backgroundColor = UIColor.white
-        print("Hello World")
         self.navigationController?.isNavigationBarHidden = true
-        getFireReports()
-        reportListTitleLabel()
-        verifyAccountLabelUI()
-        verifyWithFacebookButtonDesign()
-        verifyWithGoogleButtonDesign()
-        verifyWithAppleButtonDesign()
-        verifyWithPhoneNumberButtonDesign()
-        myReportsLabelDesign()
-        setupTableUI()
-        
-    }
-    
-    func getFireReports(){
-        let db = Firestore.firestore()
-        db.collection("reports").getDocuments { querrySnapshot, error in
-            guard let documents = querrySnapshot?.documents else {print("No Documents")
-                return}
-            self.reportsArray = documents.map({ querryDocumentSnapshot in
-                let data = querryDocumentSnapshot.data()
-                let uniqueIdentifier = data["uniqueIdentifier"] as? String? ?? ""
-                let description = data["description"] as? String? ?? ""
-                let lat = data["lat"] as? Double? ?? 0.00
-                let long = data["long"] as? Double? ?? 0.00
-                let timestamp = data["timestamp"] as? Timestamp
-                let photo = data["photo"] as? String? ?? "androidKiller"
-                return FireReportModel(description: description,id:0,lat: lat ?? 0.00, long: long ?? 0.00, photo:photo ?? "androidKiller", timestamp: timestamp?.dateValue() ?? Date(), uniqueIdentifier: uniqueIdentifier ?? "")
-            })
-            self.tableView.reloadData()
+        if let accessToken = AccessToken.current{
+            print("User is already loggedIN")
+            print(accessToken)
         }
+        setupUI()
+        checkAuthenticatedUser()
+        
+        if let token = AccessToken.current,
+                !token.isExpired {
+                // User is logged in, do work such as go to next view controller.
+            }
+        
     }
     
     enum AuthenticationError:Error {
         case authTokenError
     }
     
-    
     override func viewWillAppear(_ animated: Bool) {
+        getFireReports()
         super.viewWillAppear(animated)
         navigationController?.setNavigationBarHidden(true, animated: animated)
         print("Hello World")
@@ -92,47 +83,212 @@ class ProfileViewController: UIViewController, LoginButtonDelegate {
         navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
-    func loginButton(_ loginButton: FBLoginButton, didCompleteWith result: LoginManagerLoginResult?, error: Error?) {
-        if error != nil {
-            self.present(Alert(text: "Auth Failed", message: error?.localizedDescription ?? "Auth error", confirmAction: [UIAlertAction(title: "OK", style: .default)], disableAction: []))
-        return
+    func getFireReports(){
+        firebaseService.getFireReportsData { myFireReports, error in
+            self.reportsArray = myFireReports
+            self.tableView.reloadData()
         }
-        if (AccessToken.current != nil) {
-            let credential = FacebookAuthProvider.credential(withAccessToken: AccessToken.current!.tokenString)
-            Auth.auth().signIn(with: credential) { (authResult, error) in
-                if let error = error {
-                    self.present(Alert(text: "Auth Error", message: error.localizedDescription, confirmAction: [UIAlertAction(title: "OK", style: .default)], disableAction: []))
-                    return
-                }
-                self.present(Alert(text: "Success", message: "User verified succesfully", confirmAction: [UIAlertAction(title: "OK", style: .default)], disableAction: []))
-            }
-        } else {
-            print("there is no token for the user")
-        }
-    }
-
-    func loginButtonDidLogOut(_ loginButton: FBLoginButton) {
-       print("Logged out")
     }
     
+    @objc func setupAppleVerification(){
+        currentNonce = randomNonceString()
+        let appleIDProvider = ASAuthorizationAppleIDProvider()
+        let request = appleIDProvider.createRequest()
+        request.requestedScopes = [.email]
+        request.nonce = sha256(currentNonce!)
+        
+        let authorizationController = ASAuthorizationController(authorizationRequests: [request])
+        authorizationController.delegate = self
+        authorizationController.presentationContextProvider = self
+        authorizationController.performRequests()
+    }
+    
+    private func randomNonceString(length: Int = 32) -> String {
+      precondition(length > 0)
+      var randomBytes = [UInt8](repeating: 0, count: length)
+      let errorCode = SecRandomCopyBytes(kSecRandomDefault, randomBytes.count, &randomBytes)
+      if errorCode != errSecSuccess {
+        fatalError(
+          "Unable to generate nonce. SecRandomCopyBytes failed with OSStatus \(errorCode)"
+        )
+      }
+
+      let charset: [Character] =
+        Array("0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._")
+
+      let nonce = randomBytes.map { byte in
+        charset[Int(byte) % charset.count]
+      }
+
+      return String(nonce)
+    }
+    
+    @available(iOS 13, *)
+    private func sha256(_ input: String) -> String {
+      let inputData = Data(input.utf8)
+      let hashedData = SHA256.hash(data: inputData)
+      let hashString = hashedData.compactMap {
+        String(format: "%02x", $0)
+      }.joined()
+
+      return hashString
+    }
+    
+    @objc func setupFacebookVerification(_ loginButton: FBLoginButton!,didCompleteWith result: LoginManagerLoginResult!, error: Error!){
+        if let error = error {
+                  print(error.localizedDescription)
+              return
+              }
+              let credential = FacebookAuthProvider.credential(withAccessToken: AccessToken.current!.tokenString)
+              Auth.auth().signIn(with: credential) { (authResult, error) in
+                  if let error = error {
+                      print("Facebook authentication with Firebase error: ", error)
+                      return
+                  }
+              print("Login success!")
+              }
+    }
+
     @objc func setupGoogleVerification() {
-        firebaseService.googleAuth {
-            self.present(Alert(text: "Authentication Cancelled", message: "", confirmAction: [UIAlertAction(title: "OK", style: .default)], disableAction: []))
-        } onSuccess: {
-            self.present(Alert(text: "Success", message: "You now are a WildFireReporter verified User", confirmAction: [UIAlertAction(title: "OK", style: .default)], disableAction: []))
-        } onAuthError: {
-            self.present(Alert(text: "Auth Error", message: "Please try again later", confirmAction: [UIAlertAction(title: "OK", style: .default)], disableAction: []))
+                firebaseService.googleAuth {
+                    self.present(Alert(text: "Authentication Cancelled", message: "", confirmAction: [UIAlertAction(title: "OK", style: .default)], disableAction: []))
+                } onSuccess: {
+                    self.checkAuthenticatedUser()
+                    self.present(Alert(text: "Success", message: "You now are a WildFireReporter verified User", confirmAction: [UIAlertAction(title: "OK", style: .default)], disableAction: []))
+                } onAuthError: {
+                    self.present(Alert(text: "Auth Error", message: "Please try again later", confirmAction: [UIAlertAction(title: "OK", style: .default)], disableAction: []))
+                }
+    }
+    
+    func checkAuthenticatedUser(){
+        guard let userID = Auth.auth().currentUser else { return }
+        usernameLabel.text = userID.displayName
+        userID.getIDToken()
+        if let scene = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate{
+            if let user = Auth.auth().currentUser {
+                if user.isAnonymous {
+                    usernameLabel.isHidden = true
+                    verificationBadge.isHidden = true
+                    signOutButton.isHidden = true
+                    verifyFacebook.isHidden = false
+                    verificationInfo.isHidden = false
+                    verifyGoogle.isHidden = false
+                    verifyApple.isHidden = false
+                    verifyAccountLabel.isHidden = false
+                    infoBadge.isHidden = false
+                    usernameProfileStack.isHidden = true
+                } else {
+                    usernameLabel.isHidden = false
+                    verificationBadge.isHidden = false
+                    signOutButton.isHidden = false
+                    verifyFacebook.isHidden = true
+                    verifyGoogle.isHidden = true
+                    verifyApple.isHidden = true
+                    verifyAccountLabel.isHidden = true
+                    verificationInfo.isHidden = true
+                    infoBadge.isHidden = true
+                    usernameProfileStack.isHidden = false
+                }
+            }
+        }
+    }
+    
+    
+    @objc func signOutFunction(){
+        do{
+          try Auth.auth().signOut()
+            checkAuthenticatedUser()
+            print("Hellooo")
+            usernameLabel.isHidden = true
+            verificationBadge.isHidden = true
+            signOutButton.isHidden = true
+            verifyFacebook.isHidden = false
+            verificationInfo.isHidden = false
+            verifyGoogle.isHidden = false
+            verifyApple.isHidden = false
+            verifyAccountLabel.isHidden = false
+            infoBadge.isHidden = false
+            present(Alert(text: "User is signed out", message: "", confirmAction: [UIAlertAction(title: "OK", style: .default)], disableAction: []))
+            Auth.auth().signInAnonymously()
+        }
+        catch {
+            print("Error signing out")
+        }
+    }
+    
+    func setupUI(){
+        self.view.addSubview(scrollView)
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        self.scrollView.addSubview(container)
+        container.translatesAutoresizingMaskIntoConstraints = false
+        let hConst = container.heightAnchor.constraint(equalTo: scrollView.heightAnchor)
+        hConst.isActive = true
+        hConst.priority = UILayoutPriority(50)
+        NSLayoutConstraint.activate([
+            scrollView.topAnchor.constraint(equalTo: self.view.topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
+            
+            container.topAnchor.constraint(equalTo: self.scrollView.topAnchor),
+            container.leadingAnchor.constraint(equalTo: self.scrollView.leadingAnchor),
+            container.trailingAnchor.constraint(equalTo: self.scrollView.trailingAnchor),
+            container.bottomAnchor.constraint(equalTo: self.scrollView.bottomAnchor, constant: 850),
+            
+            container.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+            container.heightAnchor.constraint(equalTo: scrollView.heightAnchor, multiplier: 2)
+        ])
+        getFireReports()
+        reportListTitleLabel()
+        verifyAccountLabelUI()
+        verifyWithFacebookButtonDesign()
+        verifyWithGoogleButtonDesign()
+        verifyWithAppleButtonDesign()
+        reportListTitleLabel()
+        setupUsernameUI()
+        checkAuthenticatedUser()
+        signOutButtonUI()
+        setupHorizontalStack()
+        verificationBadgeDesign()
+        verifyInfoUI()
+        infoBadgeUI()
+        setupProfileStack()
+        badgeStackUI()
+        setupVerticalStack()
+        myReportsLabelDesign()
+        setupTableUI()
+    }
+    
+    func setupVerticalStack(){
+        verticalStack.distribution = .fill
+        verticalStack.alignment = .top
+        verticalStack.spacing = 16
+        verticalStack.axis = .vertical
+        self.container.addSubview(verticalStack)
+        verticalStack.translatesAutoresizingMaskIntoConstraints = false
+        verticalStack.leadingAnchor.constraint(equalTo: self.container.leadingAnchor, constant: 16).isActive = true
+        verticalStack.trailingAnchor.constraint(equalTo: self.container.trailingAnchor, constant: -16).isActive = true
+        verticalStack.topAnchor.constraint(equalTo: self.container.topAnchor, constant: 40).isActive = true
+        verticalStack.addArrangedSubview(profileLabel)
+        verticalStack.addArrangedSubview(verifyAccountLabel)
+        verticalStack.addArrangedSubview(horizontalStack)
+        verticalStack.addArrangedSubview(usernameProfileStack)
+        verticalStack.addArrangedSubview(badgeStack)
+    }
+    
+    func updateArrangedSubviews(verifies: Bool) {
+        verticalStack.arrangedSubviews.forEach { subview in
+            verticalStack.removeArrangedSubview(subview)
         }
     }
   
-    
     func setupTableUI(){
-        self.view.addSubview(tableView)
+        self.container.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.backgroundColor = UIColor.secondaryColor
-        
+        checkAuthenticatedUser()
         NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: verifyPhoneNumber.bottomAnchor, constant: 100),
+            tableView.topAnchor.constraint(equalTo: myReports.bottomAnchor, constant: 20),
             tableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
             tableView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
@@ -145,96 +301,152 @@ class ProfileViewController: UIViewController, LoginButtonDelegate {
         profileLabel.text = "Profile"
         profileLabel.font = profileLabel.font.withSize(30)
         profileLabel.textColor = UIColor.primaryColor
-        self.view.addSubview(profileLabel)
-        profileLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant:40).isActive = true
-        profileLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 30).isActive = true
+    }
+    
+    
+    func setupUsernameUI(){
+        usernameLabel = UILabel()
+        usernameLabel.translatesAutoresizingMaskIntoConstraints = false
+        usernameLabel.font = usernameLabel.font.withSize(30)
+        checkAuthenticatedUser()
+        usernameLabel.textColor = UIColor.primaryColor
+        usernameLabel.isHidden = true
+    }
+    
+    func setupProfileStack(){
+        usernameProfileStack.distribution = .fill
+        usernameProfileStack.alignment = .fill
+        usernameProfileStack.spacing = 16
+        usernameProfileStack.translatesAutoresizingMaskIntoConstraints = false
+        usernameProfileStack.addArrangedSubview(usernameLabel)
+        usernameProfileStack.addArrangedSubview(verificationBadge)
+        usernameProfileStack.addArrangedSubview(signOutButton)
+    }
+    
+    func verificationBadgeDesign(){
+        verificationBadge = UIImageView()
+        verificationBadge.translatesAutoresizingMaskIntoConstraints = false
+        verificationBadge.isHidden = true
+        checkAuthenticatedUser()
+        verificationBadge.image = UIImage(named:"istockphoto-1313547780-612x612")
+        self.view.addSubview(verificationBadge)
+        verificationBadge.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        verificationBadge.widthAnchor.constraint(equalToConstant: 40).isActive = true
     }
     
     func verifyAccountLabelUI(){
         verifyAccountLabel = UILabel()
         verifyAccountLabel.translatesAutoresizingMaskIntoConstraints = false
         verifyAccountLabel.text = "Verify Account"
-        verifyAccountLabel.font = verifyAccountLabel.font.withSize(24)
+        verifyAccountLabel.font = UIFont.systemFont(ofSize: 24, weight: .bold)
         verifyAccountLabel.textColor = UIColor.primaryColor
+        verifyAccountLabel.isHidden = false
+        checkAuthenticatedUser()
         self.view.addSubview(verifyAccountLabel)
-        verifyAccountLabel.topAnchor.constraint(equalTo: profileLabel.bottomAnchor, constant:40).isActive = true
-        verifyAccountLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30).isActive = true
+    }
+    
+    func setupHorizontalStack(){
+        horizontalStack = UIStackView()
+        horizontalStack.distribution = .fillEqually
+        horizontalStack.alignment = .fill
+        horizontalStack.spacing = 16
+        horizontalStack.translatesAutoresizingMaskIntoConstraints = false
+        horizontalStack.addArrangedSubview(verifyFacebook)
+        horizontalStack.addArrangedSubview(verifyGoogle)
+        horizontalStack.addArrangedSubview(verifyApple)
     }
     
     func verifyWithFacebookButtonDesign(){
-        verifyFacebook = FBLoginButton()
+        var facebookImage = UIImage(named:"facebook")
+//        verifyFacebook = FBLoginButton()
         verifyFacebook.translatesAutoresizingMaskIntoConstraints = false
-        verifyFacebook.setTitle("Verify with Facebook", for: .normal)
-        verifyFacebook.titleLabel?.font = UIFont.systemFont(ofSize: 24, weight: .regular)
-        verifyFacebook.backgroundColor = .systemBlue
-        verifyFacebook.layer.cornerRadius = 10
-        verifyFacebook.center = self.view.center
-        verifyFacebook.delegate = self
-        verifyFacebook.permissions = ["public_profile","email"]
-//        verifyFacebook.addTarget(self, action:Selector(("setupFacebookVerification:")), for: UIControl.Event.touchUpInside)
+        verifyFacebook.setImage(facebookImage, for: .normal)
+        verifyFacebook.imageEdgeInsets = UIEdgeInsets(top: 50, left: 80, bottom: 50, right: 80)
+        verifyFacebook.backgroundColor = UIColor.defaultWhiteColor
+        verifyFacebook.layer.cornerRadius = 20
+        verifyFacebook.layer.borderWidth = 1
+        checkAuthenticatedUser()
+        verifyFacebook.isHidden = false
+        verifyFacebook.contentMode = .scaleAspectFit
 //        verifyFacebook.addTarget(self, action: #selector(setupFacebookVerification), for: .touchUpInside)
-        view.addSubview(verifyFacebook)
         verifyFacebook.heightAnchor.constraint(equalToConstant: 55).isActive = true
-        verifyFacebook.topAnchor.constraint(equalTo: verifyAccountLabel.bottomAnchor, constant: 40).isActive = true
-        verifyFacebook.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant:-35).isActive = true
-        verifyFacebook.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 35).isActive = true
     }
     
     func verifyWithGoogleButtonDesign(){
-        let googleImage = UIImage(named:"Google_Logo.svg")
+        let googleImage = UIImage(named:"search")
         verifyGoogle = UIButton()
         verifyGoogle.translatesAutoresizingMaskIntoConstraints = false
         verifyGoogle.clipsToBounds = true
         verifyGoogle.setImage(googleImage, for: .normal)
-        verifyGoogle.imageView?.contentMode = .scaleAspectFit
-        verifyGoogle.titleLabel?.font = UIFont.systemFont(ofSize: 24, weight: .regular)
-        verifyGoogle.layer.cornerRadius = 10
-        verifyGoogle.backgroundColor = UIColor.buttonBackgroundColor
+        verifyGoogle.imageEdgeInsets = UIEdgeInsets(top: 45, left: 75, bottom: 45, right: 75)
+        verifyGoogle.layer.cornerRadius = 20
+        verifyGoogle.layer.borderWidth = 1
+        checkAuthenticatedUser()
+        verifyGoogle.isHidden = false
+        verifyGoogle.contentMode = .scaleAspectFit
+        verifyFacebook.backgroundColor = UIColor.defaultWhiteColor
         verifyGoogle.addTarget(self, action: #selector(setupGoogleVerification), for: .touchUpInside)
-        view.addSubview(verifyGoogle)
-        NSLayoutConstraint.activate([
-            verifyGoogle.heightAnchor.constraint(equalToConstant: 55),
-            verifyGoogle.topAnchor.constraint(equalTo: verifyFacebook.bottomAnchor, constant: 20),
-            verifyGoogle.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant:-220),
-            verifyGoogle.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 35),
-        ])
+        verifyGoogle.heightAnchor.constraint(equalToConstant: 55).isActive = true
     }
     
     func verifyWithAppleButtonDesign(){
-        let appleImage = UIImage(named: "Apple_logo_white.svg")
-        verifyApple = UIButton()
+        let appleImage = UIImage(named: "apple-3")
+        verifyApple = UIButton(frame: CGRect(x: 0, y: 0, width:55 , height: 55))
         verifyApple.translatesAutoresizingMaskIntoConstraints = false
-        verifyApple.setTitle("Apple", for: .normal)
         verifyApple.clipsToBounds = true
         verifyApple.setImage(appleImage, for: .normal)
-        verifyApple.imageView?.contentMode = .scaleAspectFit
-        verifyApple.titleLabel?.font = UIFont.systemFont(ofSize: 24, weight: .regular)
-        verifyApple.layer.cornerRadius = 10
-        verifyApple.backgroundColor = UIColor.buttonBackgroundColor
-        //        verifyApple.addTarget(self, action: #selector(proceedToMapView), for: .touchUpInside)
-        view.addSubview(verifyApple)
-        NSLayoutConstraint.activate([
-            verifyApple.heightAnchor.constraint(equalToConstant: 55),
-            verifyApple.topAnchor.constraint(equalTo: verifyFacebook.bottomAnchor, constant: 20),
-            verifyApple.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant:-35),
-            verifyApple.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 220),
-        ])
+        verifyApple.backgroundColor = UIColor.defaultWhiteColor
+        verifyApple.layer.borderWidth = 1
+        verifyApple.contentMode = .scaleAspectFit
+        verifyApple.imageEdgeInsets = UIEdgeInsets(top: 70, left: 100, bottom: 70, right: 100)
+        checkAuthenticatedUser()
+        verifyApple.isHidden = false
+        verifyApple.layer.cornerRadius = 20
+        verifyApple.addTarget(self, action: #selector(setupAppleVerification), for: .touchUpInside)
+        verifyApple.heightAnchor.constraint(equalToConstant: 55).isActive = true
     }
     
-    func verifyWithPhoneNumberButtonDesign(){
-        verifyPhoneNumber = UIButton()
-        verifyPhoneNumber.translatesAutoresizingMaskIntoConstraints = false
-        verifyPhoneNumber.setTitle("Verify with Phone Number", for: .normal)
-        verifyPhoneNumber.titleLabel?.font = UIFont.systemFont(ofSize: 24, weight: .regular)
-        verifyPhoneNumber.backgroundColor = .systemGreen
-        verifyPhoneNumber.layer.cornerRadius = 10
-        verifyPhoneNumber.center = self.view.center
-        //         verifyFacebookLabel.addTarget(self, action: #selector(verifyFacebookLabel), for: .touchUpInside)
-        view.addSubview(verifyPhoneNumber)
-        verifyPhoneNumber.heightAnchor.constraint(equalToConstant: 55).isActive = true
-        verifyPhoneNumber.topAnchor.constraint(equalTo: verifyApple.bottomAnchor, constant: 20).isActive = true
-        verifyPhoneNumber.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant:-35).isActive = true
-        verifyPhoneNumber.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 35).isActive = true
+    func badgeStackUI(){
+        badgeStack.distribution = .fill
+        badgeStack.alignment = .fill
+        badgeStack.spacing = 16
+        badgeStack.translatesAutoresizingMaskIntoConstraints = false
+        badgeStack.addArrangedSubview(infoBadge)
+        badgeStack.addArrangedSubview(verificationInfo)
+    }
+    
+    func verifyInfoUI(){
+        verificationInfo = UILabel()
+        verificationInfo.translatesAutoresizingMaskIntoConstraints = false
+        verificationInfo.text = "Verified users are refelcted with their higher level of trustworthines"
+        verificationInfo.font = verificationInfo.font.withSize(11)
+        verificationInfo.textColor = UIColor.primaryColor
+        verificationInfo.numberOfLines = 1
+        verificationInfo.sizeToFit()
+        verificationInfo.isHidden = false
+        checkAuthenticatedUser()
+    }
+    
+    func infoBadgeUI(){
+        let infoImage = UIImage(systemName: "info.circle")
+        infoBadge = UIImageView()
+        infoBadge.translatesAutoresizingMaskIntoConstraints = false
+        infoBadge.image = infoImage
+        infoBadge.isHidden = false
+        checkAuthenticatedUser()
+    }
+    
+    func signOutButtonUI(){
+        signOutButton = UIButton()
+        signOutButton.translatesAutoresizingMaskIntoConstraints = false
+        signOutButton.setTitle("Sign Out!", for: .normal)
+        signOutButton.backgroundColor = .systemRed
+        signOutButton.layer.cornerRadius = 10
+        signOutButton.isHidden = true
+        checkAuthenticatedUser()
+        self.view.addSubview(signOutButton)
+        signOutButton.addTarget(self, action: #selector(signOutFunction), for: .touchUpInside)
+        signOutButton.widthAnchor.constraint(equalToConstant: 120).isActive = true
     }
     
     func myReportsLabelDesign(){
@@ -243,16 +455,12 @@ class ProfileViewController: UIViewController, LoginButtonDelegate {
         myReports.text = "My Reports"
         myReports.font = myReports.font.withSize(30)
         myReports.textColor = UIColor.primaryColor
-        self.view.addSubview(myReports)
-        myReports.topAnchor.constraint(equalTo: verifyPhoneNumber.bottomAnchor, constant:40).isActive = true
-        myReports.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 30).isActive = true
+        self.container.addSubview(myReports)
+        myReports.topAnchor.constraint(equalTo: verticalStack.bottomAnchor, constant:20).isActive = true
+        myReports.leadingAnchor.constraint(equalTo: self.container.leadingAnchor, constant: 20).isActive = true
     }
     
 }
-
-
-
-
 
 extension ProfileViewController: UITableViewDelegate, UITableViewDataSource{
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -272,27 +480,21 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource{
         var longitude: Double
         var date: Date
         var image:String
-        //        if indexPath.row < reportsArray.count{
-        //            for data in self.reportsArray{
+        var address:String
         let report = reportsArray[indexPath.row]
-        //        print(report)
         description = report.description ?? "No data to show"
         latitude = report.lat
         longitude = report.long
         date = report.date
         image = report.photo ?? "androidKiller"
+        address = report.address ?? ""
         cell.selectionStyle = .none
-        //        print(report.photo!)
-        //            }
-        //        } else {
-        //            fatalError("Index path is out of bounds for reportsArray")
-        //        }
-        cell.setupCell(image:image,descriptionLabel: description, latitude: latitude, longitude: longitude, date:date)
+        cell.setupCell(image:image,descriptionLabel: description, latitude: latitude, longitude: longitude, date:date, address: address)
         return cell
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 130
+        return 200
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -302,9 +504,6 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource{
         var longitude: Double
         let finalReportVC = FinalReportViewController()
         var image:String
-        
-        
-        //        if indexPath.row < reportsArray.count{
         let report = reportsArray[indexPath.row]
         description = report.description ?? "No data to show"
         latitude = report.lat
@@ -315,221 +514,36 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource{
         finalReportVC.isConfirmButtonHidden = true
         finalReportVC.isTextFieldEditable = false
         finalReportVC.imageURL = image
-        //        } else {
-        //            fatalError("Index path is out of bounds for reportsArray")
-        //        }
+        finalReportVC.isVoteForHidden = true
+        finalReportVC.isVoteAgainstHidden = true
         navigationController?.pushViewController(finalReportVC, animated: false)
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//
-//  ReportListViewController.swift
-//  FireReporter
-//
-//  Created by Abdulla Civuli on 10.10.23.
-//
-
-//import UIKit
-//import CoreLocation
-//import FirebaseFirestore
-//
-//
-//class ReportListViewController: UIViewController {
-//
-//    var reportListTitle = UILabel()
-//
-//    var reportsArray = [FireReportModel]()
-//
-//
-//    private let images: [UIImage] = [
-//        UIImage(named: "ap23228583464745-cbe17fd99bdb2c6161082c3d8a16887c5e171c82-s1100-c50")!,
-//        UIImage(named: "fillet-steak-thumb")!,
-//        UIImage(named: "ap23228583464745-cbe17fd99bdb2c6161082c3d8a16887c5e171c82-s1100-c50")!,
-//        UIImage(named: "ap23228583464745-cbe17fd99bdb2c6161082c3d8a16887c5e171c82-s1100-c50")!
-//    ]
-//    private let descriptions = ["Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.","Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.","Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.","Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.","Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."]
-//    private let coordinates = ["latitude: 51.507222, longitude: -0.1275","latitude: 59.95, longitude: 10.75","latitude: 48.8567, longitude: 2.3508","latitude: 41.9, longitude: 12.5"]
-//    private let date = ["2020–04–15 11:11 PM","2020–04–15 11:11 PM","2020–04–15 11:11 PM","2020–04–15 11:11 PM"]
-//
-//
-//    private let tableView: UITableView = {
-//        let tableView = UITableView()
-//        tableView.backgroundColor = .white
-//        tableView.allowsSelection = true
-//        tableView.register(ReportListCustomTableViewCell.self, forCellReuseIdentifier: ReportListCustomTableViewCell.identifier)
-//        return tableView
-//    }()
-//
-//    override func viewDidLoad() {
-//        super.viewDidLoad()
-//        getFireReports()
-//        view.backgroundColor = UIColor.secondaryColor
-//        setupUI()
-//        reportListTitleLabel()
-//        self.tableView.delegate = self
-//        self.tableView.dataSource = self
-//        UITabBar.appearance().backgroundColor = UIColor.white
-//        print("Hello World")
-//        self.navigationController?.isNavigationBarHidden = true
-//    }
-//
-//
-//    func getFireReports(){
-//        let db = Firestore.firestore()
-//
-//        db.collection("reports").addSnapshotListener { querrySnapshot, error in
-//            guard let documents = querrySnapshot?.documents else {print("No Documents")
-//                return}
-//
-//            self.reportsArray = documents.map({ querryDocumentSnapshot in
-//                let data = querryDocumentSnapshot.data()
-//                let description = data["description"] as? String? ?? ""
-//                let lat = data["lat"] as? Double? ?? 0.00
-//                let long = data["long"] as? Double? ?? 0.00
-//                self.tableView.reloadData()
-//                return FireReportModel(description: description,id:0,lat: lat ?? 0.00, long: long ?? 0.00, photo: "", timestamp: Date.now)
-//            })
-//            self.tableView.reloadData()
-//        }
-//    }
-////    for document in QuerySnapshot!.documents{
-////        let fireData = document.data()
-////        print(fireData)
-////            self.wildFireReports = fireData
-////            print(self.wildFireReports)
-////        print(type(of:self.wildFireReports))
-////    }
-//
-//
-//
-//    override func viewWillAppear(_ animated: Bool) {
-//           super.viewWillAppear(animated)
-//           navigationController?.setNavigationBarHidden(true, animated: animated)
-//        print("Hello World")
-//       }
-//
-//       override func viewWillDisappear(_ animated: Bool) {
-//           super.viewWillDisappear(animated)
-//           navigationController?.setNavigationBarHidden(false, animated: animated)
-//       }
-//
-//    private func setupUI(){
-//        self.view.addSubview(tableView)
-//        tableView.translatesAutoresizingMaskIntoConstraints = false
-//        tableView.backgroundColor = UIColor.secondaryColor
-//
-//        NSLayoutConstraint.activate([
-//            tableView.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 150),
-//            tableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
-//            tableView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
-//            tableView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
-//        ])
-//    }
-//
-//    func reportListTitleLabel(){
-//        reportListTitle = UILabel()
-//        reportListTitle.translatesAutoresizingMaskIntoConstraints = false
-//        reportListTitle.text = "Fire Report List"
-//        reportListTitle.font = reportListTitle.font.withSize(28)
-//        reportListTitle.textColor = UIColor.primaryColor
-//        view.addSubview(reportListTitle)
-//        reportListTitle.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant:15).isActive = true
-//        reportListTitle.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 30).isActive = true
-//    }
-//}
-//
-//
-//
-//extension ReportListViewController: UITableViewDelegate, UITableViewDataSource{
-//    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        return self.reportsArray.count
-//    }
-//
-//    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-//        cell.backgroundColor = UIColor.secondaryColor
-//    }
-//
-//    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        guard let cell = tableView.dequeueReusableCell(withIdentifier: ReportListCustomTableViewCell.identifier, for: indexPath) as? ReportListCustomTableViewCell else {
-//            fatalError("The TableView could not dequeue a Custom Cell")
-//        }
-//        var description:String
-//        var latitude:Double
-//        var longitude: Double
-//        var date: Date
-//        if indexPath.row < reportsArray.count{
-////            for data in self.reportsArray{
-//                let report = reportsArray[indexPath.row]
-//                description = report.description ?? "No data to show"
-//                latitude = report.lat
-//                longitude = report.long
-//                date = report.timestamp
-//                cell.selectionStyle = .none
-////            }
-//        } else {
-//            fatalError("Index path is out of bounds for reportsArray")
-//
-//        }
-//        cell.setupCell(descriptionLabel: description, latitude: latitude, longitude: longitude, date: date)
-//        return cell
-//    }
-//
-//    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-//        return 130
-//    }
-//
-//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//
-//        var description:String
-//        var latitude:Double
-//        var longitude: Double
-//        var date: Date
-//        let finalReportVC = FinalReportViewController()
-//
-//        if indexPath.row < reportsArray.count{
-////            for data in self.reportsArray{
-//                let report = reportsArray[indexPath.row]
-//                description = report.description ?? "No data to show"
-//                latitude = report.lat
-//                longitude = report.long
-//                date = report.timestamp
-//            finalReportVC.descriptionText = description
-//            finalReportVC.coordinates = CLLocationCoordinate2D(latitude:latitude , longitude:longitude)
-//            finalReportVC.isConfirmButtonHidden = true
-//            finalReportVC.isTextFieldEditable = false
-//        } else {
-//            fatalError("Index path is out of bounds for reportsArray")
-//
-//        }
-////        let image = self.images[indexPath.row]
-////        let description = self.descriptions[indexPath.row]
-////        let coordinates = self.coordinates[indexPath.row]
-////        let dates = self.date[indexPath.row]
-////
-////        print(image,description,coordinates,dates)
-////        let finalReportVC = FinalReportViewController()
-////        finalReportVC.fireImage = image
-////        finalReportVC.descriptionText = description
-////        // fix with real data
-////        finalReportVC.coordinates = CLLocationCoordinate2D(latitude: 48.8567, longitude: 2.3508)
-////
-////
-//        navigationController?.pushViewController(finalReportVC, animated: false)
-//    }
-//}
-
+extension ProfileViewController: ASAuthorizationControllerDelegate, ASAuthorizationControllerPresentationContextProviding{
+    func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
+        return view.window!
+    }
+    
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
+        if let nonce = currentNonce,
+           let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential,
+           let appleidToken = appleIDCredential.identityToken,
+           let appleIDTokenString = String(data: appleidToken, encoding: .utf8){
+            let credential = OAuthProvider.credential(withProviderID: "apple.com", idToken:appleIDTokenString, rawNonce:nonce)
+            Auth.auth().signIn(with: credential){(result, error) in
+                if (error != nil) {
+                    self.present(Alert(text: error?.localizedDescription ?? "Authentication Error", message: "", confirmAction: [UIAlertAction(title: "Try again", style: .default)], disableAction: []))
+                    return
+                } else {
+                    self.checkAuthenticatedUser()
+                    self.present(Alert(text: "Success", message: "You're now a Fire Reporter Verified User", confirmAction: [UIAlertAction(title: "OK", style: .default)], disableAction: []))
+                }
+            }
+        }
+        
+        func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
+            print(error.localizedDescription)
+        }
+    }
+}

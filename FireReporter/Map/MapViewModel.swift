@@ -7,20 +7,13 @@
 
 import Foundation
 import CoreLocation
+import MapKit
 
-class MapViewModel{
+class MapViewModel: NSObject, CLLocationManagerDelegate {
     
     let locationManager = CLLocationManager()
     
-    func configureLocationManager(){
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        //        locationManager.delegate = self
-        locationManager.requestWhenInUseAuthorization()
-        locationManager.startUpdatingLocation()
-    }
-    
-    func locationManagerAuthorization(onDenial: @escaping () -> Void){
-        func locationManagerDidChangeAuthorization(_ manager: CLLocationManager){
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager, onDenial: @escaping () -> Void){
             switch manager.authorizationStatus{
             case .authorizedAlways:
                 break
@@ -36,17 +29,4 @@ class MapViewModel{
                 print("Give permission please")
             }
         }
-    }
-    
-    func updateLocation(onUpdate: @escaping(_ location:CLLocation) -> Void){
-        func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]){
-            if let location = locations.first {
-                let locationManager = CLLocationManager()
-                locationManager.stopUpdatingLocation()
-                onUpdate(location)
-            }
-        }
-    }
-    
-    
 }

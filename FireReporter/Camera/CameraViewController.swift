@@ -311,6 +311,7 @@
 import UIKit
 import AVFoundation
 import AVKit
+import FirebaseAuth
 
 class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate {
     
@@ -370,6 +371,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
                     self.prepareCamera()
                 }
             }
+            self.signInAnonymous()
             break
         case .restricted:
             break
@@ -560,6 +562,21 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
             report.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 250),
             report.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -150)
         ])
+    }
+    
+    func signInAnonymous(){
+//        if Auth.auth().currentUser == nil {
+            print("is anonymous")
+            Auth.auth().signInAnonymously()
+//            if let scene = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate{
+//                scene.userState = .anonymous
+//            }
+//        } else {
+//            print("Someone is signed in")
+//            if let user = Auth.auth().currentUser {
+//                print("\(user.uid)is not anonymous ")
+//            }
+//        }
     }
 }
 

@@ -6,13 +6,61 @@
 //
 
 import Foundation
-import Firebase
 import GoogleSignIn
 import FBSDKCoreKit
 import FBSDKLoginKit
+import FirebaseAuth
+import FirebaseFirestore
 
 
 class FirebaseService {
+    var reportsArray = [FireReport]()
+    
+    let userArray: [User] = []
+    
+    func getFireReportsData(completion: @escaping(_ myFireReports: [FireReport], Error?) -> Void) {
+        let db = Firestore.firestore()
+        db.collection("reports").whereField("uniqueIdentifier", isEqualTo: UIDevice.current.identifierForVendor!.uuidString).getDocuments { querrySnapshot, error in
+            guard let documents = querrySnapshot?.documents else {print("No Documents")
+                return}
+            self.reportsArray = documents.map({ querryDocumentSnapshot in
+                let data = querryDocumentSnapshot.data()
+                let uniqueIdentifier = data["uniqueIdentifier"] as? String? ?? ""
+                let description = data["description"] as? String? ?? ""
+                let lat = data["lat"] as? Double? ?? 0.00
+                let long = data["long"] as? Double? ?? 0.00
+                let timestamp = data["timestamp"] as? Timestamp
+                let photo = data["photo"] as? String? ?? "androidKiller"
+                let address = data["address"] as? String
+                let likes = data["likes"] ?? 0
+                return FireReport(description: description,id:"",lat: lat ?? 0.00, long: long ?? 0.00, photo:photo ?? "androidKiller", timestamp: timestamp?.dateValue() ?? Date(), uniqueIdentifier: uniqueIdentifier ?? "", address:address, likes: likes as! Int, users: self.userArray)
+            })
+            completion(self.reportsArray, error)
+        }
+    }
+    
+    func getAllReportsLocations(completion: @escaping(_ myFireReports: [FireReport], Error?) -> Void){
+        let db = Firestore.firestore()
+        var mapLocationsArray = [FireReport]()
+        db.collection("reports").getDocuments { querrySnapshot, error in
+            guard let documents = querrySnapshot?.documents else {print("No Documents")
+                return}
+            mapLocationsArray = documents.map({ querryDocumentSnapshot in
+                let data = querryDocumentSnapshot.data()
+                let uniqueIdentifier = data["uniqueIdentifier"] as? String? ?? ""
+                let description = data["description"] as? String? ?? ""
+                let lat = data["lat"] as? Double? ?? 0.00
+                let long = data["long"] as? Double? ?? 0.00
+                let timestamp = data["timestamp"] as? Timestamp
+                let photo = data["photo"] as? String? ?? "androidKiller"
+                let likes = data["likes"] as! Int
+                let id = data["id"] as? String ?? ""
+                return FireReport(description: description,id:id,lat: lat ?? 0.00, long: long ?? 0.00, photo:photo ?? "androidKiller", timestamp: timestamp?.dateValue() ?? Date(), uniqueIdentifier: uniqueIdentifier ?? "", address: "", likes: likes, users: self.userArray)
+            })
+            completion(mapLocationsArray, error)
+        }
+    }
+    
     
     func googleAuth(onError:@escaping () -> Void, onSuccess:@escaping () -> Void, onAuthError: @escaping () -> Void){
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
@@ -38,6 +86,23 @@ class FirebaseService {
         }
     }
     
-   
-    
+    func facebookAuth(onError:@escaping () -> Void, onSuccess:@escaping() -> Void){
+//        if error != nil {
+//            onError()
+//        return
+//        }
+        if (AccessToken.current != nil) {
+            let credential = FacebookAuthProvider.credential(withAccessToken: AccessToken.current!.tokenString)
+            Auth.auth().signIn(with: credential) { (authResult, error) in
+                if error != nil {
+                    onError()
+                    return
+                }
+                onSuccess()
+            }
+        } else {
+            onError()
+            print("there is no token for the user")
+        }
+    }
 }

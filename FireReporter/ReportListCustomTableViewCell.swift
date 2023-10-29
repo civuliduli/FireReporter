@@ -6,10 +6,10 @@
 //
 
 import UIKit
+import CoreLocation
 
 class ReportListCustomTableViewCell: UITableViewCell {
 
-    
     static let identifier = "ReportListCustomCell"
     
     private var descriptionLabel = UILabel()
@@ -17,9 +17,8 @@ class ReportListCustomTableViewCell: UITableViewCell {
     private var longitudeData = UILabel()
     private var fireImage = UIImageView()
     private var dateLabel = UILabel()
-    private var coordinatesDescriptionLabel = UILabel()
-    private var latitude = UILabel()
-    private var longitude = UILabel()
+    private var locationDescriptionLabel = UILabel()
+    private var locationName = UILabel()
     var imageString = ""
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -27,28 +26,13 @@ class ReportListCustomTableViewCell: UITableViewCell {
         setFireImageUI()
         setupDescriptionLabelUI()
         setupDateLabelUI()
-        setupLongitudeUI()
-        setupLatitudeUI()
         setupcoordinatesDescriptionDesign()
-        setupLatitudeLabel()
-        setupLongitudeLabel()
-//        getImage()
+        setupLocationNameDesign()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-   
-//    func convertBase64StringToImage (imageBase64String:String) -> UIImage {
-//        guard let imageData = Data(base64Encoded: imageBase64String) else { print("No image")
-//            return UIImage(named: "androidKiller")! }
-//        let image = UIImage(data: imageData)
-//        return image!
-////        let imageData = Data(base64Encoded: imageBase64String)
-////        let image = UIImage(data: imageData!)
-////        return image!
-//    }
     
     func decodeBase64ToImage(base64String: String) -> UIImage? {
         if let data = Data(base64Encoded: base64String, options: .ignoreUnknownCharacters) {
@@ -57,28 +41,21 @@ class ReportListCustomTableViewCell: UITableViewCell {
         return nil
     }
  
-   
     
-    func setupCell(image:String, descriptionLabel: String,latitude:Double, longitude:Double, date:Date){
+    func setupCell(image:String, descriptionLabel: String,latitude:Double, longitude:Double, date:Date, address:String){
         var dateString: String {
             let formatter = DateFormatter()
             formatter.dateFormat = "EEEE, MMM d, yyyy h:mm a"
             return formatter.string(from: date)
         }
-//        let mydecompressedImage = convertBase64StringToImage (imageBase64String:image)
         fireImage.image = decodeBase64ToImage(base64String: image)
-//        fireImage.image = convertBase64StringToImage (imageBase64String:image)
-//        getImage()
         self.descriptionLabel.text = descriptionLabel
-        self.latitudeData.text = String(latitude)
-        self.longitudeData.text = String(longitude)
         self.dateLabel.text = String(dateString)
         print("\(imageString) my image string")
-//        self.coordinateLabel.text = coordinateLabel
+        locationName.text = address
     }
     
    
-    
     
     func setFireImageUI(){
         fireImage = UIImageView()
@@ -88,8 +65,8 @@ class ReportListCustomTableViewCell: UITableViewCell {
         NSLayoutConstraint.activate([
             fireImage.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
             fireImage.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
-            fireImage.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 40),
-            fireImage.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -270)
+            fireImage.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            fireImage.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -250)
         ])
     }
     
@@ -102,79 +79,36 @@ class ReportListCustomTableViewCell: UITableViewCell {
         self.contentView.addSubview(descriptionLabel)
         NSLayoutConstraint.activate([
             descriptionLabel.topAnchor.constraint(equalTo: contentView.topAnchor),
-            descriptionLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -90),
-            descriptionLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 170),
+            descriptionLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -130),
+            descriptionLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 190),
             descriptionLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
         ])
     }
     
     func setupcoordinatesDescriptionDesign(){
-        coordinatesDescriptionLabel = UILabel()
-        coordinatesDescriptionLabel.translatesAutoresizingMaskIntoConstraints = false
-        coordinatesDescriptionLabel.text = "Fireplace location:"
-        coordinatesDescriptionLabel.font = UIFont.systemFont(ofSize: 17, weight: .regular)
-        self.contentView.addSubview(coordinatesDescriptionLabel)
+        locationDescriptionLabel = UILabel()
+        locationDescriptionLabel.translatesAutoresizingMaskIntoConstraints = false
+        locationDescriptionLabel.text = "Fireplace location:"
+        locationDescriptionLabel.font = UIFont.systemFont(ofSize: 17, weight: .regular)
+        self.contentView.addSubview(locationDescriptionLabel)
         NSLayoutConstraint.activate([
-            coordinatesDescriptionLabel.topAnchor.constraint(equalTo: contentView.topAnchor),
-            coordinatesDescriptionLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -40),
-            coordinatesDescriptionLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 170),
-            coordinatesDescriptionLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
+            locationDescriptionLabel.topAnchor.constraint(equalTo: contentView.topAnchor),
+            locationDescriptionLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -40),
+            locationDescriptionLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 190),
+            locationDescriptionLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
         ])
     }
     
-    func setupLatitudeLabel(){
-        latitude = UILabel()
-        latitude.translatesAutoresizingMaskIntoConstraints = false
-        latitude.text = "Lat:"
-        latitude.font = latitudeData.font.withSize(14)
-        self.contentView.addSubview(latitude)
+    func setupLocationNameDesign(){
+        locationName = UILabel()
+        locationName.translatesAutoresizingMaskIntoConstraints = false
+        locationName.font = latitudeData.font.withSize(14)
+        self.contentView.addSubview(locationName)
         NSLayoutConstraint.activate([
-            latitude.topAnchor.constraint(equalTo: contentView.topAnchor),
-            latitude.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 5),
-            latitude.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 170),
-            latitude.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
-        ])
-    }
-    
-    func setupLongitudeLabel(){
-        longitude = UILabel()
-        longitude.translatesAutoresizingMaskIntoConstraints = false
-        longitude.text = "Long:"
-        longitude.font = longitude.font.withSize(14)
-        self.contentView.addSubview(longitude)
-        NSLayoutConstraint.activate([
-            longitude.topAnchor.constraint(equalTo: contentView.topAnchor),
-            longitude.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 40),
-            longitude.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 170),
-            longitude.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
-        ])
-    }
-    
-    func setupLatitudeUI(){
-        latitudeData = UILabel()
-        latitudeData.translatesAutoresizingMaskIntoConstraints = false
-        latitudeData.text = "latitude: 51.507222, longitude: -0.1275"
-        latitudeData.font = latitudeData.font.withSize(14)
-        self.contentView.addSubview(latitudeData)
-        NSLayoutConstraint.activate([
-            latitudeData.topAnchor.constraint(equalTo: contentView.topAnchor),
-            latitudeData.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 5),
-            latitudeData.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 210),
-            latitudeData.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
-        ])
-    }
-    
-    func setupLongitudeUI(){
-        longitudeData = UILabel()
-        longitudeData.translatesAutoresizingMaskIntoConstraints = false
-        longitudeData.text = "latitude: 51.507222, longitude: -0.1275"
-        longitudeData.font = longitudeData.font.withSize(14)
-        self.contentView.addSubview(longitudeData)
-        NSLayoutConstraint.activate([
-            longitudeData.topAnchor.constraint(equalTo: contentView.topAnchor),
-            longitudeData.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 40),
-            longitudeData.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 210),
-            longitudeData.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
+            locationName.topAnchor.constraint(equalTo: contentView.topAnchor),
+            locationName.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 5),
+            locationName.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 190),
+            locationName.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
         ])
     }
     
@@ -186,8 +120,8 @@ class ReportListCustomTableViewCell: UITableViewCell {
         self.contentView.addSubview(dateLabel)
         NSLayoutConstraint.activate([
             dateLabel.topAnchor.constraint(equalTo: contentView.topAnchor),
-            dateLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 90),
-            dateLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 170),
+            dateLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 130),
+            dateLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 190),
             dateLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
         ])
     }

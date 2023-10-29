@@ -26,7 +26,7 @@ class TabBarViewController: UITabBarController, UITabBarControllerDelegate {
         let profileBarItem = UITabBarItem(title: "Profile", image: UIImage(systemName:"person.crop.circle"), selectedImage:UIImage(systemName: "person.crop.circle.fill"))
         profile.tabBarItem = profileBarItem
         
-        let userLocationsBarItem = UITabBarItem(title: "My Reports", image: UIImage(systemName:"map"), selectedImage: UIImage(systemName: "map.fill"))
+        let userLocationsBarItem = UITabBarItem(title: "All Reports", image: UIImage(systemName:"map"), selectedImage: UIImage(systemName: "map.fill"))
         userReportedLocations.tabBarItem = userLocationsBarItem
         
         let cameraNavC = NavigationController(rootViewController: cameraView)
