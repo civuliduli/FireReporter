@@ -9,8 +9,8 @@ import UIKit
 import Firebase
 import FirebaseCore
 import GoogleSignIn
-import FBSDKCoreKit
 import FacebookCore
+import FBSDKCoreKit
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -18,11 +18,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        ApplicationDelegate.shared.application(application, didFinishLaunchingWithOptions: launchOptions)
-        // Override point for customization after application launch.
         FirebaseApp.configure()
+        return ApplicationDelegate.shared.application(application, didFinishLaunchingWithOptions: launchOptions)
+        // Override point for customization after application launch.
         
-        return true
     }
     
     // for google signin

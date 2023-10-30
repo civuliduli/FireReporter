@@ -36,6 +36,7 @@ class ProfileViewController: UIViewController {
     let badgeStack = UIStackView()
     let usernameProfileStack = UIStackView()
     private var currentNonce:String?
+    var isUserProfileHidden:Bool?
     var reportsArray = [FireReport]()
     
     private let tableView: UITableView = {
@@ -59,12 +60,6 @@ class ProfileViewController: UIViewController {
         }
         setupUI()
         checkAuthenticatedUser()
-        
-        if let token = AccessToken.current,
-                !token.isExpired {
-                // User is logged in, do work such as go to next view controller.
-            }
-        
     }
     
     enum AuthenticationError:Error {
@@ -87,6 +82,25 @@ class ProfileViewController: UIViewController {
         firebaseService.getFireReportsData { myFireReports, error in
             self.reportsArray = myFireReports
             self.tableView.reloadData()
+        }
+    }
+    
+    @objc func setupFacebookVerification(){
+        let loginManager = LoginManager()
+        loginManager.logIn(permissions: ["public_profile", "email"], from: self) { [weak self] (result, error) in
+            guard let accessToken = AccessToken.current?.tokenString else {
+                print("Failed to get access token for Facebook")
+                return
+            }
+            let credentials = FacebookAuthProvider.credential(withAccessToken: accessToken)
+            //following steps is for savings Facebook credentials in Fire base we can look more about this further in my tutorial.
+            Auth.auth().signIn(with: credentials, completion: { (data, error) in
+                guard let result = data, error == nil else {
+                    print("FB Login Error: \(String(describing: error?.localizedDescription))")
+                    return
+                }
+                self?.checkAuthenticatedUser()
+            })
         }
     }
     
@@ -133,21 +147,6 @@ class ProfileViewController: UIViewController {
 
       return hashString
     }
-    
-    @objc func setupFacebookVerification(_ loginButton: FBLoginButton!,didCompleteWith result: LoginManagerLoginResult!, error: Error!){
-        if let error = error {
-                  print(error.localizedDescription)
-              return
-              }
-              let credential = FacebookAuthProvider.credential(withAccessToken: AccessToken.current!.tokenString)
-              Auth.auth().signIn(with: credential) { (authResult, error) in
-                  if let error = error {
-                      print("Facebook authentication with Firebase error: ", error)
-                      return
-                  }
-              print("Login success!")
-              }
-    }
 
     @objc func setupGoogleVerification() {
                 firebaseService.googleAuth {
@@ -167,6 +166,7 @@ class ProfileViewController: UIViewController {
         if let scene = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate{
             if let user = Auth.auth().currentUser {
                 if user.isAnonymous {
+                    isUserProfileHidden = true
                     usernameLabel.isHidden = true
                     verificationBadge.isHidden = true
                     signOutButton.isHidden = true
@@ -178,6 +178,7 @@ class ProfileViewController: UIViewController {
                     infoBadge.isHidden = false
                     usernameProfileStack.isHidden = true
                 } else {
+                    isUserProfileHidden = false
                     usernameLabel.isHidden = false
                     verificationBadge.isHidden = false
                     signOutButton.isHidden = false
@@ -368,7 +369,7 @@ class ProfileViewController: UIViewController {
         checkAuthenticatedUser()
         verifyFacebook.isHidden = false
         verifyFacebook.contentMode = .scaleAspectFit
-//        verifyFacebook.addTarget(self, action: #selector(setupFacebookVerification), for: .touchUpInside)
+        verifyFacebook.addTarget(self, action: #selector(setupFacebookVerification), for: .touchUpInside)
         verifyFacebook.heightAnchor.constraint(equalToConstant: 55).isActive = true
     }
     
