@@ -608,12 +608,16 @@ class FinalReportViewController: UIViewController {
     var voteInfo = UILabel()
     var voteLabel = UILabel()
     var ID:String!
-    var votedFor:Bool?
     var votes: Int?
     var mainStack = UIStackView()
-
-
-
+    var userVotes:Int = 0
+    var updatedUserVote = 0
+    var isUserVerified: Bool!
+    var upVoteSelected: Bool!
+    var downVoteSelected: Bool!
+    var thisUser: Vote?
+    var collectionVotes: Int!
+    var totalVote: Int!
     lazy var mapView: MKMapView = {
         let map = MKMapView()
         map.translatesAutoresizingMaskIntoConstraints = false
@@ -637,7 +641,15 @@ class FinalReportViewController: UIViewController {
         previewImage.addGestureRecognizer(tapGestureRecognizer)
         fireImageView.isUserInteractionEnabled = true
         fireImageView.addGestureRecognizer(tapGestureRecognizer1)
-        self.enableDisableVoting()
+        self.navigationController?.setNavigationBarHidden(false, animated: true)
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "", image: UIImage(systemName:"x.circle"), target: self, action: #selector(dismissScreen))
+//        getUserVotes()
+        getQuantity { [weak self] quantity in
+              if let self = self, let quantity = quantity {
+                  self.userVotes = quantity
+                  print("Quantity in viewDidLoad: \(quantity)")
+              }
+          }
     }
 
     @objc func dismissKeyboard(){
@@ -647,6 +659,32 @@ class FinalReportViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         finalReportViewModel.configureLocationManager()
         fireLocation()
+        getQuantity { [weak self] quantity in
+              if let self = self, let quantity = quantity {
+                  self.userVotes = quantity
+                  print("Quantity in viewDidLoad: \(quantity)")
+              }
+          }
+        navigationController?.navigationBar.backgroundColor = .white
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        getQuantity { [weak self] quantity in
+            if let self = self, let quantity = quantity {
+                self.userVotes = quantity
+                print("Quantity in viewDidLoad: \(quantity)")
+            }
+        }
+//        getUserVotes()
+        self.isUserVerified = Auth.auth().currentUser?.isEmailVerified
+        print("\(isUserVerified!)is user verified")
+        print("\(collectionVotes ?? 0) report votes")
+        self.voteInfo.text = String(collectionVotes ?? 0)
+        updatedUserVote = userVotes
+    }
+    
+    @objc func dismissScreen(){
+        dismiss(animated: true, completion: nil)
     }
 
     func fireLocation(){
@@ -688,47 +726,52 @@ class FinalReportViewController: UIViewController {
             }
         })
     }
-
-    func getUserVotes(){
-        let db = Firestore.firestore()
-        let voteCollection = db.collection("reports")
-        let query = voteCollection.whereField("id", isEqualTo: ID!)
-        query.getDocuments { QuerySnapshot, error in
-            if let error = error{
-                print("error fetching votes")
-            } else if let document = QuerySnapshot?.documents.first{
-                let data = document.data()
-                if let vote = data["likes"] as? Int {
-                    self.votes = vote
-                    self.voteInfo.text = String(vote)
-                    print("\(vote) my vote")
-                } else {
-                    print("Misssing field")
-                }
-            }
-        }
+    
+    func getQuantity(completion: @escaping (Int?) -> Void){
+           let db = Firestore.firestore()
+           db.collection("reports").document(self.ID).collection("Votes").whereField("userID", isEqualTo: Auth.auth().currentUser?.uid ?? "").getDocuments { votesQuantity, error in
+               guard let documents = votesQuantity?.documents else {
+                   print("No Documents")
+                   completion(nil)
+                   return
+               }
+               
+               if let quantity = documents.first?.data()["quantity"] as? Int {
+                   self.userVotes = quantity
+                   if self.userVotes == nil || self.userVotes == 0 {
+                       self.voteFor.setImage(UIImage(systemName:"arrow.up.square"), for: .normal)
+                       self.voteAgainst.setImage(UIImage(systemName: "arrow.down.square"), for: .normal)
+                   } else if self.userVotes > 0 {
+                       self.upVoteSelected = true
+                       self.voteFor.setImage(UIImage(systemName:"arrow.up.square.fill"), for: .normal)
+                       self.voteAgainst.setImage(UIImage(systemName: "arrow.down.square"), for: .normal)
+                   } else if self.userVotes < 0{
+                       self.upVoteSelected = false
+                       self.voteFor.setImage(UIImage(systemName:"arrow.down.square.fill"), for: .normal)
+                       self.voteFor.setImage(UIImage(systemName:"arrow.up.square"), for: .normal)
+                   }
+                   completion(quantity)
+               } else {
+                   completion(nil)
+               }
+           }
     }
 
-
     @objc func sendReport(){
-        var likes = 0
+        let userID = Auth.auth().currentUser
+        var votes = 0
         if let user = Auth.auth().currentUser {
             if user.isAnonymous {
-                likes += 1
+                votes += 1
             } else {
-                likes += 10
+                votes += 10
             }
         }
-        let userArray: [User] = []
         let myCompressedImage = convertImageToBase64String(img: (fireImage ?? UIImage(named: "androidKiller"))!)
         let db = Firestore.firestore()
-        let uuid = UUID().uuidString
-        let userID = Auth.auth().currentUser
-        let user = User(userID: userID!.uid, votedFor: false)
-        let users = [user]
-        let fireReport = FireReport(description: descriptionTextField.text, id:uuid, lat: coordinates.latitude, long: coordinates.longitude, photo: myCompressedImage, timestamp: Date(), uniqueIdentifier: UIDevice.current.identifierForVendor!.uuidString, address: addressName, likes:likes, users:users)
+        let fireReport = FireReport(description: descriptionTextField.text, id:self.ID, lat: coordinates.latitude, long: coordinates.longitude, photo: myCompressedImage, timestamp: Date(), uniqueIdentifier: UIDevice.current.identifierForVendor!.uuidString, address: addressName, votes:votes)
         print(fireReport)
-        db.collection("reports").addDocument(data: fireReport.dictionary) { err in
+        db.collection("reports").document(self.ID).setData(fireReport.dictionary) { err in
                 if let err = err {
                     self.present(Alert(text: "Error", message: err.localizedDescription, confirmAction:[UIAlertAction(title: "Try again", style: .default)], disableAction: []))
                     print("Error writing document: \(err.localizedDescription)")
@@ -744,133 +787,74 @@ class FinalReportViewController: UIViewController {
     }
 
     @objc func putVote(){
-        var likes = 0
-        let db = Firestore.firestore()
-        let userID = Auth.auth().currentUser
-        var user = ["userID":userID?.uid,"votedFor":true] as [String : Any]
-        db.collection("reports").whereField("id", isEqualTo:ID!).getDocuments { result, error in
-            let documnetData = result?.documents.first?.data()
-            if error == nil {
-                var users = documnetData?["users"] as? [[String: Any]] ?? []
-                print(users)
-                if let index = users.firstIndex(where: { $0["userID"] as? String == userID?.uid }){
-                    if let useri = Auth.auth().currentUser {
-                        if useri.isAnonymous {
-                            users[index] = user
-                            self.votes! += 1
-                            //                            likes += 1
-                        } else {
-                            users[index] = user
-                            //                            likes += 10
-                            self.votes! += 10
-                        }
-                    }
-                } else {
-                    if let useri = Auth.auth().currentUser {
-                        if useri.isAnonymous {
-                            users.append(user)
-                            self.votes! += 1
-                        } else {
-                            users.append(user)
-                            self.votes! += 10
-                        }
-                    }
-                }
-                for document in result!.documents{
-                    db.collection("reports").document(document.documentID).updateData(["likes": self.votes!,"users":users])
-                }
-//                self.voteFor.isEnabled = self.votedFor ?? true
-//                self.voteAgainst.isEnabled = !(self.votedFor ?? false)
-//                self.voteFor.setImage(UIImage(systemName: "arrow.up.square"), for: .normal)
-//                self.voteAgainst.setImage(UIImage(systemName: "arrow.down.square.fill"), for: .normal)
-                self.voteFor.isEnabled = false
-                self.voteAgainst.isEnabled = true
-                self.votedFor = true
-//                self.enableDisableVoting()
-                self.getUserVotes()
-            }
+        let voteWeight = isUserVerified ? 10 : 1
+        if updatedUserVote == voteWeight {
+            updatedUserVote = 0
+            self.voteFor.setImage(UIImage(systemName:"arrow.up.square"), for: .normal)
+            self.voteAgainst.setImage(UIImage(systemName: "arrow.down.square"), for: .normal)
+        } else if updatedUserVote < 0 {
+            updatedUserVote = voteWeight
+            self.voteFor.setImage(UIImage(systemName:"arrow.up.square.fill"), for: .normal)
+            self.voteAgainst.setImage(UIImage(systemName: "arrow.down.square"), for: .normal)
+        } else {
+            updatedUserVote += voteWeight
+            self.voteFor.setImage(UIImage(systemName:"arrow.up.square.fill"), for: .normal)
+            self.voteAgainst.setImage(UIImage(systemName: "arrow.down.square"), for: .normal)
         }
+        totalVote = self.collectionVotes + self.updatedUserVote - self.userVotes
+        self.voteInfo.text = String(totalVote)
+        print("\(self.collectionVotes + self.updatedUserVote - self.userVotes) ghhghg")
+        print("\(updatedUserVote) updated user vote")
+        print(collectionVotes!)
     }
 
     @objc func removeVote(){
-        var likes = 0
-        let db = Firestore.firestore()
-        let userID = Auth.auth().currentUser
-        var user = ["userID":userID?.uid,"votedFor":false] as [String : Any]
-        db.collection("reports").whereField("id", isEqualTo:ID!).getDocuments { result, error in
-            let documnetData = result?.documents.first?.data()
-            if error == nil {
-                var users = documnetData?["users"] as? [[String: Any]] ?? []
-                print(users)
-                if let index = users.firstIndex(where: { $0["userID"] as? String == userID?.uid }){
-                    if let useri = Auth.auth().currentUser {
-                        if useri.isAnonymous {
-                            users[index] = user
-                            self.votes! -= 1
-                            //                            likes -= 1
-                        } else {
-                            users[index] = user
-                            self.votes! -= 10
-                            //                            likes -= 10
-                        }
-                    }
-                } else {
-                    if let useri = Auth.auth().currentUser {
-                        if useri.isAnonymous {
-                            users.append(user)
-                            self.votes! -= 1
-                            //                            likes -= 1
-                        } else {
-                            users.append(user)
-                            self.votes! -= 10
-                            //                            likes -= 10
-                        }
-                    }
-                }
-                for document in result!.documents{
-                    db.collection("reports").document(document.documentID).updateData(["likes": self.votes!,"users":users])
-                }
-//                self.voteFor.isEnabled = self.votedFor ?? true
-//                self.voteAgainst.isEnabled = !(self.votedFor ?? false)
-//                self.voteAgainst.setImage(UIImage(systemName: "arrow.down.square.fill"), for: .normal)
-//                self.voteFor.setImage(UIImage(systemName: "arrow.up.square"), for: .normal)
-                self.voteFor.isEnabled = true
-                self.voteAgainst.isEnabled = false
-                self.votedFor = false
-//                self.enableDisableVoting()
-                self.getUserVotes()
-            }
-        }
-    }
-
-    func enableDisableVoting(){
-        self.voteInfo.text = String("\(votes ?? 0)")
-        if votedFor ?? true  {
-            self.voteFor.isEnabled = false
-            self.voteFor.setImage(UIImage(systemName: "arrow.up.square.fill"), for: .normal)
-            self.voteAgainst.isEnabled = true
+        let voteWeight = isUserVerified ? -10 : -1
+        if updatedUserVote == voteWeight {
+            updatedUserVote = 0
+            self.voteFor.setImage(UIImage(systemName:"arrow.up.square"), for: .normal)
             self.voteAgainst.setImage(UIImage(systemName: "arrow.down.square"), for: .normal)
-        } else if votedFor == false  {
-            self.voteFor.isEnabled = true
-            self.voteFor.setImage(UIImage(systemName: "arrow.up.square"), for: .normal)
-            self.voteAgainst.isEnabled = false
+        } else if updatedUserVote > 0 {
+            updatedUserVote = voteWeight
+            self.voteFor.setImage(UIImage(systemName:"arrow.up.square"), for: .normal)
             self.voteAgainst.setImage(UIImage(systemName: "arrow.down.square.fill"), for: .normal)
         } else {
-            self.voteFor.isEnabled = true
-            self.voteFor.setImage(UIImage(systemName: "arrow.up.square"), for: .normal)
-            self.voteAgainst.isEnabled = true
-            self.voteAgainst.setImage(UIImage(systemName: "arrow.down.square"), for: .normal)
+            updatedUserVote += voteWeight
+            self.voteFor.setImage(UIImage(systemName:"arrow.up.square"), for: .normal)
+            self.voteAgainst.setImage(UIImage(systemName: "arrow.down.square.fill"), for: .normal)
         }
+        totalVote = self.collectionVotes + self.updatedUserVote - self.userVotes
+        self.voteInfo.text = String(totalVote)
+        print("\(self.collectionVotes + self.updatedUserVote - self.userVotes) ghhghg")
+        print("\(updatedUserVote) updated user vote")
+        print(collectionVotes!)
+    }
+    
+    func sentVote(){
+        let db = Firestore.firestore()
+        let userID = Auth.auth().currentUser
+        thisUser?.quantity = userVotes
+        let vote = Vote(createdAt: Date(), documentID: self.ID, quantity: updatedUserVote, userID: userID?.uid ?? "")
+        db.collection("reports").document(self.ID).collection("Votes").document(userID?.uid ?? "").getDocument { [self] querrySnapshot, error in
+            if querrySnapshot?.exists == true {
+                db.collection("reports").document(self.ID).collection("Votes").document(userID?.uid ?? " ").updateData(vote.dictionary)
+//                db.collection("reports").document(self.ID).updateData(["votes": self.totalVote!])
+                db.collection("reports").document(self.ID).updateData(["votes": FieldValue.increment(Double(totalVote))])
 
-//        self.voteFor.isEnabled = self.votedFor ?? true
-//        self.voteAgainst.isEnabled = !(self.votedFor ?? false)
-//        self.voteFor.setImage(UIImage(systemName: "arrow.up.square"), for: .normal)
-//        self.voteAgainst.setImage(UIImage(systemName: "arrow.down.square.fill"), for: .normal)
-//
-//        self.voteFor.isEnabled = self.votedFor ?? true
-//        self.voteAgainst.isEnabled = !(self.votedFor ?? false)
-//        self.voteAgainst.setImage(UIImage(systemName: "arrow.down.square.fill"), for: .normal)
-//        self.voteFor.setImage(UIImage(systemName: "arrow.up.square"), for: .normal)
+            } else {
+                db.collection("reports").document(self.ID).collection("Votes").document(userID?.uid ?? " ").setData(vote.dictionary, merge: true)
+//                db.collection("reports").document(self.ID).updateData(["votes" : FieldValue.increment(totalVote!)])
+                db.collection("reports").document(self.ID).updateData(["votes": FieldValue.increment(Double(totalVote))])
+            }
+            print("my votes flag")
+        }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        if isBeingDismissed {
+            sentVote()
+        }
     }
 
     func setupUI(){
@@ -996,7 +980,7 @@ class FinalReportViewController: UIViewController {
         voteLabel.translatesAutoresizingMaskIntoConstraints = false
         voteLabel.font = UIFont.systemFont(ofSize: 14, weight: .regular)
         voteLabel.textColor = UIColor.primaryColor
-        voteLabel.text = "people have voted for this location as the most dangerous"
+        voteLabel.text = "votes for this location as the most dangerous"
         voteLabel.isHidden = isVoteForHidden
         self.view.addSubview(voteLabel)
         NSLayoutConstraint.activate([
@@ -1031,7 +1015,7 @@ class FinalReportViewController: UIViewController {
     func setupVotingUI(){
         voteFor = UIButton()
         voteFor.translatesAutoresizingMaskIntoConstraints = false
-        voteFor.setImage(UIImage(systemName:"arrow.up.square.fill"), for: .normal)
+        voteFor.setImage(UIImage(systemName:"arrow.up.square"), for: .normal)
         voteFor.contentVerticalAlignment = .fill
         voteFor.contentHorizontalAlignment = .fill
         voteFor.contentMode = .scaleAspectFill
@@ -1044,7 +1028,6 @@ class FinalReportViewController: UIViewController {
             voteFor.leadingAnchor.constraint(equalTo: self.container.leadingAnchor, constant: 125),
             voteFor.bottomAnchor.constraint(equalTo: self.descriptionTextField.bottomAnchor, constant: 150)
         ])
-        let arrowDown = UIImage(systemName: "arrow.down.square.fill")
         voteAgainst = UIButton()
         voteAgainst.translatesAutoresizingMaskIntoConstraints = false
         voteAgainst.setImage(UIImage(systemName:"arrow.down.square"), for: .normal)
@@ -1081,10 +1064,15 @@ class FinalReportViewController: UIViewController {
 
     @objc func showPreview(_ sender:AnyObject){
         previewImage.isHidden = false
+        voteLabel.isHidden = true
+        voteInfo.isHidden = true
     }
 
     @objc func hidePreview(_ sender:AnyObject){
         previewImage.isHidden = true
         votingDescription.isHidden = false
+        isVoteForHidden = false
+        voteLabel.isHidden = false
+        voteInfo.isHidden = false
     }
-}
+    }

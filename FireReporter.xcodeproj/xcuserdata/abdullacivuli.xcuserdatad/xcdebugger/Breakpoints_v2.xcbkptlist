@@ -7,32 +7,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "18EEFAB3-5A65-48B3-AB8C-A45DDCDC32AE"
+            uuid = "CE6F846F-C935-48CF-9DB1-9F9261A7EF15"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "FireReporter/UserReportedLocations/UserReportedLocationsViewController.swift"
+            filePath = "FireReporter/FinalReport/FinalReportViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "86"
-            endingLineNumber = "86"
-            landmarkName = "mapView(_:didSelect:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "1A2F1E10-23E4-4450-89D1-6430F06DAAC3"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "FireReporter/UserReportedLocations/UserReportedLocationsViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "89"
-            endingLineNumber = "89"
-            landmarkName = "mapView(_:didSelect:)"
+            startingLineNumber = "833"
+            endingLineNumber = "833"
+            landmarkName = "sentVote()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

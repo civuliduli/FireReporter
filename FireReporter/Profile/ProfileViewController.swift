@@ -18,6 +18,7 @@ class ProfileViewController: UIViewController {
     
     private let firebaseService = FirebaseService()
     
+    private var currentNonce:String?
     var profileLabel = UILabel()
     var verifyAccountLabel = UILabel()
     var verifyFacebook = UIButton()
@@ -35,29 +36,12 @@ class ProfileViewController: UIViewController {
     let verticalStack = UIStackView()
     let badgeStack = UIStackView()
     let usernameProfileStack = UIStackView()
-    private var currentNonce:String?
     var isUserProfileHidden:Bool?
     var reportsArray = [FireReport]()
-    
-    private let tableView: UITableView = {
-        let tableView = UITableView()
-        tableView.backgroundColor = .white
-        tableView.allowsSelection = true
-        tableView.register(ReportListCustomTableViewCell.self, forCellReuseIdentifier: ReportListCustomTableViewCell.identifier)
-        return tableView
-    }()
+    private let tableView = UITableView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = UIColor.secondaryColor
-        self.tableView.delegate = self
-        self.tableView.dataSource = self
-        UITabBar.appearance().backgroundColor = UIColor.white
-        self.navigationController?.isNavigationBarHidden = true
-        if let accessToken = AccessToken.current{
-            print("User is already loggedIN")
-            print(accessToken)
-        }
         setupUI()
         checkAuthenticatedUser()
     }
@@ -67,16 +51,11 @@ class ProfileViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        getFireReports()
         super.viewWillAppear(animated)
+        getFireReports()
         navigationController?.setNavigationBarHidden(true, animated: animated)
-        print("Hello World")
     }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        navigationController?.setNavigationBarHidden(false, animated: animated)
-    }
+
     
     func getFireReports(){
         firebaseService.getFireReportsData { myFireReports, error in
@@ -93,7 +72,6 @@ class ProfileViewController: UIViewController {
                 return
             }
             let credentials = FacebookAuthProvider.credential(withAccessToken: accessToken)
-            //following steps is for savings Facebook credentials in Fire base we can look more about this further in my tutorial.
             Auth.auth().signIn(with: credentials, completion: { (data, error) in
                 guard let result = data, error == nil else {
                     print("FB Login Error: \(String(describing: error?.localizedDescription))")
@@ -219,6 +197,9 @@ class ProfileViewController: UIViewController {
     
     func setupUI(){
         self.view.addSubview(scrollView)
+        navigationController?.setNavigationBarHidden(true, animated: true)
+        view.backgroundColor = UIColor.secondaryColor
+        UITabBar.appearance().backgroundColor = UIColor.white
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         self.scrollView.addSubview(container)
         container.translatesAutoresizingMaskIntoConstraints = false
@@ -284,9 +265,14 @@ class ProfileViewController: UIViewController {
     }
   
     func setupTableUI(){
+        self.tableView.delegate = self
+        self.tableView.dataSource = self
         self.container.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.backgroundColor = UIColor.secondaryColor
+        tableView.backgroundColor = .white
+        tableView.allowsSelection = true
+        tableView.register(ReportListCustomTableViewCell.self, forCellReuseIdentifier: ReportListCustomTableViewCell.identifier)
         checkAuthenticatedUser()
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: myReports.bottomAnchor, constant: 20),
@@ -503,21 +489,21 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource{
         var description:String
         var latitude:Double
         var longitude: Double
-        let finalReportVC = FinalReportViewController()
+        let previewReport = PreviewReport()
         var image:String
         let report = reportsArray[indexPath.row]
         description = report.description ?? "No data to show"
         latitude = report.lat
         longitude = report.long
         image = report.photo!
-        finalReportVC.descriptionText = description
-        finalReportVC.coordinates = CLLocationCoordinate2D(latitude:latitude, longitude:longitude)
-        finalReportVC.isConfirmButtonHidden = true
-        finalReportVC.isTextFieldEditable = false
-        finalReportVC.imageURL = image
-        finalReportVC.isVoteForHidden = true
-        finalReportVC.isVoteAgainstHidden = true
-        navigationController?.pushViewController(finalReportVC, animated: false)
+        previewReport.descriptionText = description
+        previewReport.coordinates = CLLocationCoordinate2D(latitude:latitude, longitude:longitude)
+//        previewReport.isConfirmButtonHidden = true
+        previewReport.isTextFieldEditable = false
+        previewReport.imageURL = image
+//        finalReportVC.isVoteForHidden = true
+//        finalReportVC.isVoteAgainstHidden = true
+        present(previewReport, animated: true, completion: nil)
     }
 }
 

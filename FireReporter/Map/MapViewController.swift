@@ -95,6 +95,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate {
             let finalReportVC = FinalReportViewController()
             finalReportVC.coordinates = coordinates ?? CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0)
             finalReportVC.fireImage = firePlace
+            finalReportVC.ID = UUID().uuidString
             navigationController?.pushViewController(finalReportVC, animated: false)
         }
     }

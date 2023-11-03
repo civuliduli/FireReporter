@@ -17,8 +17,7 @@ struct FireReport : Codable {
     var description:String?
     var date: Date
     var address: String?
-    var likes: Int
-    var users: [User]
+    var votes: Int
  
     
     var dictionary: [String: Any] {
@@ -27,15 +26,14 @@ struct FireReport : Codable {
                 "lat": lat,
                 "long": long,
                 "photo": photo ?? "",
-//                "date": date,
                 "uniqueIdentifier": uniqueIdentifier,
                 "description": description ?? "",
                 "address": address ?? "",
-                "likes":likes,
+                "votes":votes,
         ]
        }
     
-    init(description: String? = nil, id: String, lat: Double = 0.00, long: Double = 0.00, photo: String, timestamp: Date, uniqueIdentifier:String, address:String?, likes:Int, users: [User]) {
+    init(description: String? = nil, id: String, lat: Double = 0.00, long: Double = 0.00, photo: String, timestamp: Date, uniqueIdentifier:String, address:String?, votes:Int) {
         self.description = description
         self.id = id
         self.lat = lat
@@ -44,8 +42,7 @@ struct FireReport : Codable {
         self.date = timestamp
         self.uniqueIdentifier = uniqueIdentifier
         self.address = address
-        self.likes = likes
-        self.users = users
+        self.votes = votes
     }
     
     enum CodingKeys: CodingKey {
@@ -57,8 +54,7 @@ struct FireReport : Codable {
         case date
         case uniqueIdentifier
         case address
-        case likes
-        case users
+        case votes
     }
     
     init(from decoder: Decoder) throws {
@@ -71,8 +67,7 @@ struct FireReport : Codable {
         self.date = try container.decode(Date.self, forKey: .date)
         self.uniqueIdentifier = try container.decode(String.self, forKey: .uniqueIdentifier)
         self.address = try container.decode(String.self, forKey: .address)
-        self.likes = try container.decode(Int.self, forKey: .likes)
-        self.users = try container.decode([User].self, forKey: .users)
+        self.votes = try container.decode(Int.self, forKey: .votes)
     }
     
     func encode(to encoder: Encoder) throws {
@@ -85,7 +80,6 @@ struct FireReport : Codable {
         try container.encode(self.date.timeIntervalSince1970, forKey: .date)
         try container.encode(self.uniqueIdentifier, forKey: .uniqueIdentifier)
         try container.encode(self.address, forKey: .address)
-        try container.encode(self.likes, forKey: .address)
-        try container.encode(self.users, forKey:.users)
+        try container.encode(self.votes, forKey: .address)
     }
 }
