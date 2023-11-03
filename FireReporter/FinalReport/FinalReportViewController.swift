@@ -579,7 +579,7 @@ class FinalReportViewController: UIViewController {
 
     let userArray: [User] = []
 
-
+    var onChange: (() -> Void)?
     var currentLocation: CLLocation!
     var fireImage: UIImage?
     var fireImageView = UIImageView()
@@ -643,7 +643,6 @@ class FinalReportViewController: UIViewController {
         fireImageView.addGestureRecognizer(tapGestureRecognizer1)
         self.navigationController?.setNavigationBarHidden(false, animated: true)
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "", image: UIImage(systemName:"x.circle"), target: self, action: #selector(dismissScreen))
-//        getUserVotes()
         getQuantity { [weak self] quantity in
               if let self = self, let quantity = quantity {
                   self.userVotes = quantity
@@ -672,6 +671,7 @@ class FinalReportViewController: UIViewController {
         getQuantity { [weak self] quantity in
             if let self = self, let quantity = quantity {
                 self.userVotes = quantity
+                updatedUserVote = userVotes
                 print("Quantity in viewDidLoad: \(quantity)")
             }
         }
@@ -680,7 +680,8 @@ class FinalReportViewController: UIViewController {
         print("\(isUserVerified!)is user verified")
         print("\(collectionVotes ?? 0) report votes")
         self.voteInfo.text = String(collectionVotes ?? 0)
-        updatedUserVote = userVotes
+//        updatedUserVote = userVotes
+        print(collectionVotes)
     }
     
     @objc func dismissScreen(){
@@ -738,16 +739,16 @@ class FinalReportViewController: UIViewController {
                
                if let quantity = documents.first?.data()["quantity"] as? Int {
                    self.userVotes = quantity
-                   if self.userVotes == nil || self.userVotes == 0 {
+                   if self.userVotes == 0 {
                        self.voteFor.setImage(UIImage(systemName:"arrow.up.square"), for: .normal)
                        self.voteAgainst.setImage(UIImage(systemName: "arrow.down.square"), for: .normal)
                    } else if self.userVotes > 0 {
                        self.upVoteSelected = true
                        self.voteFor.setImage(UIImage(systemName:"arrow.up.square.fill"), for: .normal)
                        self.voteAgainst.setImage(UIImage(systemName: "arrow.down.square"), for: .normal)
-                   } else if self.userVotes < 0{
+                   } else if self.userVotes == 0 || self.userVotes <= -1{
                        self.upVoteSelected = false
-                       self.voteFor.setImage(UIImage(systemName:"arrow.down.square.fill"), for: .normal)
+                       self.voteAgainst.setImage(UIImage(systemName:"arrow.down.square.fill"), for: .normal)
                        self.voteFor.setImage(UIImage(systemName:"arrow.up.square"), for: .normal)
                    }
                    completion(quantity)
@@ -787,73 +788,79 @@ class FinalReportViewController: UIViewController {
     }
 
     @objc func putVote(){
-        let voteWeight = isUserVerified ? 10 : 1
-        if updatedUserVote == voteWeight {
-            updatedUserVote = 0
-            self.voteFor.setImage(UIImage(systemName:"arrow.up.square"), for: .normal)
-            self.voteAgainst.setImage(UIImage(systemName: "arrow.down.square"), for: .normal)
-        } else if updatedUserVote < 0 {
-            updatedUserVote = voteWeight
-            self.voteFor.setImage(UIImage(systemName:"arrow.up.square.fill"), for: .normal)
-            self.voteAgainst.setImage(UIImage(systemName: "arrow.down.square"), for: .normal)
-        } else {
-            updatedUserVote += voteWeight
-            self.voteFor.setImage(UIImage(systemName:"arrow.up.square.fill"), for: .normal)
-            self.voteAgainst.setImage(UIImage(systemName: "arrow.down.square"), for: .normal)
-        }
-        totalVote = self.collectionVotes + self.updatedUserVote - self.userVotes
-        self.voteInfo.text = String(totalVote)
-        print("\(self.collectionVotes + self.updatedUserVote - self.userVotes) ghhghg")
-        print("\(updatedUserVote) updated user vote")
-        print(collectionVotes!)
-    }
+          let voteWeight = isUserVerified ? 10 : 1
+          if updatedUserVote == voteWeight {
+              updatedUserVote = 0
+              self.voteFor.setImage(UIImage(systemName:"arrow.up.square"), for: .normal)
+              self.voteAgainst.setImage(UIImage(systemName: "arrow.down.square"), for: .normal)
+          } else if updatedUserVote < 0 {
+              updatedUserVote = voteWeight
+              self.voteFor.setImage(UIImage(systemName:"arrow.up.square.fill"), for: .normal)
+              self.voteAgainst.setImage(UIImage(systemName: "arrow.down.square"), for: .normal)
+          } else {
+              updatedUserVote += voteWeight
+              self.voteFor.setImage(UIImage(systemName:"arrow.up.square.fill"), for: .normal)
+              self.voteAgainst.setImage(UIImage(systemName: "arrow.down.square"), for: .normal)
+          }
+          totalVote = self.collectionVotes + self.updatedUserVote - self.userVotes
+          self.voteInfo.text = String(totalVote)
+          print("\(self.collectionVotes + self.updatedUserVote - self.userVotes) ghhghg")
+          print("\(updatedUserVote) updated user vote")
+          print(collectionVotes!)
+      }
 
     @objc func removeVote(){
-        let voteWeight = isUserVerified ? -10 : -1
-        if updatedUserVote == voteWeight {
-            updatedUserVote = 0
-            self.voteFor.setImage(UIImage(systemName:"arrow.up.square"), for: .normal)
-            self.voteAgainst.setImage(UIImage(systemName: "arrow.down.square"), for: .normal)
-        } else if updatedUserVote > 0 {
-            updatedUserVote = voteWeight
-            self.voteFor.setImage(UIImage(systemName:"arrow.up.square"), for: .normal)
-            self.voteAgainst.setImage(UIImage(systemName: "arrow.down.square.fill"), for: .normal)
-        } else {
-            updatedUserVote += voteWeight
-            self.voteFor.setImage(UIImage(systemName:"arrow.up.square"), for: .normal)
-            self.voteAgainst.setImage(UIImage(systemName: "arrow.down.square.fill"), for: .normal)
-        }
-        totalVote = self.collectionVotes + self.updatedUserVote - self.userVotes
-        self.voteInfo.text = String(totalVote)
-        print("\(self.collectionVotes + self.updatedUserVote - self.userVotes) ghhghg")
-        print("\(updatedUserVote) updated user vote")
-        print(collectionVotes!)
-    }
+           let voteWeight = isUserVerified ? -10 : -1
+           if updatedUserVote == voteWeight {
+               updatedUserVote = 0
+               self.voteFor.setImage(UIImage(systemName:"arrow.up.square"), for: .normal)
+               self.voteAgainst.setImage(UIImage(systemName: "arrow.down.square"), for: .normal)
+           } else if updatedUserVote > 0 {
+               updatedUserVote = voteWeight
+               self.voteFor.setImage(UIImage(systemName:"arrow.up.square"), for: .normal)
+               self.voteAgainst.setImage(UIImage(systemName: "arrow.down.square.fill"), for: .normal)
+           } else {
+               updatedUserVote += voteWeight
+               self.voteFor.setImage(UIImage(systemName:"arrow.up.square"), for: .normal)
+               self.voteAgainst.setImage(UIImage(systemName: "arrow.down.square.fill"), for: .normal)
+           }
+           totalVote = self.collectionVotes + self.updatedUserVote - self.userVotes
+           self.voteInfo.text = String(totalVote)
+           print("\(self.collectionVotes + self.updatedUserVote - self.userVotes) ghhghg")
+           print("\(updatedUserVote) updated user vote")
+           print(collectionVotes!)
+       }
     
     func sentVote(){
-        let db = Firestore.firestore()
-        let userID = Auth.auth().currentUser
-        thisUser?.quantity = userVotes
-        let vote = Vote(createdAt: Date(), documentID: self.ID, quantity: updatedUserVote, userID: userID?.uid ?? "")
-        db.collection("reports").document(self.ID).collection("Votes").document(userID?.uid ?? "").getDocument { [self] querrySnapshot, error in
-            if querrySnapshot?.exists == true {
-                db.collection("reports").document(self.ID).collection("Votes").document(userID?.uid ?? " ").updateData(vote.dictionary)
-//                db.collection("reports").document(self.ID).updateData(["votes": self.totalVote!])
-                db.collection("reports").document(self.ID).updateData(["votes": FieldValue.increment(Double(totalVote))])
-
-            } else {
-                db.collection("reports").document(self.ID).collection("Votes").document(userID?.uid ?? " ").setData(vote.dictionary, merge: true)
-//                db.collection("reports").document(self.ID).updateData(["votes" : FieldValue.increment(totalVote!)])
-                db.collection("reports").document(self.ID).updateData(["votes": FieldValue.increment(Double(totalVote))])
+        if updatedUserVote == userVotes {
+                        self.dismissScreen()
+        } else {
+            let db = Firestore.firestore()
+            let userID = Auth.auth().currentUser
+            thisUser?.quantity = userVotes
+            let vote = Vote(createdAt: Date(), documentID: self.ID, quantity: updatedUserVote, userID: userID?.uid ?? "")
+            db.collection("reports").document(self.ID).collection("Votes").document(userID?.uid ?? "").getDocument { [self] querrySnapshot, error in
+                if querrySnapshot?.exists == true {
+                    db.collection("reports").document(self.ID).collection("Votes").document(userID?.uid ?? " ").updateData(vote.dictionary)
+                    //                db.collection("reports").document(self.ID).updateData(["votes": self.totalVote!])
+//                    db.collection("reports").document(self.ID).updateData(["votes": FieldValue.increment(Double(totalVote))])
+                    db.collection("reports").document(self.ID).updateData(["votes": totalVote ?? 0])
+                } else {
+                    db.collection("reports").document(self.ID).collection("Votes").document(userID?.uid ?? " ").setData(vote.dictionary, merge: true)
+                    //                db.collection("reports").document(self.ID).updateData(["votes" : FieldValue.increment(totalVote!)])
+                    db.collection("reports").document(self.ID).updateData(["votes": totalVote ?? 0])
+                }
+                print("my votes flag")
             }
-            print("my votes flag")
         }
-    }
+
+     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         if isBeingDismissed {
             sentVote()
+            onChange?()
         }
     }
 

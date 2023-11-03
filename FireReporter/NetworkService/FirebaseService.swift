@@ -32,7 +32,8 @@ class FirebaseService {
                 let photo = data["photo"] as? String? ?? "androidKiller"
                 let address = data["address"] as? String
                 let votes = data["votes"] ?? 0
-                return FireReport(description: description,id:"",lat: lat ?? 0.00, long: long ?? 0.00, photo:photo ?? "androidKiller", timestamp: timestamp?.dateValue() ?? Date(), uniqueIdentifier: uniqueIdentifier ?? "", address:address, votes: votes as! Int)
+                //
+                return FireReport(description: description,id:"",lat: lat ?? 0.00, long: long ?? 0.00, photo:photo ?? "androidKiller", timestamp: timestamp?.dateValue() ?? Date(), uniqueIdentifier: uniqueIdentifier ?? "", address:address, votes: votes as? Int ?? 0)
             })
             completion(self.reportsArray, error)
         }

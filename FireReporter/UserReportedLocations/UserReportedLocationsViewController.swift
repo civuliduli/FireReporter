@@ -19,6 +19,7 @@ class CustomPointAnnotation: MKPointAnnotation {
 
 class UserReportedLocationsViewController: UIViewController, MKMapViewDelegate {
     
+    
     private let firebaseService = FirebaseService()
     lazy var mapView: MKMapView = {
         let map = MKMapView()
@@ -43,7 +44,21 @@ class UserReportedLocationsViewController: UIViewController, MKMapViewDelegate {
         getAllReports()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        getAllReports()
+    }
+    
+    func presentViewControllerA() {
+          let viewControllerA = FinalReportViewController()
+        viewControllerA.onChange = { [weak self] in
+            self?.getAllReports()
+        }
+          self.present(viewControllerA, animated: true, completion: nil)
+      }
+    
     func getAllReports(){
+        let allAnnotations = self.mapView.annotations
+        self.mapView.removeAnnotations(allAnnotations)
         firebaseService.getAllReportsLocations { [self] myFireReports, error in
             self.myLocations = myFireReports
             for data in self.myLocations{
@@ -76,8 +91,11 @@ class UserReportedLocationsViewController: UIViewController, MKMapViewDelegate {
             print(annotation.likes)
             finalReportVC.ID = annotation.ID
             present(finalReportVC, animated: true)
+            finalReportVC.onChange = { [weak self] in
+                self?.getAllReports()
             }
-     }
+        }
+    }
      
      func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
          let identifier = "Location"
