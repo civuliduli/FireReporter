@@ -21,6 +21,8 @@ class UserReportedLocationsViewController: UIViewController, MKMapViewDelegate {
     
     
     private let firebaseService = FirebaseService()
+    private let keychainService = KeychainService()
+
     lazy var mapView: MKMapView = {
         let map = MKMapView()
         map.translatesAutoresizingMaskIntoConstraints = false

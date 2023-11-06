@@ -7,47 +7,62 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "25082EA2-A6F8-486D-A84A-60437B5B119D"
+            uuid = "1692B9BE-91D0-4E40-ABD1-12E9CC2644B5"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "FireReporter/FinalReport/FinalReportViewController.swift"
+            filePath = "FireReporter/Profile/ProfileViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "740"
-            endingLineNumber = "740"
-            landmarkName = "getQuantity(completion:)"
-            landmarkType = "7">
+            startingLineNumber = "509"
+            endingLineNumber = "509"
+            landmarkName = "ProfileViewController"
+            landmarkType = "21">
             <Locations>
                <Location
-                  uuid = "25082EA2-A6F8-486D-A84A-60437B5B119D - 66c822455baced15"
+                  uuid = "1692B9BE-91D0-4E40-ABD1-12E9CC2644B5 - da25f467b955aac2"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "closure #1 (Swift.Optional&lt;__C.FIRQuerySnapshot&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in FireReporter.FinalReportViewController.getQuantity(completion: (Swift.Optional&lt;Swift.Int&gt;) -&gt; ()) -&gt; ()"
+                  symbolName = "FireReporter.ProfileViewController.authorizationController(controller: __C.ASAuthorizationController, didCompleteWithAuthorization: __C.ASAuthorization) -&gt; ()"
                   moduleName = "FireReporter"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/abdullacivuli/Desktop/FireReporter/FireReporter/FinalReport/FinalReportViewController.swift"
+                  urlString = "file:///Users/abdullacivuli/Desktop/FireReporter/FireReporter/Profile/ProfileViewController.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "740"
-                  endingLineNumber = "740"
-                  offsetFromSymbolStart = "556">
+                  startingLineNumber = "510"
+                  endingLineNumber = "510"
+                  offsetFromSymbolStart = "376">
                </Location>
                <Location
-                  uuid = "25082EA2-A6F8-486D-A84A-60437B5B119D - 66c822455baced15"
+                  uuid = "1692B9BE-91D0-4E40-ABD1-12E9CC2644B5 - da25f467b955aaad"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "closure #1 (Swift.Optional&lt;__C.FIRQuerySnapshot&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in FireReporter.FinalReportViewController.getQuantity(completion: (Swift.Optional&lt;Swift.Int&gt;) -&gt; ()) -&gt; ()"
+                  symbolName = "FireReporter.ProfileViewController.authorizationController(controller: __C.ASAuthorizationController, didCompleteWithAuthorization: __C.ASAuthorization) -&gt; ()"
                   moduleName = "FireReporter"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/abdullacivuli/Desktop/FireReporter/FireReporter/FinalReport/FinalReportViewController.swift"
+                  urlString = "file:///Users/abdullacivuli/Desktop/FireReporter/FireReporter/Profile/ProfileViewController.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "740"
-                  endingLineNumber = "740"
-                  offsetFromSymbolStart = "1120">
+                  startingLineNumber = "509"
+                  endingLineNumber = "509"
+                  offsetFromSymbolStart = "376">
+               </Location>
+               <Location
+                  uuid = "1692B9BE-91D0-4E40-ABD1-12E9CC2644B5 - da25f467b955aaad"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "FireReporter.ProfileViewController.authorizationController(controller: __C.ASAuthorizationController, didCompleteWithAuthorization: __C.ASAuthorization) -&gt; ()"
+                  moduleName = "FireReporter"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/abdullacivuli/Desktop/FireReporter/FireReporter/Profile/ProfileViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "509"
+                  endingLineNumber = "509"
+                  offsetFromSymbolStart = "276">
                </Location>
             </Locations>
          </BreakpointContent>
@@ -55,17 +70,484 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "FEFFA3FF-E733-46E4-8BAB-F9AF4F112190"
+            uuid = "3083079A-5869-477C-A6BB-340E03634E0A"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "FireReporter/FinalReport/FinalReportViewController.swift"
+            filePath = "FireReporter/Profile/ProfileViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "731"
-            endingLineNumber = "731"
-            landmarkName = "getQuantity(completion:)"
+            startingLineNumber = "528"
+            endingLineNumber = "528"
+            landmarkName = "authorizationController(controller:didCompleteWithAuthorization:)"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "3083079A-5869-477C-A6BB-340E03634E0A - 7748966e3a57ffe9"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Optional&lt;__C.FIRAuthDataResult&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in FireReporter.ProfileViewController.authorizationController(controller: __C.ASAuthorizationController, didCompleteWithAuthorization: __C.ASAuthorization) -&gt; ()"
+                  moduleName = "FireReporter"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/abdullacivuli/Desktop/FireReporter/FireReporter/Profile/ProfileViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "530"
+                  endingLineNumber = "530"
+                  offsetFromSymbolStart = "2620">
+               </Location>
+               <Location
+                  uuid = "3083079A-5869-477C-A6BB-340E03634E0A - 7748966e3a57ffe9"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Optional&lt;__C.FIRAuthDataResult&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in FireReporter.ProfileViewController.authorizationController(controller: __C.ASAuthorizationController, didCompleteWithAuthorization: __C.ASAuthorization) -&gt; ()"
+                  moduleName = "FireReporter"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/abdullacivuli/Desktop/FireReporter/FireReporter/Profile/ProfileViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "530"
+                  endingLineNumber = "530"
+                  offsetFromSymbolStart = "2780">
+               </Location>
+               <Location
+                  uuid = "3083079A-5869-477C-A6BB-340E03634E0A - 7748966e3a57ffaf"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Optional&lt;__C.FIRAuthDataResult&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in FireReporter.ProfileViewController.authorizationController(controller: __C.ASAuthorizationController, didCompleteWithAuthorization: __C.ASAuthorization) -&gt; ()"
+                  moduleName = "FireReporter"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/abdullacivuli/Desktop/FireReporter/FireReporter/Profile/ProfileViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "528"
+                  endingLineNumber = "528"
+                  offsetFromSymbolStart = "2748">
+               </Location>
+               <Location
+                  uuid = "3083079A-5869-477C-A6BB-340E03634E0A - 7748966e3a57ffaf"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Optional&lt;__C.FIRAuthDataResult&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in FireReporter.ProfileViewController.authorizationController(controller: __C.ASAuthorizationController, didCompleteWithAuthorization: __C.ASAuthorization) -&gt; ()"
+                  moduleName = "FireReporter"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/abdullacivuli/Desktop/FireReporter/FireReporter/Profile/ProfileViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "528"
+                  endingLineNumber = "528"
+                  offsetFromSymbolStart = "3174">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "6DAEB9C7-71A2-4CCA-A65F-F95FB0188761"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "FireReporter/Profile/ProfileViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "529"
+            endingLineNumber = "529"
+            landmarkName = "authorizationController(controller:didCompleteWithAuthorization:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "6DAEB9C7-71A2-4CCA-A65F-F95FB0188761 - 7748966e3a57ffc8"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Optional&lt;__C.FIRAuthDataResult&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in FireReporter.ProfileViewController.authorizationController(controller: __C.ASAuthorizationController, didCompleteWithAuthorization: __C.ASAuthorization) -&gt; ()"
+                  moduleName = "FireReporter"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/abdullacivuli/Desktop/FireReporter/FireReporter/Profile/ProfileViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "531"
+                  endingLineNumber = "531"
+                  offsetFromSymbolStart = "2796">
+               </Location>
+               <Location
+                  uuid = "6DAEB9C7-71A2-4CCA-A65F-F95FB0188761 - 7748966e3a57ffe9"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Optional&lt;__C.FIRAuthDataResult&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in FireReporter.ProfileViewController.authorizationController(controller: __C.ASAuthorizationController, didCompleteWithAuthorization: __C.ASAuthorization) -&gt; ()"
+                  moduleName = "FireReporter"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/abdullacivuli/Desktop/FireReporter/FireReporter/Profile/ProfileViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "530"
+                  endingLineNumber = "530"
+                  offsetFromSymbolStart = "2620">
+               </Location>
+               <Location
+                  uuid = "6DAEB9C7-71A2-4CCA-A65F-F95FB0188761 - 7748966e3a57ffe9"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Optional&lt;__C.FIRAuthDataResult&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in FireReporter.ProfileViewController.authorizationController(controller: __C.ASAuthorizationController, didCompleteWithAuthorization: __C.ASAuthorization) -&gt; ()"
+                  moduleName = "FireReporter"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/abdullacivuli/Desktop/FireReporter/FireReporter/Profile/ProfileViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "530"
+                  endingLineNumber = "530"
+                  offsetFromSymbolStart = "2780">
+               </Location>
+               <Location
+                  uuid = "6DAEB9C7-71A2-4CCA-A65F-F95FB0188761 - 7748966e3a57ff8e"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Optional&lt;__C.FIRAuthDataResult&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in FireReporter.ProfileViewController.authorizationController(controller: __C.ASAuthorizationController, didCompleteWithAuthorization: __C.ASAuthorization) -&gt; ()"
+                  moduleName = "FireReporter"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/abdullacivuli/Desktop/FireReporter/FireReporter/Profile/ProfileViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "529"
+                  endingLineNumber = "529"
+                  offsetFromSymbolStart = "2808">
+               </Location>
+               <Location
+                  uuid = "6DAEB9C7-71A2-4CCA-A65F-F95FB0188761 - 7748966e3a57ff8e"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Optional&lt;__C.FIRAuthDataResult&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in FireReporter.ProfileViewController.authorizationController(controller: __C.ASAuthorizationController, didCompleteWithAuthorization: __C.ASAuthorization) -&gt; ()"
+                  moduleName = "FireReporter"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/abdullacivuli/Desktop/FireReporter/FireReporter/Profile/ProfileViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "529"
+                  endingLineNumber = "529"
+                  offsetFromSymbolStart = "3257">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "3B8F2A37-311D-4BE5-B90C-42EC5744CB0A"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "FireReporter/Profile/ProfileViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "531"
+            endingLineNumber = "531"
+            landmarkName = "authorizationController(controller:didCompleteWithAuthorization:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "3B8F2A37-311D-4BE5-B90C-42EC5744CB0A - 7748966e3a57ff0a"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Optional&lt;__C.FIRAuthDataResult&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in FireReporter.ProfileViewController.authorizationController(controller: __C.ASAuthorizationController, didCompleteWithAuthorization: __C.ASAuthorization) -&gt; ()"
+                  moduleName = "FireReporter"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/abdullacivuli/Desktop/FireReporter/FireReporter/Profile/ProfileViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "533"
+                  endingLineNumber = "533"
+                  offsetFromSymbolStart = "3036">
+               </Location>
+               <Location
+                  uuid = "3B8F2A37-311D-4BE5-B90C-42EC5744CB0A - 7748966e3a57ff2b"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Optional&lt;__C.FIRAuthDataResult&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in FireReporter.ProfileViewController.authorizationController(controller: __C.ASAuthorizationController, didCompleteWithAuthorization: __C.ASAuthorization) -&gt; ()"
+                  moduleName = "FireReporter"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/abdullacivuli/Desktop/FireReporter/FireReporter/Profile/ProfileViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "532"
+                  endingLineNumber = "532"
+                  offsetFromSymbolStart = "2856">
+               </Location>
+               <Location
+                  uuid = "3B8F2A37-311D-4BE5-B90C-42EC5744CB0A - 7748966e3a57ffc8"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Optional&lt;__C.FIRAuthDataResult&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in FireReporter.ProfileViewController.authorizationController(controller: __C.ASAuthorizationController, didCompleteWithAuthorization: __C.ASAuthorization) -&gt; ()"
+                  moduleName = "FireReporter"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/abdullacivuli/Desktop/FireReporter/FireReporter/Profile/ProfileViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "531"
+                  endingLineNumber = "531"
+                  offsetFromSymbolStart = "3344">
+               </Location>
+               <Location
+                  uuid = "3B8F2A37-311D-4BE5-B90C-42EC5744CB0A - 7748966e3a57ffc8"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Optional&lt;__C.FIRAuthDataResult&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in FireReporter.ProfileViewController.authorizationController(controller: __C.ASAuthorizationController, didCompleteWithAuthorization: __C.ASAuthorization) -&gt; ()"
+                  moduleName = "FireReporter"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/abdullacivuli/Desktop/FireReporter/FireReporter/Profile/ProfileViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "531"
+                  endingLineNumber = "531"
+                  offsetFromSymbolStart = "3905">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "384D43CE-B634-4179-8ABF-B989EFA1E1AC"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "FireReporter/Profile/ProfileViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "523"
+            endingLineNumber = "523"
+            landmarkName = "authorizationController(controller:didCompleteWithAuthorization:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "384D43CE-B634-4179-8ABF-B989EFA1E1AC - 7748966e3a57fe23"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Optional&lt;__C.FIRAuthDataResult&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in FireReporter.ProfileViewController.authorizationController(controller: __C.ASAuthorizationController, didCompleteWithAuthorization: __C.ASAuthorization) -&gt; ()"
+                  moduleName = "FireReporter"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/abdullacivuli/Desktop/FireReporter/FireReporter/Profile/ProfileViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "524"
+                  endingLineNumber = "524"
+                  offsetFromSymbolStart = "1812">
+               </Location>
+               <Location
+                  uuid = "384D43CE-B634-4179-8ABF-B989EFA1E1AC - 7748966e3a57fec0"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Optional&lt;__C.FIRAuthDataResult&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in FireReporter.ProfileViewController.authorizationController(controller: __C.ASAuthorizationController, didCompleteWithAuthorization: __C.ASAuthorization) -&gt; ()"
+                  moduleName = "FireReporter"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/abdullacivuli/Desktop/FireReporter/FireReporter/Profile/ProfileViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "523"
+                  endingLineNumber = "523"
+                  offsetFromSymbolStart = "1764">
+               </Location>
+               <Location
+                  uuid = "384D43CE-B634-4179-8ABF-B989EFA1E1AC - 7748966e3a57fec0"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Optional&lt;__C.FIRAuthDataResult&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in FireReporter.ProfileViewController.authorizationController(controller: __C.ASAuthorizationController, didCompleteWithAuthorization: __C.ASAuthorization) -&gt; ()"
+                  moduleName = "FireReporter"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/abdullacivuli/Desktop/FireReporter/FireReporter/Profile/ProfileViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "523"
+                  endingLineNumber = "523"
+                  offsetFromSymbolStart = "1937">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "42118FA0-663A-4292-B0CE-F5276F831AAD"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "FireReporter/Profile/ProfileViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "517"
+            endingLineNumber = "517"
+            landmarkName = "authorizationController(controller:didCompleteWithAuthorization:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "42118FA0-663A-4292-B0CE-F5276F831AAD - 7748966e3a57fd65"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Optional&lt;__C.FIRAuthDataResult&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in FireReporter.ProfileViewController.authorizationController(controller: __C.ASAuthorizationController, didCompleteWithAuthorization: __C.ASAuthorization) -&gt; ()"
+                  moduleName = "FireReporter"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/abdullacivuli/Desktop/FireReporter/FireReporter/Profile/ProfileViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "518"
+                  endingLineNumber = "518"
+                  offsetFromSymbolStart = "476">
+               </Location>
+               <Location
+                  uuid = "42118FA0-663A-4292-B0CE-F5276F831AAD - 7748966e3a57fd1a"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Optional&lt;__C.FIRAuthDataResult&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in FireReporter.ProfileViewController.authorizationController(controller: __C.ASAuthorizationController, didCompleteWithAuthorization: __C.ASAuthorization) -&gt; ()"
+                  moduleName = "FireReporter"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/abdullacivuli/Desktop/FireReporter/FireReporter/Profile/ProfileViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "517"
+                  endingLineNumber = "517"
+                  offsetFromSymbolStart = "428">
+               </Location>
+               <Location
+                  uuid = "42118FA0-663A-4292-B0CE-F5276F831AAD - 7748966e3a57fd1a"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Optional&lt;__C.FIRAuthDataResult&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in FireReporter.ProfileViewController.authorizationController(controller: __C.ASAuthorizationController, didCompleteWithAuthorization: __C.ASAuthorization) -&gt; ()"
+                  moduleName = "FireReporter"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/abdullacivuli/Desktop/FireReporter/FireReporter/Profile/ProfileViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "517"
+                  endingLineNumber = "517"
+                  offsetFromSymbolStart = "359">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "17DDFBFC-668C-48CC-BD6F-FD2652B4A101"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "FireReporter/Profile/ProfileViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "516"
+            endingLineNumber = "516"
+            landmarkName = "authorizationController(controller:didCompleteWithAuthorization:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "17DDFBFC-668C-48CC-BD6F-FD2652B4A101 - da25f467b955aba5"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "FireReporter.ProfileViewController.authorizationController(controller: __C.ASAuthorizationController, didCompleteWithAuthorization: __C.ASAuthorization) -&gt; ()"
+                  moduleName = "FireReporter"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/abdullacivuli/Desktop/FireReporter/FireReporter/Profile/ProfileViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "517"
+                  endingLineNumber = "517"
+                  offsetFromSymbolStart = "2024">
+               </Location>
+               <Location
+                  uuid = "17DDFBFC-668C-48CC-BD6F-FD2652B4A101 - 7748966e3a57fd1a"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Optional&lt;__C.FIRAuthDataResult&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in FireReporter.ProfileViewController.authorizationController(controller: __C.ASAuthorizationController, didCompleteWithAuthorization: __C.ASAuthorization) -&gt; ()"
+                  moduleName = "FireReporter"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/abdullacivuli/Desktop/FireReporter/FireReporter/Profile/ProfileViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "517"
+                  endingLineNumber = "517"
+                  offsetFromSymbolStart = "460">
+               </Location>
+               <Location
+                  uuid = "17DDFBFC-668C-48CC-BD6F-FD2652B4A101 - da25f467b955ab84"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "FireReporter.ProfileViewController.authorizationController(controller: __C.ASAuthorizationController, didCompleteWithAuthorization: __C.ASAuthorization) -&gt; ()"
+                  moduleName = "FireReporter"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/abdullacivuli/Desktop/FireReporter/FireReporter/Profile/ProfileViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "516"
+                  endingLineNumber = "516"
+                  offsetFromSymbolStart = "2024">
+               </Location>
+               <Location
+                  uuid = "17DDFBFC-668C-48CC-BD6F-FD2652B4A101 - 7748966e3a57fd3b"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Optional&lt;__C.FIRAuthDataResult&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in FireReporter.ProfileViewController.authorizationController(controller: __C.ASAuthorizationController, didCompleteWithAuthorization: __C.ASAuthorization) -&gt; ()"
+                  moduleName = "FireReporter"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/abdullacivuli/Desktop/FireReporter/FireReporter/Profile/ProfileViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "516"
+                  endingLineNumber = "516"
+                  offsetFromSymbolStart = "412">
+               </Location>
+               <Location
+                  uuid = "17DDFBFC-668C-48CC-BD6F-FD2652B4A101 - da25f467b955ab84"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "FireReporter.ProfileViewController.authorizationController(controller: __C.ASAuthorizationController, didCompleteWithAuthorization: __C.ASAuthorization) -&gt; ()"
+                  moduleName = "FireReporter"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/abdullacivuli/Desktop/FireReporter/FireReporter/Profile/ProfileViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "516"
+                  endingLineNumber = "516"
+                  offsetFromSymbolStart = "1741">
+               </Location>
+               <Location
+                  uuid = "17DDFBFC-668C-48CC-BD6F-FD2652B4A101 - 7748966e3a57fd3b"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Optional&lt;__C.FIRAuthDataResult&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in FireReporter.ProfileViewController.authorizationController(controller: __C.ASAuthorizationController, didCompleteWithAuthorization: __C.ASAuthorization) -&gt; ()"
+                  moduleName = "FireReporter"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/abdullacivuli/Desktop/FireReporter/FireReporter/Profile/ProfileViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "516"
+                  endingLineNumber = "516"
+                  offsetFromSymbolStart = "341">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

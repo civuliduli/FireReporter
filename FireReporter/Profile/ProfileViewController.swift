@@ -17,6 +17,7 @@ import CryptoKit
 class ProfileViewController: UIViewController {
     
     private let firebaseService = FirebaseService()
+    private let keychainService = KeychainService()
     
     private var currentNonce:String?
     var profileLabel = UILabel()
@@ -54,9 +55,13 @@ class ProfileViewController: UIViewController {
         super.viewWillAppear(animated)
         getFireReports()
         navigationController?.setNavigationBarHidden(true, animated: animated)
+        if let storedUser = UserDefaults.standard.object(forKey: "appleUsername") as? String {
+            print(storedUser)
+        } else {
+            print("Not found")
+        }
     }
 
-    
     func getFireReports(){
         firebaseService.getFireReportsData { myFireReports, error in
             self.reportsArray = myFireReports
@@ -65,23 +70,15 @@ class ProfileViewController: UIViewController {
     }
     
     @objc func setupFacebookVerification(){
-        let loginManager = LoginManager()
-        loginManager.logIn(permissions: ["public_profile", "email"], from: self) { [weak self] (result, error) in
-            guard let accessToken = AccessToken.current?.tokenString else {
-                print("Failed to get access token for Facebook")
-                return
-            }
-            let credentials = FacebookAuthProvider.credential(withAccessToken: accessToken)
-            Auth.auth().signIn(with: credentials, completion: { (data, error) in
-                guard let result = data, error == nil else {
-                    print("FB Login Error: \(String(describing: error?.localizedDescription))")
-                    return
-                }
-                self?.checkAuthenticatedUser()
-            })
+        firebaseService.facebookAuth {
+            self.present(Alert(text: "Success", message: "You're now a verified Fire Reporter user", confirmAction: [UIAlertAction(title: "Great", style: .default)], disableAction: []))
+            self.checkAuthenticatedUser()
+        } onError: {
+            self.present(Alert(text: "Error", message: "Login Failed", confirmAction: [UIAlertAction(title: "Try again", style: .default)], disableAction: []))
         }
     }
     
+    //TODO: MVVM get apple username and save it to user defaults
     @objc func setupAppleVerification(){
         currentNonce = randomNonceString()
         let appleIDProvider = ASAuthorizationAppleIDProvider()
@@ -137,6 +134,7 @@ class ProfileViewController: UIViewController {
                 }
     }
     
+// TODO: Clean code
     func checkAuthenticatedUser(){
         guard let userID = Auth.auth().currentUser else { return }
         usernameLabel.text = userID.displayName
@@ -188,7 +186,6 @@ class ProfileViewController: UIViewController {
             verifyAccountLabel.isHidden = false
             infoBadge.isHidden = false
             present(Alert(text: "User is signed out", message: "", confirmAction: [UIAlertAction(title: "OK", style: .default)], disableAction: []))
-            Auth.auth().signInAnonymously()
         }
         catch {
             print("Error signing out")
@@ -498,11 +495,8 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource{
         image = report.photo!
         previewReport.descriptionText = description
         previewReport.coordinates = CLLocationCoordinate2D(latitude:latitude, longitude:longitude)
-//        previewReport.isConfirmButtonHidden = true
         previewReport.isTextFieldEditable = false
         previewReport.imageURL = image
-//        finalReportVC.isVoteForHidden = true
-//        finalReportVC.isVoteAgainstHidden = true
         present(previewReport, animated: true, completion: nil)
     }
 }
@@ -518,17 +512,30 @@ extension ProfileViewController: ASAuthorizationControllerDelegate, ASAuthorizat
            let appleidToken = appleIDCredential.identityToken,
            let appleIDTokenString = String(data: appleidToken, encoding: .utf8){
             let credential = OAuthProvider.credential(withProviderID: "apple.com", idToken:appleIDTokenString, rawNonce:nonce)
+            print(appleIDCredential.fullName)
             Auth.auth().signIn(with: credential){(result, error) in
                 if (error != nil) {
+                    print("\(String(describing: result?.user)) user result")
                     self.present(Alert(text: error?.localizedDescription ?? "Authentication Error", message: "", confirmAction: [UIAlertAction(title: "Try again", style: .default)], disableAction: []))
                     return
                 } else {
+                    if let result = result {
+                        let user = result.user
+                        print(user.displayName ?? "No name")
+                    }
+                    print("\(credential) user credentials")
+                    if let appleIDCredential = authorization.credential as?  ASAuthorizationAppleIDCredential {
+                    let userIdentifier = appleIDCredential.user
+                        let fullName = appleIDCredential.fullName?.givenName
+                    let email = appleIDCredential.email
+                        let defaults = UserDefaults.standard
+                        defaults.set(fullName, forKey:"appleUsername" )
+                    print("User id is \(userIdentifier) \n Full Name is \(String(describing: fullName)) \n Email id is \(String(describing: email))") }
                     self.checkAuthenticatedUser()
                     self.present(Alert(text: "Success", message: "You're now a Fire Reporter Verified User", confirmAction: [UIAlertAction(title: "OK", style: .default)], disableAction: []))
                 }
             }
         }
-        
         func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
             print(error.localizedDescription)
         }

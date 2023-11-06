@@ -86,23 +86,29 @@ class FirebaseService {
         }
     }
     
-    func facebookAuth(onError:@escaping () -> Void, onSuccess:@escaping() -> Void){
-//        if error != nil {
-//            onError()
-//        return
-//        }
-        if (AccessToken.current != nil) {
-            let credential = FacebookAuthProvider.credential(withAccessToken: AccessToken.current!.tokenString)
-            Auth.auth().signIn(with: credential) { (authResult, error) in
-                if error != nil {
+    func facebookAuth(onSuccess:@escaping() -> Void, onError:@escaping()->Void){
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                      let window = windowScene.windows.first,
+                      let rootViewController = window.rootViewController else {
+                    print("there is no root view controller")
+                    return
+                }
+        let loginManager = LoginManager()
+        loginManager.logIn(permissions: ["public_profile"], from: rootViewController) { [weak self] (result, error) in
+            guard let accessToken = AccessToken.current?.tokenString else {
+                print("Failed to get access token for Facebook")
+                onError()
+                return
+            }
+            let credentials = FacebookAuthProvider.credential(withAccessToken: accessToken)
+            Auth.auth().signIn(with: credentials, completion: { (data, error) in
+                guard let result = data, error == nil else {
                     onError()
+                    print("FB Login Error: \(String(describing: error?.localizedDescription))")
                     return
                 }
                 onSuccess()
-            }
-        } else {
-            onError()
-            print("there is no token for the user")
+            })
         }
     }
 }

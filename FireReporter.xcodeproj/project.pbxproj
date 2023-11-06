@@ -24,6 +24,8 @@
 		6F494D522AF014C5001036DE /* Vote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F494D512AF014C5001036DE /* Vote.swift */; };
 		6F4BA4282ADF390A00D736BE /* FireReporter + Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4BA4272ADF390A00D736BE /* FireReporter + Date.swift */; };
 		6F581ECA2AF1CF9500CFAD93 /* PreviewReport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F581EC92AF1CF9500CFAD93 /* PreviewReport.swift */; };
+		6F5BC1BD2AF7E97900C8E218 /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5BC1BC2AF7E97900C8E218 /* Keychain.swift */; };
+		6F5BC1C02AF945B000C8E218 /* SuccessMessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5BC1BF2AF945B000C8E218 /* SuccessMessageViewController.swift */; };
 		6F7E79D62AE9C75E00B12C51 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7E79D52AE9C75E00B12C51 /* User.swift */; };
 		6F927C1F2ADB21DA000FD630 /* FinalReportViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F927C1E2ADB21DA000FD630 /* FinalReportViewModel.swift */; };
 		6F927C212ADB2551000FD630 /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F927C202ADB2551000FD630 /* MapViewModel.swift */; };
@@ -77,6 +79,8 @@
 		6F494D512AF014C5001036DE /* Vote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Vote.swift; sourceTree = "<group>"; };
 		6F4BA4272ADF390A00D736BE /* FireReporter + Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FireReporter + Date.swift"; sourceTree = "<group>"; };
 		6F581EC92AF1CF9500CFAD93 /* PreviewReport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewReport.swift; sourceTree = "<group>"; };
+		6F5BC1BC2AF7E97900C8E218 /* Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
+		6F5BC1BF2AF945B000C8E218 /* SuccessMessageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuccessMessageViewController.swift; sourceTree = "<group>"; };
 		6F7E79D52AE9C75E00B12C51 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		6F8D50562AE48A480075104F /* FireReporter.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FireReporter.entitlements; sourceTree = "<group>"; };
 		6F927C1E2ADB21DA000FD630 /* FinalReportViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinalReportViewModel.swift; sourceTree = "<group>"; };
@@ -178,6 +182,22 @@
 			path = Preview;
 			sourceTree = "<group>";
 		};
+		6F5BC1BB2AF7E95500C8E218 /* KeychainService */ = {
+			isa = PBXGroup;
+			children = (
+				6F5BC1BC2AF7E97900C8E218 /* Keychain.swift */,
+			);
+			path = KeychainService;
+			sourceTree = "<group>";
+		};
+		6F5BC1BE2AF9459100C8E218 /* SuccessfullMessage */ = {
+			isa = PBXGroup;
+			children = (
+				6F5BC1BF2AF945B000C8E218 /* SuccessMessageViewController.swift */,
+			);
+			path = SuccessfullMessage;
+			sourceTree = "<group>";
+		};
 		6F7E79D42AE9C74100B12C51 /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -239,6 +259,7 @@
 				6F8D50562AE48A480075104F /* FireReporter.entitlements */,
 				6FE9013C2ACC51FC00984C73 /* AppDelegate.swift */,
 				6FE9013E2ACC51FC00984C73 /* SceneDelegate.swift */,
+				6F5BC1BE2AF9459100C8E218 /* SuccessfullMessage */,
 				6F581EC82AF1CF7000CFAD93 /* Preview */,
 				6FCE0EF62AE26E8300FE3159 /* UserReportedLocations */,
 				6FB1024D2AD02EC700289D09 /* Map */,
@@ -247,6 +268,7 @@
 				6FFD0DC92AD30470001F64BA /* FinalReport */,
 				6F1DD2012AD2043900226345 /* Extensions */,
 				6FE901742ACCAAA700984C73 /* TabBarViewController.swift */,
+				6F5BC1BB2AF7E95500C8E218 /* KeychainService */,
 				6F252CD22AE4038100BE8439 /* NetworkService */,
 				6F3D9F732AD5F5580056F4C5 /* ReportListCustomTableViewCell.swift */,
 				6FEDE2BD2ACF018400D77FE2 /* NavigationController.swift */,
@@ -445,6 +467,7 @@
 				6FE3FB832ADE717000F39F10 /* FireReport.swift in Sources */,
 				6FE9013D2ACC51FC00984C73 /* AppDelegate.swift in Sources */,
 				6F1DD2062AD2051000226345 /* UIAlertModel.swift in Sources */,
+				6F5BC1C02AF945B000C8E218 /* SuccessMessageViewController.swift in Sources */,
 				6F1A75552AE8778E007C9029 /* ProfileViewModel.swift in Sources */,
 				6F494D522AF014C5001036DE /* Vote.swift in Sources */,
 				6F252CD42AE4040A00BE8439 /* FirebaseService.swift in Sources */,
@@ -458,6 +481,7 @@
 				6FFD0DCB2AD30496001F64BA /* FinalReportViewController.swift in Sources */,
 				6FC4BA1A2ADFCB25001F28AA /* FireReporter + UIImageToString.swift in Sources */,
 				6F927C212ADB2551000FD630 /* MapViewModel.swift in Sources */,
+				6F5BC1BD2AF7E97900C8E218 /* Keychain.swift in Sources */,
 				6F1DD2042AD204FD00226345 /* FireReporter + UIAlertControllerExtension.swift in Sources */,
 				6FEDE2BE2ACF018400D77FE2 /* NavigationController.swift in Sources */,
 				6F4BA4282ADF390A00D736BE /* FireReporter + Date.swift in Sources */,
