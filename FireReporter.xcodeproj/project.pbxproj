@@ -29,6 +29,7 @@
 		6F7E79D62AE9C75E00B12C51 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7E79D52AE9C75E00B12C51 /* User.swift */; };
 		6F927C1F2ADB21DA000FD630 /* FinalReportViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F927C1E2ADB21DA000FD630 /* FinalReportViewModel.swift */; };
 		6F927C212ADB2551000FD630 /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F927C202ADB2551000FD630 /* MapViewModel.swift */; };
+		6F9304C72AFA8B49006892E7 /* FirebaseRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = 6F9304C62AFA8B49006892E7 /* FirebaseRemoteConfig */; };
 		6F99E86B2AEBF06000ABA7A0 /* FacebookShare in Frameworks */ = {isa = PBXBuildFile; productRef = 6F99E86A2AEBF06000ABA7A0 /* FacebookShare */; };
 		6FC4BA1A2ADFCB25001F28AA /* FireReporter + UIImageToString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FC4BA192ADFCB25001F28AA /* FireReporter + UIImageToString.swift */; };
 		6FCE0EF82AE26EBC00FE3159 /* UserReportedLocationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCE0EF72AE26EBC00FE3159 /* UserReportedLocationsViewController.swift */; };
@@ -117,6 +118,7 @@
 				6F252CC52AE2889700BE8439 /* GoogleSignIn in Frameworks */,
 				6F252CC72AE2889700BE8439 /* GoogleSignInSwift in Frameworks */,
 				6F99E86B2AEBF06000ABA7A0 /* FacebookShare in Frameworks */,
+				6F9304C72AFA8B49006892E7 /* FirebaseRemoteConfig in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -340,6 +342,7 @@
 				6F252CCB2AE2CC3600BE8439 /* FacebookCore */,
 				6F252CCD2AE2CC3600BE8439 /* FacebookLogin */,
 				6F99E86A2AEBF06000ABA7A0 /* FacebookShare */,
+				6F9304C62AFA8B49006892E7 /* FirebaseRemoteConfig */,
 			);
 			productName = FireReporter;
 			productReference = 6FE901392ACC51FC00984C73 /* FireReporter.app */;
@@ -872,6 +875,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6F252CCA2AE2CC3600BE8439 /* XCRemoteSwiftPackageReference "facebook-ios-sdk" */;
 			productName = FacebookLogin;
+		};
+		6F9304C62AFA8B49006892E7 /* FirebaseRemoteConfig */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6FE3FB7B2ADDDF9A00F39F10 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseRemoteConfig;
 		};
 		6F99E86A2AEBF06000ABA7A0 /* FacebookShare */ = {
 			isa = XCSwiftPackageProductDependency;

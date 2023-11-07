@@ -64,6 +64,7 @@ class FinalReportViewController: UIViewController {
     var collectionVotes: Int!
     var totalVote: Int!
     var IDfromKeychain:String?
+    var hasSentVote: Bool?
     
     lazy var mapView: MKMapView = {
         let map = MKMapView()
@@ -84,7 +85,11 @@ class FinalReportViewController: UIViewController {
             print("UUID from Keychain: \(savedUUID)")
         }
 //        NotificationCenter.default.addObserver(self, selector: #selector(appDidEnterBackground), name: UIApplication.didEnterBackgroundNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(appDidBecomeActive), name: UIApplication.willEnterForegroundNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(appIsKilled), name:
+                                                UIApplication.willResignActiveNotification, object: nil)
     }
+    
 
     @objc func dismissKeyboard(){
         view.endEditing(true)
@@ -103,7 +108,7 @@ class FinalReportViewController: UIViewController {
         }
         print("\(String(describing: isUserVerified))is user verified")
         print("\(collectionVotes ?? 0) report votes")
-        self.voteInfo.text = String(collectionVotes ?? 0)
+            self.voteInfo.text = String(self.collectionVotes ?? 0)
         print(collectionVotes)
         print("Hello World")
     }
@@ -164,19 +169,13 @@ class FinalReportViewController: UIViewController {
 
     @objc func sendReport(){
         let phoneNumber = 192
-        finalReportViewModel.sendReport(fireReport: FireReport(description: descriptionTextField.text, id: self.ID, lat: coordinates.latitude, long: coordinates.longitude, photo: "", timestamp: Date(), uniqueIdentifier: UIDevice.current.identifierForVendor!.uuidString, address: "", votes: 0), fireImage: fireImage) {
+        finalReportViewModel.sendReport(fireReport: FireReport(description: descriptionTextField.text, id: self.ID, lat: coordinates.latitude, long: coordinates.longitude, photo: "", timestamp: Date(), uniqueIdentifier: UIDevice.current.identifierForVendor!.uuidString, address: "", votes: 0, createdByVerifiedUser: false), fireImage: fireImage) {
             if let scene = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate{
                 scene.photoState = .completed
             }
-            self.present(Alert(text: "Success", message: "Report sent successfully", confirmAction: [UIAlertAction(title: "Back To Camera", style: .default, handler: { action in
-                self.navigationController?.popToRootViewController(animated: false)
-            })], disableAction: [UIAlertAction(title: "Call Firefighter", style: .default, handler: { action in
-                guard let url = URL(string: "telprompt://\(phoneNumber)"),
-                       UIApplication.shared.canOpenURL(url) else {
-                       return
-                   }
-                   UIApplication.shared.open(url, options: [:], completionHandler: nil)
-            })]))
+            self.navigationController?.popToRootViewController(animated: false)
+            let successView = SuccessMessageViewController()
+            self.present(successView, animated: true)
         } error: {
             self.present(Alert(text: "Error!", message: "Error sending report", confirmAction: [UIAlertAction(title: "Try again", style: .default)], disableAction: []))
         }
@@ -209,10 +208,6 @@ class FinalReportViewController: UIViewController {
           print("\(self.collectionVotes + self.updatedUserVote - self.userVotes) ghhghg")
           print("\(updatedUserVote) updated user vote")
           print(collectionVotes!)
-//        hasSentVote = !hasSentVote
-//        print(hasSentVote)
-
-       
       }
     
     @objc func removeVote(){
@@ -242,20 +237,19 @@ class FinalReportViewController: UIViewController {
            print("\(self.collectionVotes + self.updatedUserVote - self.userVotes) ghhghg")
            print("\(updatedUserVote) updated user vote")
            print(collectionVotes!)
-//        hasSentVote = !hasSentVote
-//        print(hasSentVote)
-
-
        }
     
     //TODO: MVVM
     func sentVote(){
         let userID = Auth.auth().currentUser
         let uid:String?
+        var isCreatedVerifiedUser: Bool!
         if isUserVerified == nil || isUserVerified == false{
             uid = IDfromKeychain
+            isCreatedVerifiedUser = false
         } else {
             uid = userID?.uid
+            isCreatedVerifiedUser = true
         }
         let myVote = updatedUserVote - self.userVotes
         if updatedUserVote == userVotes {
@@ -263,14 +257,13 @@ class FinalReportViewController: UIViewController {
         } else {
             let db = Firestore.firestore()
             thisUser?.quantity = userVotes
-            let vote = Vote(createdAt: Date(), documentID: self.ID, quantity: updatedUserVote, userID: uid ?? "")
+            let vote = Vote(createdAt: Date(), documentID: self.ID, quantity: updatedUserVote, userID: uid ?? "", createdByVerifiedUser: isCreatedVerifiedUser)
             db.collection("reports").document(self.ID).collection("Votes").document(uid ?? "").getDocument { [self] querrySnapshot, error in
                 if querrySnapshot?.exists == true {
                     db.collection("reports").document(self.ID).collection("Votes").document(uid ?? "").updateData(vote.dictionary)
                     db.collection("reports").document(self.ID).updateData(["votes": FieldValue.increment(Double(myVote))])
                 } else {
                     db.collection("reports").document(self.ID).collection("Votes").document(uid ?? "").setData(vote.dictionary, merge: true)
-                    //                    db.collection("reports").document(self.ID).updateData(["votes": totalVote ?? 0])
                     db.collection("reports").document(self.ID).updateData(["votes": FieldValue.increment(Double(myVote))])
                 }
                 print("my votes flag")
@@ -278,27 +271,72 @@ class FinalReportViewController: UIViewController {
         }
      }
     
-//    override func viewDidDisappear(_ animated: Bool) {
-//        super.viewWillDisappear(animated)
-//        if isBeingDismissed && !hasSentVote {
-//               sentVote()
-//               onChange?()
-//               hasSentVote = true
-//           }
-//    }
-//    
-//    func resetSentVoteFlag() {
-//        hasSentVote = false
-//    }
-//    
-////     This method will be called when the app enters the background
+    func getAllVotes(completion: @escaping ([DocumentSnapshot]?, Error?) -> Void) {
+        let db = Firestore.firestore()
+        db.collection("reports").whereField("id", isEqualTo: self.ID ?? "").getDocuments { (querySnapshot, error) in
+            if let error = error {
+                completion(nil, error)
+            } else {
+                completion(querySnapshot?.documents, nil)
+            }
+        }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        if updatedUserVote == userVotes {
+            print("You havent voted yet")
+        }else {
+            sentVote()
+        }
+        onChange?()
+    }
+  
 //       @objc func appDidEnterBackground() {
-//           if !hasSentVote {
-//                   sentVote()
-//                   hasSentVote = true
-//               }
+//           if updatedUserVote == userVotes {
+//               print("You havent voted yet")
+//           }else {
+//               sentVote()
+//           }
+//           onChange?()
+//           print("The app is in background")
 //       }
-
+    
+    @objc func appIsKilled(){
+        if updatedUserVote == userVotes {
+            print("You havent voted yet")
+        }else {
+            sentVote()
+        }
+        onChange?()
+        print("The app is killed")
+    }
+    
+    @objc func appDidBecomeActive(){
+            print("The app is active")
+        getQuantity { [weak self] quantity in
+            if let self = self, let quantity = quantity {
+                self.userVotes = quantity
+                updatedUserVote = userVotes
+                print("Quantity in viewDidLoad: \(quantity)")
+            }
+        }
+        getAllVotes { (documents, error) in
+            if let error = error {
+                print("Error: \(error.localizedDescription)")
+            } else if let documents = documents {
+                for document in documents {
+                    let data = document.data()
+                    if let votes = data?["votes"] as? Int {
+                        self.collectionVotes = votes
+                        print(self.collectionVotes ?? 0)
+                        self.voteInfo.text = String(votes)
+                    }
+                }
+            }
+        }
+    }
+    
     func setupUI(){
         self.view.addSubview(scrollView)
         scrollView.translatesAutoresizingMaskIntoConstraints = false

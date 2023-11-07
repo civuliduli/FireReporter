@@ -53,17 +53,20 @@ class FinalReportViewModel{
     func sendReport(fireReport:FireReport, fireImage: UIImage, success:@escaping ()-> Void, error:@escaping ()-> Void){
         convertLatLongToAddress(latitude: fireReport.lat, longitude: fireReport.long) { [self] locationName in
             self.addressName = locationName
+            var isCreatedVerifiedUser: Bool!
             var isUserVerified: Bool!
             isUserVerified = Auth.auth().currentUser?.isEmailVerified
             var votes = 0
             if isUserVerified == nil || isUserVerified == false{
                 votes += 1
+                isCreatedVerifiedUser = false
             } else {
                 votes += 10
+                isCreatedVerifiedUser = true
             }
             let myCompressedImage = convertImageToBase64String(img: fireImage)
             let db = Firestore.firestore()
-            let fireReport = FireReport(description: fireReport.description, id:fireReport.id, lat: fireReport.lat, long: fireReport.long, photo: myCompressedImage, timestamp: fireReport.date, uniqueIdentifier: UIDevice.current.identifierForVendor!.uuidString, address: locationName, votes:votes)
+            let fireReport = FireReport(description: fireReport.description, id:fireReport.id, lat: fireReport.lat, long: fireReport.long, photo: myCompressedImage, timestamp: fireReport.date, uniqueIdentifier: UIDevice.current.identifierForVendor!.uuidString, address: locationName, votes:votes, createdByVerifiedUser: isCreatedVerifiedUser)
             print(fireReport)
             db.collection("reports").document(fireReport.id).setData(fireReport.dictionary) { err in
                 if err != nil {

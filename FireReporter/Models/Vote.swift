@@ -14,6 +14,7 @@ struct Vote: Codable{
     var documentID:String
     var quantity: Int
     var userID: String
+    var createdByVerifiedUser: Bool
     
     
     
@@ -22,7 +23,8 @@ struct Vote: Codable{
             "createdAt":createdAt,
             "documentID":documentID,
             "quantity":quantity,
-            "userID":userID
+            "userID":userID,
+            "createdByVerifiedUser": createdByVerifiedUser
         ]
        }
 }

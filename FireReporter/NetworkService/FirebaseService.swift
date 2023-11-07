@@ -32,8 +32,9 @@ class FirebaseService {
                 let photo = data["photo"] as? String? ?? "androidKiller"
                 let address = data["address"] as? String
                 let votes = data["votes"] ?? 0
+                let createdByVerifiedUser = data["createdByVerifiedUser"] as? Bool ?? false
                 //
-                return FireReport(description: description,id:"",lat: lat ?? 0.00, long: long ?? 0.00, photo:photo ?? "androidKiller", timestamp: timestamp?.dateValue() ?? Date(), uniqueIdentifier: uniqueIdentifier ?? "", address:address, votes: votes as? Int ?? 0)
+                return FireReport(description: description,id:"",lat: lat ?? 0.00, long: long ?? 0.00, photo:photo ?? "androidKiller", timestamp: timestamp?.dateValue() ?? Date(), uniqueIdentifier: uniqueIdentifier ?? "", address:address, votes: votes as? Int ?? 0, createdByVerifiedUser: createdByVerifiedUser)
             })
             completion(self.reportsArray, error)
         }
@@ -55,7 +56,8 @@ class FirebaseService {
                 let photo = data["photo"] as? String? ?? "androidKiller"
                 let votes = data["votes"] as? Int ?? 0
                 let id = data["id"] as? String ?? ""
-                return FireReport(description: description,id:id,lat: lat ?? 0.00, long: long ?? 0.00, photo:photo ?? "androidKiller", timestamp: timestamp?.dateValue() ?? Date(), uniqueIdentifier: uniqueIdentifier ?? "", address: "", votes: votes)
+                let createdByVerifiedUser = data["createdByVerifiedUser"] as? Bool ?? false
+                return FireReport(description: description,id:id,lat: lat ?? 0.00, long: long ?? 0.00, photo:photo ?? "androidKiller", timestamp: timestamp?.dateValue() ?? Date(), uniqueIdentifier: uniqueIdentifier ?? "", address: "", votes: votes, createdByVerifiedUser: createdByVerifiedUser)
             })
             completion(mapLocationsArray, error)
         }

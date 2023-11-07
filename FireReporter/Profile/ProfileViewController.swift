@@ -83,7 +83,7 @@ class ProfileViewController: UIViewController {
         currentNonce = randomNonceString()
         let appleIDProvider = ASAuthorizationAppleIDProvider()
         let request = appleIDProvider.createRequest()
-        request.requestedScopes = [.email]
+        request.requestedScopes = [.email, .fullName]
         request.nonce = sha256(currentNonce!)
         
         let authorizationController = ASAuthorizationController(authorizationRequests: [request])
@@ -136,8 +136,19 @@ class ProfileViewController: UIViewController {
     
 // TODO: Clean code
     func checkAuthenticatedUser(){
-        guard let userID = Auth.auth().currentUser else { return }
-        usernameLabel.text = userID.displayName
+        guard let userID = Auth.auth().currentUser else {
+            return
+        }
+        if let displayName = userID.displayName {
+            usernameLabel.text = displayName
+        } else {
+            if let usernameFromUserDefaults = UserDefaults.standard.string(forKey: "appleUsername") {
+                usernameLabel.text = usernameFromUserDefaults
+            } else {
+                usernameLabel.text = "Default Username"
+            }
+        }
+
         userID.getIDToken()
         if let scene = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate{
             if let user = Auth.auth().currentUser {
@@ -196,7 +207,7 @@ class ProfileViewController: UIViewController {
         self.view.addSubview(scrollView)
         navigationController?.setNavigationBarHidden(true, animated: true)
         view.backgroundColor = UIColor.secondaryColor
-        UITabBar.appearance().backgroundColor = UIColor.white
+        UITabBar.appearance().backgroundColor = UIColor.secondaryColor
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         self.scrollView.addSubview(container)
         container.translatesAutoresizingMaskIntoConstraints = false
