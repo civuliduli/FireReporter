@@ -295,7 +295,7 @@ class ProfileViewController: UIViewController {
         profileLabel.translatesAutoresizingMaskIntoConstraints = false
         profileLabel.text = "Profile"
         profileLabel.font = profileLabel.font.withSize(30)
-        profileLabel.textColor = UIColor.primaryColor
+        profileLabel.textColor = UIColor.textColor
     }
     
     
@@ -304,7 +304,7 @@ class ProfileViewController: UIViewController {
         usernameLabel.translatesAutoresizingMaskIntoConstraints = false
         usernameLabel.font = usernameLabel.font.withSize(30)
         checkAuthenticatedUser()
-        usernameLabel.textColor = UIColor.primaryColor
+        usernameLabel.textColor = UIColor.textColor
         usernameLabel.isHidden = true
     }
     
@@ -334,7 +334,7 @@ class ProfileViewController: UIViewController {
         verifyAccountLabel.translatesAutoresizingMaskIntoConstraints = false
         verifyAccountLabel.text = "Verify Account"
         verifyAccountLabel.font = UIFont.systemFont(ofSize: 24, weight: .bold)
-        verifyAccountLabel.textColor = UIColor.primaryColor
+        verifyAccountLabel.textColor = UIColor.textColor
         verifyAccountLabel.isHidden = false
         checkAuthenticatedUser()
         self.view.addSubview(verifyAccountLabel)
@@ -415,7 +415,7 @@ class ProfileViewController: UIViewController {
         verificationInfo.translatesAutoresizingMaskIntoConstraints = false
         verificationInfo.text = "Verified users are refelcted with their higher level of trustworthines"
         verificationInfo.font = verificationInfo.font.withSize(11)
-        verificationInfo.textColor = UIColor.primaryColor
+        verificationInfo.textColor = UIColor.textColor
         verificationInfo.numberOfLines = 1
         verificationInfo.sizeToFit()
         verificationInfo.isHidden = false
@@ -449,7 +449,7 @@ class ProfileViewController: UIViewController {
         myReports.translatesAutoresizingMaskIntoConstraints = false
         myReports.text = "My Reports"
         myReports.font = myReports.font.withSize(30)
-        myReports.textColor = UIColor.primaryColor
+        myReports.textColor = UIColor.textColor
         self.container.addSubview(myReports)
         myReports.topAnchor.constraint(equalTo: verticalStack.bottomAnchor, constant:20).isActive = true
         myReports.leadingAnchor.constraint(equalTo: self.container.leadingAnchor, constant: 20).isActive = true

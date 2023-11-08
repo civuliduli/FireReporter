@@ -662,6 +662,7 @@
 				DEVELOPMENT_TEAM = DLFLF8ZQDD;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FireReporter/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = WildFire;
 				INFOPLIST_KEY_NSCameraUsageDescription = "In order to take images and report fire abuses";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "We want to help you locate your current location in order to report the fire abuse";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We want to help you locate your current location in order to report the fire abuse";
@@ -694,6 +695,7 @@
 				DEVELOPMENT_TEAM = DLFLF8ZQDD;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FireReporter/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = WildFire;
 				INFOPLIST_KEY_NSCameraUsageDescription = "In order to take images and report fire abuses";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "We want to help you locate your current location in order to report the fire abuse";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We want to help you locate your current location in order to report the fire abuse";

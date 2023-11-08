@@ -89,13 +89,11 @@ class SuccessMessageViewController: UIViewController {
                         // Configuration is activated
                         let phoneNumber = remoteConfig["emergencyPhoneNumber"].stringValue ?? "default_phone_number"
                         print("Phone number: \(phoneNumber)")
-                        guard let url = URL(string: "telprompt://\(phoneNumber)"),
-                               UIApplication.shared.canOpenURL(url) else {
-                               return
-                           }
-                        DispatchQueue.main.async{
-                                guard let url = URL(string: "telprompt://\(phoneNumber)") else { return }
-                                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                        let yourNumber = "+1 999 999 9999"  
+                        DispatchQueue.main.async{//Your needed phone
+                            guard let number = URL(string: "tel://" + phoneNumber),        //Check if phone non-optional and app can open this URL
+                                  UIApplication.shared.canOpenURL(number) else { return }
+                            UIApplication.shared.open(number)
                         }
                     }
                 } else {

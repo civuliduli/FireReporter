@@ -10,7 +10,7 @@ import UIKit
 class NavigationController: UINavigationController{
     func setupNavigationController(){
         let appearance = UINavigationBarAppearance()
-        appearance.backgroundColor = UIColor(named: "primary")
+        appearance.backgroundColor = UIColor.white
         
         UINavigationBar.appearance().tintColor = UIColor(named: "background")
         UINavigationBar.appearance().standardAppearance = appearance

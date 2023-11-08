@@ -65,6 +65,7 @@ class FinalReportViewController: UIViewController {
     var totalVote: Int!
     var IDfromKeychain:String?
     var hasSentVote: Bool?
+    var hasChanges = false
     
     lazy var mapView: MKMapView = {
         let map = MKMapView()
@@ -86,8 +87,9 @@ class FinalReportViewController: UIViewController {
         }
 //        NotificationCenter.default.addObserver(self, selector: #selector(appDidEnterBackground), name: UIApplication.didEnterBackgroundNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(appDidBecomeActive), name: UIApplication.willEnterForegroundNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(appIsKilled), name:
-                                                UIApplication.willResignActiveNotification, object: nil)
+//        NotificationCenter.default.addObserver(self, selector: #selector(appIsKilled), name:
+//                                                UIApplication.didEnterBackgroundNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(appWillTerminate), name: UIApplication.willResignActiveNotification, object: nil)
     }
     
 
@@ -99,11 +101,25 @@ class FinalReportViewController: UIViewController {
         self.isUserVerified = Auth.auth().currentUser?.isEmailVerified
         finalReportViewModel.configureLocationManager()
         fireLocation()
+        getAllVotes { (documents, error) in
+            if let error = error {
+                print("Error: \(error.localizedDescription)")
+            } else if let documents = documents {
+                for document in documents {
+                    let data = document.data()
+                    if let votes = data?["votes"] as? Int {
+                        self.collectionVotes = votes
+                        print(self.collectionVotes ?? 0)
+                        self.voteInfo.text = String(votes)
+                    }
+                }
+            }
+        }
         getQuantity { [weak self] quantity in
             if let self = self, let quantity = quantity {
                 self.userVotes = quantity
                 updatedUserVote = userVotes
-                print("Quantity in viewDidLoad: \(quantity)")
+                print("1111 Quantity in viewDidLoad: \(quantity)")
             }
         }
         print("\(String(describing: isUserVerified))is user verified")
@@ -240,7 +256,7 @@ class FinalReportViewController: UIViewController {
        }
     
     //TODO: MVVM
-    func sentVote(){
+    func sentVote() {
         let userID = Auth.auth().currentUser
         let uid:String?
         var isCreatedVerifiedUser: Bool!
@@ -253,11 +269,13 @@ class FinalReportViewController: UIViewController {
         }
         let myVote = updatedUserVote - self.userVotes
         if updatedUserVote == userVotes {
+            print("5555 send vote and dismiss")
             dismiss(animated: true, completion: nil)
         } else {
             let db = Firestore.firestore()
             thisUser?.quantity = userVotes
             let vote = Vote(createdAt: Date(), documentID: self.ID, quantity: updatedUserVote, userID: uid ?? "", createdByVerifiedUser: isCreatedVerifiedUser)
+            print("5555 send vote before update")
             db.collection("reports").document(self.ID).collection("Votes").document(uid ?? "").getDocument { [self] querrySnapshot, error in
                 if querrySnapshot?.exists == true {
                     db.collection("reports").document(self.ID).collection("Votes").document(uid ?? "").updateData(vote.dictionary)
@@ -266,7 +284,30 @@ class FinalReportViewController: UIViewController {
                     db.collection("reports").document(self.ID).collection("Votes").document(uid ?? "").setData(vote.dictionary, merge: true)
                     db.collection("reports").document(self.ID).updateData(["votes": FieldValue.increment(Double(myVote))])
                 }
-                print("my votes flag")
+                print("5555 my votes flag")
+                getQuantity { [weak self] quantity in
+                    if let self = self, let quantity = quantity {
+                        self.userVotes = quantity
+                        updatedUserVote = userVotes
+                        print("Quantity in viewDidLoad: \(quantity)")
+                    }
+                }
+                getAllVotes { (documents, error) in
+                    if let error = error {
+                        print("Error: \(error.localizedDescription)")
+                    } else if let documents = documents {
+                        for document in documents {
+                            let data = document.data()
+                            if let votes = data?["votes"] as? Int {
+                                self.collectionVotes = votes
+                                print("\(self.collectionVotes ?? 0) my votesssssssss")
+                                self.voteInfo.text = String(votes)
+                                print("All votes are here")
+                            }
+                        }
+                    }
+                }
+               
             }
         }
      }
@@ -284,32 +325,23 @@ class FinalReportViewController: UIViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        onChange?()
         if updatedUserVote == userVotes {
             print("You havent voted yet")
         }else {
             sentVote()
+            updatedUserVote = userVotes
         }
-        onChange?()
+        print("Is dismissed")
     }
-  
-//       @objc func appDidEnterBackground() {
-//           if updatedUserVote == userVotes {
-//               print("You havent voted yet")
-//           }else {
-//               sentVote()
-//           }
-//           onChange?()
-//           print("The app is in background")
-//       }
     
-    @objc func appIsKilled(){
+    @objc func appWillTerminate(){
         if updatedUserVote == userVotes {
-            print("You havent voted yet")
+            print("You haven't voted yet")
         }else {
             sentVote()
+            updatedUserVote = userVotes
         }
-        onChange?()
-        print("The app is killed")
     }
     
     @objc func appDidBecomeActive(){
@@ -371,8 +403,8 @@ class FinalReportViewController: UIViewController {
         submitReportButtonDesign()
         setupInfoDescriptionUI()
         setupVotingUI()
-        previewImageDesign()
         setupVotingInfo()
+        previewImageDesign()
     }
 
     func previewImageDesign(){
@@ -398,7 +430,7 @@ class FinalReportViewController: UIViewController {
         reportLabel.translatesAutoresizingMaskIntoConstraints = false
         reportLabel.text = "Fire Report Summary"
         reportLabel.font = reportLabel.font.withSize(28)
-        reportLabel.textColor = UIColor.black
+        reportLabel.textColor = UIColor.textColor
         self.view.addSubview(reportLabel)
         reportLabel.topAnchor.constraint(equalTo: self.container.topAnchor, constant:30).isActive = true
         reportLabel.leadingAnchor.constraint(equalTo: self.container.leadingAnchor, constant: 16).isActive = true
@@ -460,6 +492,7 @@ class FinalReportViewController: UIViewController {
         voteInfo.font = UIFont.systemFont(ofSize: 14, weight: .bold)
         voteInfo.textColor = UIColor.primaryColor
         voteInfo.isHidden = isVoteForHidden
+        voteInfo.textColor = UIColor.textColor
         self.view.addSubview(voteInfo)
         NSLayoutConstraint.activate([
             voteInfo.topAnchor.constraint(equalTo: descriptionTextField.bottomAnchor, constant: 20),
@@ -467,7 +500,7 @@ class FinalReportViewController: UIViewController {
         ])
         voteLabel.translatesAutoresizingMaskIntoConstraints = false
         voteLabel.font = UIFont.systemFont(ofSize: 14, weight: .regular)
-        voteLabel.textColor = UIColor.primaryColor
+        voteLabel.textColor = UIColor.textColor
         voteLabel.text = "votes for this location as the most dangerous"
         voteLabel.isHidden = isVoteForHidden
         self.view.addSubview(voteLabel)
@@ -482,6 +515,7 @@ class FinalReportViewController: UIViewController {
         votingDescription = UILabel()
         votingDescription.translatesAutoresizingMaskIntoConstraints = false
         votingDescription.font = UIFont.systemFont(ofSize: 14)
+        votingDescription.textColor = UIColor.textColor
         votingDescription.text = "There was a fire reported at this location"
         votingDescription.isHidden = isvotingDescriptionHidden
         self.view.addSubview(votingDescription)

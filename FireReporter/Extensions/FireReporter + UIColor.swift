@@ -14,4 +14,5 @@ extension UIColor {
     static var tabBarNavBarColor: UIColor = UIColor.init(named:"tabBarNavBarColor")!
     static var defaultWhiteColor: UIColor = UIColor.init(named:"defaultWhiteColor")!
     static var buttonBackgroundColor: UIColor = UIColor.init(named:"buttonBackgroundColor")!
+    static var textColor: UIColor = UIColor.init(named:"textColor")!
 }

@@ -145,7 +145,291 @@
                   endingLineNumber = "527"
                   offsetFromSymbolStart = "2732">
                </Location>
+               <Location
+                  uuid = "17DDFBFC-668C-48CC-BD6F-FD2652B4A101 - da25f467b955a8f3"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "FireReporter.ProfileViewController.authorizationController(controller: __C.ASAuthorizationController, didCompleteWithAuthorization: __C.ASAuthorization) -&gt; ()"
+                  moduleName = "FireReporter"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/abdullacivuli/Desktop/FireReporter/FireReporter/Profile/ProfileViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "527"
+                  endingLineNumber = "527"
+                  offsetFromSymbolStart = "2024">
+               </Location>
+               <Location
+                  uuid = "17DDFBFC-668C-48CC-BD6F-FD2652B4A101 - 7748966e3a57fe4c"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Optional&lt;__C.FIRAuthDataResult&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in FireReporter.ProfileViewController.authorizationController(controller: __C.ASAuthorizationController, didCompleteWithAuthorization: __C.ASAuthorization) -&gt; ()"
+                  moduleName = "FireReporter"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/abdullacivuli/Desktop/FireReporter/FireReporter/Profile/ProfileViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "527"
+                  endingLineNumber = "527"
+                  offsetFromSymbolStart = "412">
+               </Location>
             </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "F5D017C4-D430-4FC3-A59F-A9BACC52C97F"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "FireReporter/FinalReport/FinalReportViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "100"
+            endingLineNumber = "100"
+            landmarkName = "viewWillAppear(_:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "75FFE4F7-4870-4B59-8298-D8A421BD4CD4"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "FireReporter/FinalReport/FinalReportViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "119"
+            endingLineNumber = "119"
+            landmarkName = "viewWillAppear(_:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "75FFE4F7-4870-4B59-8298-D8A421BD4CD4 - 56b062a07321733d"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "FireReporter.FinalReportViewController.fireLocation() -&gt; ()"
+                  moduleName = "FireReporter"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/abdullacivuli/Desktop/FireReporter/FireReporter/FinalReport/FinalReportViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "118"
+                  endingLineNumber = "118"
+                  offsetFromSymbolStart = "84">
+               </Location>
+               <Location
+                  uuid = "75FFE4F7-4870-4B59-8298-D8A421BD4CD4 - 532d7fe5682a6f70"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #2 (Swift.Optional&lt;Swift.Int&gt;) -&gt; () in FireReporter.FinalReportViewController.viewWillAppear(Swift.Bool) -&gt; ()"
+                  moduleName = "FireReporter"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/abdullacivuli/Desktop/FireReporter/FireReporter/FinalReport/FinalReportViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "118"
+                  endingLineNumber = "118"
+                  offsetFromSymbolStart = "232">
+               </Location>
+               <Location
+                  uuid = "75FFE4F7-4870-4B59-8298-D8A421BD4CD4 - 532d7fe5682a6f70"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #2 (Swift.Optional&lt;Swift.Int&gt;) -&gt; () in FireReporter.FinalReportViewController.viewWillAppear(Swift.Bool) -&gt; ()"
+                  moduleName = "FireReporter"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/abdullacivuli/Desktop/FireReporter/FireReporter/FinalReport/FinalReportViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "118"
+                  endingLineNumber = "118"
+                  offsetFromSymbolStart = "288">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "EAD70CA8-8963-4148-88EE-E05544EF372C"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "FireReporter/FinalReport/FinalReportViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "363"
+            endingLineNumber = "363"
+            landmarkName = "appDidBecomeActive()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "EAD70CA8-8963-4148-88EE-E05544EF372C - 3739469c70af6547"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #2 (Swift.Optional&lt;Swift.Array&lt;__C.FIRDocumentSnapshot&gt;&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in FireReporter.FinalReportViewController.appDidBecomeActive() -&gt; ()"
+                  moduleName = "FireReporter"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/abdullacivuli/Desktop/FireReporter/FireReporter/FinalReport/FinalReportViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "373"
+                  endingLineNumber = "373"
+                  offsetFromSymbolStart = "2108">
+               </Location>
+               <Location
+                  uuid = "EAD70CA8-8963-4148-88EE-E05544EF372C - 3739469c70af6358"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #2 (Swift.Optional&lt;Swift.Array&lt;__C.FIRDocumentSnapshot&gt;&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in FireReporter.FinalReportViewController.appDidBecomeActive() -&gt; ()"
+                  moduleName = "FireReporter"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/abdullacivuli/Desktop/FireReporter/FireReporter/FinalReport/FinalReportViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "388"
+                  endingLineNumber = "388"
+                  offsetFromSymbolStart = "2108">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "CA148817-4011-4042-BC45-4EA3407D9D24"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "FireReporter/FinalReport/FinalReportViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "165"
+            endingLineNumber = "165"
+            landmarkName = "getQuantity(completion:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "CA148817-4011-4042-BC45-4EA3407D9D24 - 66c822455bac1755"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Optional&lt;__C.FIRQuerySnapshot&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in FireReporter.FinalReportViewController.getQuantity(completion: (Swift.Optional&lt;Swift.Int&gt;) -&gt; ()) -&gt; ()"
+                  moduleName = "FireReporter"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/abdullacivuli/Desktop/FireReporter/FireReporter/FinalReport/FinalReportViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "164"
+                  endingLineNumber = "164"
+                  offsetFromSymbolStart = "2296">
+               </Location>
+               <Location
+                  uuid = "CA148817-4011-4042-BC45-4EA3407D9D24 - 66c822455bac1755"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Optional&lt;__C.FIRQuerySnapshot&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in FireReporter.FinalReportViewController.getQuantity(completion: (Swift.Optional&lt;Swift.Int&gt;) -&gt; ()) -&gt; ()"
+                  moduleName = "FireReporter"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/abdullacivuli/Desktop/FireReporter/FireReporter/FinalReport/FinalReportViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "164"
+                  endingLineNumber = "164"
+                  offsetFromSymbolStart = "556">
+               </Location>
+               <Location
+                  uuid = "CA148817-4011-4042-BC45-4EA3407D9D24 - 66c822455bac1755"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Optional&lt;__C.FIRQuerySnapshot&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in FireReporter.FinalReportViewController.getQuantity(completion: (Swift.Optional&lt;Swift.Int&gt;) -&gt; ()) -&gt; ()"
+                  moduleName = "FireReporter"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/abdullacivuli/Desktop/FireReporter/FireReporter/FinalReport/FinalReportViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "164"
+                  endingLineNumber = "164"
+                  offsetFromSymbolStart = "1120">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "3068DDBC-FC12-4CB1-84DB-368F3D03D1A3"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "FireReporter/FinalReport/FinalReportViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "105"
+            endingLineNumber = "105"
+            landmarkName = "viewWillAppear(_:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "3068DDBC-FC12-4CB1-84DB-368F3D03D1A3 - c2a010425c4785ef"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Optional&lt;Swift.Array&lt;__C.FIRDocumentSnapshot&gt;&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in FireReporter.FinalReportViewController.viewWillAppear(Swift.Bool) -&gt; ()"
+                  moduleName = "FireReporter"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/abdullacivuli/Desktop/FireReporter/FireReporter/FinalReport/FinalReportViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "104"
+                  endingLineNumber = "104"
+                  offsetFromSymbolStart = "200">
+               </Location>
+               <Location
+                  uuid = "3068DDBC-FC12-4CB1-84DB-368F3D03D1A3 - c2a010425c4785ef"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Optional&lt;Swift.Array&lt;__C.FIRDocumentSnapshot&gt;&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in FireReporter.FinalReportViewController.viewWillAppear(Swift.Bool) -&gt; ()"
+                  moduleName = "FireReporter"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/abdullacivuli/Desktop/FireReporter/FireReporter/FinalReport/FinalReportViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "104"
+                  endingLineNumber = "104"
+                  offsetFromSymbolStart = "340">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "F66FC524-0FA8-4225-8103-D11CAA3A2662"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "FireReporter/FinalReport/FinalReportViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "274"
+            endingLineNumber = "274"
+            landmarkName = "sentVote()"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>
