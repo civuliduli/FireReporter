@@ -42,21 +42,21 @@ class UserReportedLocationsViewController: UIViewController, MKMapViewDelegate {
         self.mapView.showAnnotations(self.mapView.annotations, animated: true)
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        getAllReports()
-    }
+//    override func viewDidAppear(_ animated: Bool) {
+//        getAllReports()
+//    }
     
     override func viewWillAppear(_ animated: Bool) {
         getAllReports()
     }
     
-    func presentViewControllerA() {
-          let viewControllerA = FinalReportViewController()
-        viewControllerA.onChange = { [weak self] in
-            self?.getAllReports()
-        }
-          self.present(viewControllerA, animated: true, completion: nil)
-      }
+//    func presentViewControllerA() {
+//          let viewControllerA = FinalReportViewController()
+//        viewControllerA.onChange = { [weak self] in
+//            self?.getAllReports()
+//        }
+//          self.present(viewControllerA, animated: true, completion: nil)
+//      }
     
     func getAllReports(){
         let allAnnotations = self.mapView.annotations
@@ -89,13 +89,13 @@ class UserReportedLocationsViewController: UIViewController, MKMapViewDelegate {
             finalReportVC.isVoteAgainstHidden = false
             finalReportVC.voteInfo.text = "\(String(describing: annotation.likes!))"
             finalReportVC.votes = annotation.likes
-            finalReportVC.collectionVotes = annotation.likes ?? 0
+//            finalReportVC.collectionVotes = annotation.likes ?? 0
             print(annotation.likes)
             finalReportVC.ID = annotation.ID
             present(finalReportVC, animated: true)
-            finalReportVC.onChange = { [weak self] in
-                self?.getAllReports()
-            }
+//            finalReportVC.onChange = { [weak self] in
+//                self?.getAllReports()
+//            }
         }
     }
      

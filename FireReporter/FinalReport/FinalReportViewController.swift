@@ -86,13 +86,12 @@ class FinalReportViewController: UIViewController, UITextViewDelegate {
             self.IDfromKeychain = savedUUID
             print("UUID from Keychain: \(savedUUID)")
         }
-//        NotificationCenter.default.addObserver(self, selector: #selector(appDidEnterBackground), name: UIApplication.didEnterBackgroundNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(appDidBecomeActive), name: UIApplication.willEnterForegroundNotification, object: nil)
-//        NotificationCenter.default.addObserver(self, selector: #selector(appIsKilled), name:
-//                                                UIApplication.didEnterBackgroundNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(appWillTerminate), name: UIApplication.willResignActiveNotification, object: nil)
     }
-    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
 
     @objc func dismissKeyboard(){
         view.endEditing(true)
@@ -102,7 +101,8 @@ class FinalReportViewController: UIViewController, UITextViewDelegate {
         self.isUserVerified = Auth.auth().currentUser?.isEmailVerified
         finalReportViewModel.configureLocationManager()
         fireLocation()
-        getAllVotes { (documents, error) in
+        getAllVotes { [weak self] (documents, error) in
+            guard let self else { return }
             if let error = error {
                 print("Error: \(error.localizedDescription)")
             } else if let documents = documents {
@@ -155,7 +155,8 @@ class FinalReportViewController: UIViewController, UITextViewDelegate {
             uid = userID?.uid
         }
            let db = Firestore.firestore()
-        db.collection("reports").document(self.ID).collection("Votes").whereField("userID", isEqualTo: uid ?? "").getDocuments { votesQuantity, error in
+        db.collection("reports").document(self.ID).collection("Votes").whereField("userID", isEqualTo: uid ?? "").getDocuments { [weak self] votesQuantity, error in
+            guard let self else { return }
                guard let documents = votesQuantity?.documents else {
                    print("No Documents")
                    completion(nil)
@@ -226,7 +227,7 @@ class FinalReportViewController: UIViewController, UITextViewDelegate {
           print("\(updatedUserVote) updated user vote")
           print(collectionVotes!)
 //        hasChanges.toggle()
-        hasChanges = true
+        hasChanges = userVotes != updatedUserVote
         print(hasChanges)
         
       }
@@ -262,7 +263,7 @@ class FinalReportViewController: UIViewController, UITextViewDelegate {
            print("\(updatedUserVote) updated user vote")
            print(collectionVotes!)
 //        hasChanges = true
-        hasChanges = true
+        hasChanges = userVotes != updatedUserVote
         print(hasChanges)
 
        }
@@ -288,7 +289,9 @@ class FinalReportViewController: UIViewController, UITextViewDelegate {
             thisUser?.quantity = userVotes
             let vote = Vote(createdAt: Date(), documentID: self.ID, quantity: updatedUserVote, userID: uid ?? "", createdByVerifiedUser: isCreatedVerifiedUser)
             print("5555 send vote before update")
-            db.collection("reports").document(self.ID).collection("Votes").document(uid ?? "").getDocument { [self] querrySnapshot, error in
+            db.collection("reports").document(self.ID).collection("Votes").document(uid ?? "").getDocument { [weak self] querrySnapshot, error in
+                guard let self else { return }
+                hasChanges = false
                 if querrySnapshot?.exists == true {
                     db.collection("reports").document(self.ID).collection("Votes").document(uid ?? "").updateData(vote.dictionary)
                     db.collection("reports").document(self.ID).updateData(["votes": FieldValue.increment(Double(myVote))])
@@ -297,7 +300,6 @@ class FinalReportViewController: UIViewController, UITextViewDelegate {
                     db.collection("reports").document(self.ID).updateData(["votes": FieldValue.increment(Double(myVote))])
                 }
                 print("5555 my votes flag")
-//                updatedUserVote = 0
                 getQuantity { [weak self] quantity in
                     if let self = self, let quantity = quantity {
                         self.userVotes = quantity
@@ -305,11 +307,12 @@ class FinalReportViewController: UIViewController, UITextViewDelegate {
                         print("Quantity in viewDidLoad: \(quantity)")
                     }
                 }
-                getAllVotes { (documents, error) in
+                getAllVotes { [weak self](documents, error) in
                     if let error = error {
                         print("Error: \(error.localizedDescription)")
                     } else if let documents = documents {
                         for document in documents {
+                            guard let self else { return }
                             let data = document.data()
                             if let votes = data?["votes"] as? Int {
                                 self.collectionVotes = votes
@@ -326,7 +329,7 @@ class FinalReportViewController: UIViewController, UITextViewDelegate {
     
     func getAllVotes(completion: @escaping ([DocumentSnapshot]?, Error?) -> Void) {
         let db = Firestore.firestore()
-        db.collection("reports").whereField("id", isEqualTo: self.ID ?? "").getDocuments { (querySnapshot, error) in
+        db.collection("reports").whereField("id", isEqualTo: self.ID ?? "").getDocuments { [weak self] (querySnapshot, error) in
             if let error = error {
                 completion(nil, error)
             } else {
@@ -337,12 +340,11 @@ class FinalReportViewController: UIViewController, UITextViewDelegate {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        onChange?()
+//        onChange?()
         if updatedUserVote == userVotes {
             print("You havent voted yet")
         }else {
             sentVote()
-//            updatedUserVote = 0
         }
         print("Is dismissed")
     }
@@ -353,58 +355,11 @@ class FinalReportViewController: UIViewController, UITextViewDelegate {
         } else {
             print("You haven't voted yet")
         }
-//        onChange?()
-//        if updatedUserVote == userVotes {
-//        }else {
-//            updatedUserVote = 0
-//        }
-//        print("App is killed")
+        print("pspspsppspspspspssp")
     }
-    
-//    @objc func appWillTerminate() {
-//        onChange?()
-//
-//        if updatedUserVote == userVotes {
-//            print("You haven't voted yet")
-//        } else {
-//            let backgroundTaskID = UIApplication.shared.beginBackgroundTask {
-//                // Handle the expiration of the background task if necessary.
-//            }
-//
-//            DispatchQueue.global().async {
-//                self.sentVote()
-//                self.updatedUserVote = self.userVotes
-//                UIApplication.shared.endBackgroundTask(backgroundTaskID)
-//            }
-//        }
-//
-//        print("App is killed")
-//    }
-
     
     @objc func appDidBecomeActive(){
             print("The app is active")
-        getQuantity { [weak self] quantity in
-            if let self = self, let quantity = quantity {
-                self.userVotes = quantity
-                updatedUserVote = userVotes
-                print("Quantity in viewDidLoad: \(quantity)")
-            }
-        }
-        getAllVotes { (documents, error) in
-            if let error = error {
-                print("Error: \(error.localizedDescription)")
-            } else if let documents = documents {
-                for document in documents {
-                    let data = document.data()
-                    if let votes = data?["votes"] as? Int {
-                        self.collectionVotes = votes
-                        print(self.collectionVotes ?? 0)
-                        self.voteInfo.text = String(votes)
-                    }
-                }
-            }
-        }
     }
     
     func setupUI(){
