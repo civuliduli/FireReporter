@@ -15,7 +15,7 @@ protocol MyDataSendingDelegateProtocol{
     func sendDataToCameraViewController(photoState:Bool)
 }
 
-class FinalReportViewController: UIViewController {
+class FinalReportViewController: UIViewController, UITextViewDelegate {
 
     private let finalReportViewModel = FinalReportViewModel()
     private let firebaseService = FirebaseService()
@@ -55,6 +55,7 @@ class FinalReportViewController: UIViewController {
     var ID:String!
     var votes: Int?
     var mainStack = UIStackView()
+    var horizontalStack = UIStackView()
     var userVotes:Int = 0
     var updatedUserVote = 0
     var isUserVerified: Bool!
@@ -144,8 +145,6 @@ class FinalReportViewController: UIViewController {
         fireImage = myDecompressedImage
     }
     
-  
-    
     // TODO: MVVM
     func getQuantity(completion: @escaping (Int?) -> Void){
         let userID = Auth.auth().currentUser
@@ -184,7 +183,6 @@ class FinalReportViewController: UIViewController {
     }
 
     @objc func sendReport(){
-        let phoneNumber = 192
         finalReportViewModel.sendReport(fireReport: FireReport(description: descriptionTextField.text, id: self.ID, lat: coordinates.latitude, long: coordinates.longitude, photo: "", timestamp: Date(), uniqueIdentifier: UIDevice.current.identifierForVendor!.uuidString, address: "", votes: 0, createdByVerifiedUser: false), fireImage: fireImage) {
             if let scene = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate{
                 scene.photoState = .completed
@@ -208,14 +206,17 @@ class FinalReportViewController: UIViewController {
         }
           if updatedUserVote == voteWeight {
               updatedUserVote = 0
+//              hasChanges = false
               self.voteFor.setImage(UIImage(systemName:"arrow.up.square"), for: .normal)
               self.voteAgainst.setImage(UIImage(systemName: "arrow.down.square"), for: .normal)
           } else if updatedUserVote < 0 {
               updatedUserVote = voteWeight
+//              hasChanges = true
               self.voteFor.setImage(UIImage(systemName:"arrow.up.square.fill"), for: .normal)
               self.voteAgainst.setImage(UIImage(systemName: "arrow.down.square"), for: .normal)
           } else {
               updatedUserVote += voteWeight
+//              hasChanges = true
               self.voteFor.setImage(UIImage(systemName:"arrow.up.square.fill"), for: .normal)
               self.voteAgainst.setImage(UIImage(systemName: "arrow.down.square"), for: .normal)
           }
@@ -224,6 +225,10 @@ class FinalReportViewController: UIViewController {
           print("\(self.collectionVotes + self.updatedUserVote - self.userVotes) ghhghg")
           print("\(updatedUserVote) updated user vote")
           print(collectionVotes!)
+//        hasChanges.toggle()
+        hasChanges = true
+        print(hasChanges)
+        
       }
     
     @objc func removeVote(){
@@ -237,14 +242,17 @@ class FinalReportViewController: UIViewController {
         }
            if updatedUserVote == voteWeight {
                updatedUserVote = 0
+//               hasChanges = false
                self.voteFor.setImage(UIImage(systemName:"arrow.up.square"), for: .normal)
                self.voteAgainst.setImage(UIImage(systemName: "arrow.down.square"), for: .normal)
            } else if updatedUserVote > 0 {
                updatedUserVote = voteWeight
+//               hasChanges = true
                self.voteFor.setImage(UIImage(systemName:"arrow.up.square"), for: .normal)
                self.voteAgainst.setImage(UIImage(systemName: "arrow.down.square.fill"), for: .normal)
            } else {
                updatedUserVote += voteWeight
+//               hasChanges = true
                self.voteFor.setImage(UIImage(systemName:"arrow.up.square"), for: .normal)
                self.voteAgainst.setImage(UIImage(systemName: "arrow.down.square.fill"), for: .normal)
            }
@@ -253,6 +261,10 @@ class FinalReportViewController: UIViewController {
            print("\(self.collectionVotes + self.updatedUserVote - self.userVotes) ghhghg")
            print("\(updatedUserVote) updated user vote")
            print(collectionVotes!)
+//        hasChanges = true
+        hasChanges = true
+        print(hasChanges)
+
        }
     
     //TODO: MVVM
@@ -285,6 +297,7 @@ class FinalReportViewController: UIViewController {
                     db.collection("reports").document(self.ID).updateData(["votes": FieldValue.increment(Double(myVote))])
                 }
                 print("5555 my votes flag")
+//                updatedUserVote = 0
                 getQuantity { [weak self] quantity in
                     if let self = self, let quantity = quantity {
                         self.userVotes = quantity
@@ -307,7 +320,6 @@ class FinalReportViewController: UIViewController {
                         }
                     }
                 }
-               
             }
         }
      }
@@ -330,19 +342,45 @@ class FinalReportViewController: UIViewController {
             print("You havent voted yet")
         }else {
             sentVote()
-            updatedUserVote = userVotes
+//            updatedUserVote = 0
         }
         print("Is dismissed")
     }
     
     @objc func appWillTerminate(){
-        if updatedUserVote == userVotes {
-            print("You haven't voted yet")
-        }else {
+        if hasChanges {
             sentVote()
-            updatedUserVote = userVotes
+        } else {
+            print("You haven't voted yet")
         }
+//        onChange?()
+//        if updatedUserVote == userVotes {
+//        }else {
+//            updatedUserVote = 0
+//        }
+//        print("App is killed")
     }
+    
+//    @objc func appWillTerminate() {
+//        onChange?()
+//
+//        if updatedUserVote == userVotes {
+//            print("You haven't voted yet")
+//        } else {
+//            let backgroundTaskID = UIApplication.shared.beginBackgroundTask {
+//                // Handle the expiration of the background task if necessary.
+//            }
+//
+//            DispatchQueue.global().async {
+//                self.sentVote()
+//                self.updatedUserVote = self.userVotes
+//                UIApplication.shared.endBackgroundTask(backgroundTaskID)
+//            }
+//        }
+//
+//        print("App is killed")
+//    }
+
     
     @objc func appDidBecomeActive(){
             print("The app is active")
@@ -404,7 +442,9 @@ class FinalReportViewController: UIViewController {
         setupInfoDescriptionUI()
         setupVotingUI()
         setupVotingInfo()
+//        setupHorizontalStack()
         previewImageDesign()
+        
     }
 
     func previewImageDesign(){
@@ -470,6 +510,7 @@ class FinalReportViewController: UIViewController {
 
     func descriptionTextFieldDesign(){
         descriptionTextField = UITextView()
+        descriptionTextField.delegate = self
         descriptionTextField.translatesAutoresizingMaskIntoConstraints = false
         descriptionTextField.layer.cornerRadius = 10
         descriptionTextField.font = UIFont.systemFont(ofSize: 14)
@@ -486,6 +527,21 @@ class FinalReportViewController: UIViewController {
             descriptionTextField.trailingAnchor.constraint(equalTo: self.container.trailingAnchor, constant: -20),
         ])
     }
+    
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        // Calculate the new text length if the change is allowed
+        let currentText = textView.text as NSString
+        let updatedText = currentText.replacingCharacters(in: range, with: text)
+        
+        // Check if the updated text length exceeds 20 characters
+        if updatedText.count > 35 {
+            return false
+        }
+        
+        return true
+    }
+
+    
     //TODO: Fix autolayout
     func setupVotingInfo(){
         voteInfo.translatesAutoresizingMaskIntoConstraints = false
@@ -534,6 +590,20 @@ class FinalReportViewController: UIViewController {
             infoImage.leadingAnchor.constraint(equalTo: self.container.leadingAnchor, constant: 65)
         ])
     }
+    
+//    func setupHorizontalStack(){
+//        horizontalStack = UIStackView()
+//        horizontalStack.distribution = .fillEqually
+//        horizontalStack.alignment = .fill
+//        horizontalStack.spacing = 16
+//        horizontalStack.translatesAutoresizingMaskIntoConstraints = false
+//        horizontalStack.addArrangedSubview(voteFor)
+//        horizontalStack.addArrangedSubview(voteAgainst)
+//        horizontalStack.topAnchor.constraint(equalTo: self.descriptionTextField.bottomAnchor, constant: 50).isActive = true
+//        horizontalStack.widthAnchor.constraint(equalToConstant: 300).isActive = true
+//        horizontalStack.heightAnchor.constraint(equalToConstant: 120).isActive = true
+//        self.view.addSubview(horizontalStack)
+//    }
 
     //TODO: Fix autolayout
     func setupVotingUI(){
@@ -569,7 +639,7 @@ class FinalReportViewController: UIViewController {
     }
 
     func submitReportButtonDesign(){
-        confirmReportButton = UIButton()
+        confirmReportButton = UIButton(type:.system)
         confirmReportButton.translatesAutoresizingMaskIntoConstraints = false
         confirmReportButton.setTitle("Submit Report!", for: .normal)
         confirmReportButton.titleLabel?.font = UIFont.systemFont(ofSize: 24, weight: .regular)

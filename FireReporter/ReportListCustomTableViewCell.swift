@@ -74,6 +74,7 @@ class ReportListCustomTableViewCell: UITableViewCell {
         descriptionLabel = UILabel()
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
         descriptionLabel.font = UIFont.systemFont(ofSize: 20, weight: .medium)
+        descriptionLabel.textColor = UIColor.textColor
         descriptionLabel.text = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
         descriptionLabel.numberOfLines = 4
         self.contentView.addSubview(descriptionLabel)
@@ -89,6 +90,7 @@ class ReportListCustomTableViewCell: UITableViewCell {
         locationDescriptionLabel = UILabel()
         locationDescriptionLabel.translatesAutoresizingMaskIntoConstraints = false
         locationDescriptionLabel.text = "Fireplace location:"
+        locationDescriptionLabel.textColor = UIColor.textColor
         locationDescriptionLabel.font = UIFont.systemFont(ofSize: 17, weight: .regular)
         self.contentView.addSubview(locationDescriptionLabel)
         NSLayoutConstraint.activate([
@@ -102,6 +104,7 @@ class ReportListCustomTableViewCell: UITableViewCell {
     func setupLocationNameDesign(){
         locationName = UILabel()
         locationName.translatesAutoresizingMaskIntoConstraints = false
+        locationName.textColor = UIColor.textColor
         locationName.font = latitudeData.font.withSize(14)
         self.contentView.addSubview(locationName)
         NSLayoutConstraint.activate([
@@ -117,6 +120,7 @@ class ReportListCustomTableViewCell: UITableViewCell {
         dateLabel.translatesAutoresizingMaskIntoConstraints = false
         dateLabel.text = "2020–04–15 11:11 PM"
         dateLabel.font = dateLabel.font.withSize(12)
+        dateLabel.textColor = UIColor.textColor
         self.contentView.addSubview(dateLabel)
         NSLayoutConstraint.activate([
             dateLabel.topAnchor.constraint(equalTo: contentView.topAnchor),
