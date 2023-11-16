@@ -46,6 +46,7 @@ class ProfileViewController: UIViewController {
         super.viewDidLoad()
         setupUI()
         checkAuthenticatedUser()
+        
     }
     
     enum AuthenticationError:Error {
@@ -62,12 +63,32 @@ class ProfileViewController: UIViewController {
         }
     }
 
-    func getFireReports(){
+    func getFireReports() {
+        let activityIndicator = UIActivityIndicatorView(style: .medium)
+        activityIndicator.startAnimating()
+        view.addSubview(activityIndicator)
+        activityIndicator.center = view.center
+
         firebaseService.getFireReportsData { myFireReports, error in
-            self.reportsArray = myFireReports
-            self.tableView.reloadData()
+            activityIndicator.stopAnimating()
+            activityIndicator.removeFromSuperview()
+
+            if let error = error {
+                print("Error getting fire reports: \(error.localizedDescription)")
+            } else {
+                self.reportsArray = myFireReports
+                self.tableView.reloadData()
+            }
         }
     }
+
+//    
+//    func getFireReports(){
+//        firebaseService.getFireReportsData { myFireReports, error in
+//            self.reportsArray = myFireReports
+//            self.tableView.reloadData()
+//        }
+//    }
     
     @objc func setupFacebookVerification(){
         authentication.facebookAuth {

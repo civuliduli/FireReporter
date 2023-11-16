@@ -49,9 +49,15 @@ class UserReportedLocationsViewController: UIViewController, MKMapViewDelegate {
     }
     
     func getAllReports(){
+        let activityIndicator = UIActivityIndicatorView(style: .medium)
+        activityIndicator.startAnimating()
+        view.addSubview(activityIndicator)
+        activityIndicator.center = view.center
         let allAnnotations = self.mapView.annotations
         self.mapView.removeAnnotations(allAnnotations)
         firebaseService.getAllReportsLocations { [self] myFireReports, error in
+            activityIndicator.stopAnimating()
+            activityIndicator.removeFromSuperview()
             self.myLocations = myFireReports
             for data in self.myLocations{
                 let annotation = CustomPointAnnotation()
