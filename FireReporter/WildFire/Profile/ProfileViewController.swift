@@ -81,14 +81,6 @@ class ProfileViewController: UIViewController {
             }
         }
     }
-
-//    
-//    func getFireReports(){
-//        firebaseService.getFireReportsData { myFireReports, error in
-//            self.reportsArray = myFireReports
-//            self.tableView.reloadData()
-//        }
-//    }
     
     @objc func setupFacebookVerification(){
         authentication.facebookAuth {
