@@ -55,7 +55,7 @@ class FinalReportViewModel{
             self.addressName = locationName
             var isCreatedVerifiedUser: Bool!
             var isUserVerified: Bool!
-            isUserVerified = Auth.auth().currentUser?.isEmailVerified
+            isUserVerified = !(Auth.auth().currentUser?.isAnonymous ?? true)
             var votes = 0
             if isUserVerified == nil || isUserVerified == false{
                 votes += 1

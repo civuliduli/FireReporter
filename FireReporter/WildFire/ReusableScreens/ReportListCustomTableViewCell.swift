@@ -24,9 +24,7 @@ class ReportListCustomTableViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setFireImageUI()
-        setupDescriptionLabelUI()
         setupDateLabelUI()
-        setupcoordinatesDescriptionDesign()
         setupLocationNameDesign()
     }
     
@@ -40,9 +38,8 @@ class ReportListCustomTableViewCell: UITableViewCell {
         }
         return nil
     }
- 
     
-    func setupCell(image:String, descriptionLabel: String,latitude:Double, longitude:Double, date:Date, address:String){
+    func setupCell(image: String, descriptionLabel: String, latitude: Double, longitude: Double, date: Date, address: String) {
         var dateString: String {
             let formatter = DateFormatter()
             formatter.dateFormat = "EEEE, MMM d, yyyy h:mm a"
@@ -50,54 +47,40 @@ class ReportListCustomTableViewCell: UITableViewCell {
         }
         fireImage.image = decodeBase64ToImage(base64String: image)
         self.descriptionLabel.text = descriptionLabel
-        self.dateLabel.text = String(dateString)
-        print("\(imageString) my image string")
+        self.dateLabel.text = timeAgoString(from: date)
         locationName.text = address
     }
-    
-   
-    
+
+    func timeAgoString(from date: Date) -> String {
+        let currentDate = Date()
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: date, to: currentDate)
+        if let year = components.year, year > 0 {
+            return "\(year) \(year == 1 ? "year" : "years") ago"
+        } else if let month = components.month, month > 0 {
+            return "\(month) \(month == 1 ? "month" : "months") ago"
+        } else if let day = components.day, day > 0 {
+            return "\(day) \(day == 1 ? "day" : "days") ago"
+        } else if let hour = components.hour, hour > 0 {
+            return "\(hour) \(hour == 1 ? "hour" : "hours") ago"
+        } else if let minute = components.minute, minute > 0 {
+            return "\(minute) \(minute == 1 ? "minute" : "minutes") ago"
+        } else {
+            return "Just now"
+        }
+    }
+        
     func setFireImageUI(){
         fireImage = UIImageView()
         fireImage.translatesAutoresizingMaskIntoConstraints = false
         fireImage.image = UIImage(named: "pictureNotAvailable")
         self.contentView.addSubview(fireImage)
+        fireImage.contentMode = .scaleAspectFit
         NSLayoutConstraint.activate([
             fireImage.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
             fireImage.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
             fireImage.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            fireImage.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -250)
-        ])
-    }
-    
-    func setupDescriptionLabelUI(){
-        descriptionLabel = UILabel()
-        descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
-        descriptionLabel.font = UIFont.systemFont(ofSize: 20, weight: .medium)
-        descriptionLabel.textColor = UIColor.textColor
-        descriptionLabel.text = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
-        descriptionLabel.numberOfLines = 4
-        self.contentView.addSubview(descriptionLabel)
-        NSLayoutConstraint.activate([
-            descriptionLabel.topAnchor.constraint(equalTo: contentView.topAnchor),
-            descriptionLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -130),
-            descriptionLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 190),
-            descriptionLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
-        ])
-    }
-    
-    func setupcoordinatesDescriptionDesign(){
-        locationDescriptionLabel = UILabel()
-        locationDescriptionLabel.translatesAutoresizingMaskIntoConstraints = false
-        locationDescriptionLabel.text = "Fireplace location:"
-        locationDescriptionLabel.textColor = UIColor.textColor
-        locationDescriptionLabel.font = UIFont.systemFont(ofSize: 17, weight: .regular)
-        self.contentView.addSubview(locationDescriptionLabel)
-        NSLayoutConstraint.activate([
-            locationDescriptionLabel.topAnchor.constraint(equalTo: contentView.topAnchor),
-            locationDescriptionLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -40),
-            locationDescriptionLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 190),
-            locationDescriptionLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
+            fireImage.widthAnchor.constraint(equalToConstant: 120)
         ])
     }
     
@@ -105,12 +88,12 @@ class ReportListCustomTableViewCell: UITableViewCell {
         locationName = UILabel()
         locationName.translatesAutoresizingMaskIntoConstraints = false
         locationName.textColor = UIColor.textColor
-        locationName.font = latitudeData.font.withSize(14)
+        locationName.font = UIFont.systemFont(ofSize: 24, weight: .bold)
         self.contentView.addSubview(locationName)
         NSLayoutConstraint.activate([
             locationName.topAnchor.constraint(equalTo: contentView.topAnchor),
-            locationName.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 5),
-            locationName.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 190),
+            locationName.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -30),
+            locationName.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 150),
             locationName.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
         ])
     }
@@ -119,13 +102,13 @@ class ReportListCustomTableViewCell: UITableViewCell {
         dateLabel = UILabel()
         dateLabel.translatesAutoresizingMaskIntoConstraints = false
         dateLabel.text = "2020–04–15 11:11 PM"
-        dateLabel.font = dateLabel.font.withSize(12)
+        dateLabel.font = dateLabel.font.withSize(17)
         dateLabel.textColor = UIColor.textColor
         self.contentView.addSubview(dateLabel)
         NSLayoutConstraint.activate([
             dateLabel.topAnchor.constraint(equalTo: contentView.topAnchor),
-            dateLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 130),
-            dateLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 190),
+            dateLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 40),
+            dateLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 150),
             dateLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
         ])
     }

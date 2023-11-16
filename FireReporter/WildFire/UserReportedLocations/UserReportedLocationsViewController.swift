@@ -84,33 +84,62 @@ class UserReportedLocationsViewController: UIViewController, MKMapViewDelegate {
             present(finalReportVC, animated: true)
         }
     }
-     
+    
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         let identifier = "Location"
         if let customAnnotation = annotation as? CustomPointAnnotation {
             var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
             if annotationView == nil {
-                annotationView = MKMarkerAnnotationView(annotation: customAnnotation, reuseIdentifier: identifier)
-                annotationView?.canShowCallout = true
+                annotationView = MKAnnotationView(annotation: customAnnotation, reuseIdentifier: identifier)
+                annotationView?.canShowCallout = false
+                annotationView?.image = UIImage(named: "flame-icon22x29") // Set your image here
+                annotationView?.backgroundColor = UIColor.clear // Make the background transparent
             } else {
                 annotationView?.annotation = annotation
             }
-
             if let likes = customAnnotation.likes {
                 if likes == 0 {
-                    (annotationView as? MKMarkerAnnotationView)?.markerTintColor = .blue
+                    annotationView?.tintColor = .blue
                 } else if likes <= 10 {
-                    (annotationView as? MKMarkerAnnotationView)?.markerTintColor = .yellow
+                    annotationView?.tintColor = .yellow
                 } else {
-                    (annotationView as? MKMarkerAnnotationView)?.markerTintColor = .red
+//                    annotationView?.image = UIImage(named: "flame-icon22x29")
                 }
             }
-
             return annotationView
         }
-
         return nil
     }
+
+    
+//    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+//        let identifier = "Location"
+//        if let customAnnotation = annotation as? CustomPointAnnotation {
+//            var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
+//            if annotationView == nil {
+//                annotationView = MKMarkerAnnotationView(annotation: customAnnotation, reuseIdentifier: identifier)
+//                annotationView?.canShowCallout = true
+//            } else {
+//                annotationView?.annotation = annotation
+//            }
+//
+//            if let likes = customAnnotation.likes {
+//                if likes == 0 {
+//                    (annotationView as? MKMarkerAnnotationView)?.markerTintColor = .blue
+//                } else if likes <= 10 {
+//                    (annotationView as? MKMarkerAnnotationView)?.markerTintColor = .yellow
+//                } else {
+////                    (annotationView as? MKMarkerAnnotationView)?.markerTintColor = .red
+//                    
+//                    (annotationView as? MKMarkerAnnotationView)?.glyphImage = UIImage(named:"flame-icon22x29")
+//                }
+//            }
+//
+//            return annotationView
+//        }
+//
+//        return nil
+//    }
 
     
     func setupMapUI(){

@@ -33,6 +33,7 @@
 		6F927C1F2ADB21DA000FD630 /* FinalReportViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F927C1E2ADB21DA000FD630 /* FinalReportViewModel.swift */; };
 		6F927C212ADB2551000FD630 /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F927C202ADB2551000FD630 /* MapViewModel.swift */; };
 		6F9304C72AFA8B49006892E7 /* FirebaseRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = 6F9304C62AFA8B49006892E7 /* FirebaseRemoteConfig */; };
+		6F9759B82B0270830085291C /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 6F9759B72B0270830085291C /* FirebaseCrashlytics */; };
 		6F99E86B2AEBF06000ABA7A0 /* FacebookShare in Frameworks */ = {isa = PBXBuildFile; productRef = 6F99E86A2AEBF06000ABA7A0 /* FacebookShare */; };
 		6FCE0EF82AE26EBC00FE3159 /* UserReportedLocationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCE0EF72AE26EBC00FE3159 /* UserReportedLocationsViewController.swift */; };
 		6FE3FB7D2ADDDF9A00F39F10 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 6FE3FB7C2ADDDF9A00F39F10 /* FirebaseAuth */; };
@@ -121,6 +122,7 @@
 				6FE3FB7F2ADDDF9A00F39F10 /* FirebaseFirestore in Frameworks */,
 				6F252CC52AE2889700BE8439 /* GoogleSignIn in Frameworks */,
 				6F252CC72AE2889700BE8439 /* GoogleSignInSwift in Frameworks */,
+				6F9759B82B0270830085291C /* FirebaseCrashlytics in Frameworks */,
 				6F99E86B2AEBF06000ABA7A0 /* FacebookShare in Frameworks */,
 				6F9304C72AFA8B49006892E7 /* FirebaseRemoteConfig in Frameworks */,
 			);
@@ -374,6 +376,7 @@
 				6FE901352ACC51FC00984C73 /* Sources */,
 				6FE901362ACC51FC00984C73 /* Frameworks */,
 				6FE901372ACC51FC00984C73 /* Resources */,
+				6F9759B92B0272E50085291C /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -389,6 +392,7 @@
 				6F252CCD2AE2CC3600BE8439 /* FacebookLogin */,
 				6F99E86A2AEBF06000ABA7A0 /* FacebookShare */,
 				6F9304C62AFA8B49006892E7 /* FirebaseRemoteConfig */,
+				6F9759B72B0270830085291C /* FirebaseCrashlytics */,
 			);
 			productName = FireReporter;
 			productReference = 6FE901392ACC51FC00984C73 /* FireReporter.app */;
@@ -504,6 +508,28 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		6F9759B92B0272E50085291C /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
+				"$(SRCROOT)/$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\"${BUILD_DIR%/Build/*}/SourcePackages/checkouts/firebase-ios-sdk/Crashlytics/run\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		6FE901352ACC51FC00984C73 /* Sources */ = {
@@ -707,6 +733,7 @@
 				CODE_SIGN_ENTITLEMENTS = FireReporter/WildFire/FireReporter.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = DLFLF8ZQDD;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FireReporter/WildFire/Info.plist;
@@ -930,6 +957,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6FE3FB7B2ADDDF9A00F39F10 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseRemoteConfig;
+		};
+		6F9759B72B0270830085291C /* FirebaseCrashlytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6FE3FB7B2ADDDF9A00F39F10 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCrashlytics;
 		};
 		6F99E86A2AEBF06000ABA7A0 /* FacebookShare */ = {
 			isa = XCSwiftPackageProductDependency;

@@ -17,31 +17,46 @@ import AuthenticationServices
 
 class Authentication {
     
-    func facebookAuth(onSuccess:@escaping() -> Void, onError:@escaping()->Void){
+    func facebookAuth(onSuccess: @escaping () -> Void, onError: @escaping () -> Void, onAuthError: @escaping () -> Void) {
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-                      let window = windowScene.windows.first,
-                      let rootViewController = window.rootViewController else {
-                    print("there is no root view controller")
-                    return
-                }
+              let window = windowScene.windows.first,
+              let rootViewController = window.rootViewController else {
+            print("There is no root view controller")
+            return
+        }
+        
         let loginManager = LoginManager()
         loginManager.logIn(permissions: ["public_profile"], from: rootViewController) { [weak self] (result, error) in
+            if let error = error {
+                print("Facebook login error: \(error.localizedDescription)")
+                onError()
+                return
+            }
+            
+            guard let result = result, !result.isCancelled else {
+                print("Facebook login cancelled")
+                // Handle cancellation (e.g., show an appropriate message)
+                return
+            }
+
             guard let accessToken = AccessToken.current?.tokenString else {
                 print("Failed to get access token for Facebook")
                 onError()
                 return
             }
+            
             let credentials = FacebookAuthProvider.credential(withAccessToken: accessToken)
-            Auth.auth().signIn(with: credentials, completion: { (data, error) in
-                guard let result = data, error == nil else {
-                    onError()
-                    print("FB Login Error: \(String(describing: error?.localizedDescription))")
-                    return
+            Auth.auth().signIn(with: credentials) { (authData, authError) in
+                if let authError = authError {
+                    print("Firebase authentication error: \(authError.localizedDescription)")
+                    onAuthError()
+                } else {
+                    onSuccess()
                 }
-                onSuccess()
-            })
+            }
         }
     }
+
     
     func googleAuth(onError:@escaping () -> Void, onSuccess:@escaping () -> Void, onAuthError: @escaping () -> Void){
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,

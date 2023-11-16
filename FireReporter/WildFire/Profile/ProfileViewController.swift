@@ -8,6 +8,8 @@
 import UIKit
 import Firebase
 import SwiftUI
+import FacebookLogin
+import FirebaseAuth
 
 
 class ProfileViewController: UIViewController {
@@ -33,7 +35,9 @@ class ProfileViewController: UIViewController {
     var container = UIView()
     let verticalStack = UIStackView()
     let badgeStack = UIStackView()
-    let usernameProfileStack = UIStackView()
+    var verified = UILabel()
+    var lineView = UIView()
+    var lineView1 = UIView()
     var isUserProfileHidden:Bool?
     var reportsArray = [FireReport]()
     private let tableView = UITableView()
@@ -67,11 +71,12 @@ class ProfileViewController: UIViewController {
     
     @objc func setupFacebookVerification(){
         authentication.facebookAuth {
-            self.present(Alert(text: "Success", message: "You're now a verified Fire Reporter user", confirmAction: [UIAlertAction(title: "Great", style: .default)], disableAction: []))
-            self.checkAuthenticatedUser()
-        } onError: {
-            self.present(Alert(text: "Error", message: "Login Failed", confirmAction: [UIAlertAction(title: "Try again", style: .default)], disableAction: []))
-        }
+                   self.checkAuthenticatedUser()
+               } onError: {
+                   self.present(Alert(text: "Error", message: "Login Failed", confirmAction: [UIAlertAction(title: "Try again", style: .default)], disableAction: []))
+               } onAuthError: {
+                   self.present(Alert(text: "Auth Error", message: "Please try again later", confirmAction: [UIAlertAction(title: "OK", style: .default)], disableAction: []))
+               }
     }
     
     @objc func setupAppleVerification(){
@@ -83,7 +88,6 @@ class ProfileViewController: UIViewController {
                     self.present(Alert(text: "Authentication Cancelled", message: "", confirmAction: [UIAlertAction(title: "OK", style: .default)], disableAction: []))
                 } onSuccess: {
                     self.checkAuthenticatedUser()
-                    self.present(Alert(text: "Success", message: "You now are a WildFireReporter verified User", confirmAction: [UIAlertAction(title: "OK", style: .default)], disableAction: []))
                 } onAuthError: {
                     self.present(Alert(text: "Auth Error", message: "Please try again later", confirmAction: [UIAlertAction(title: "OK", style: .default)], disableAction: []))
                 }
@@ -115,7 +119,9 @@ class ProfileViewController: UIViewController {
                     verifyApple.isHidden = false
                     verifyAccountLabel.isHidden = false
                     infoBadge.isHidden = false
-                    usernameProfileStack.isHidden = true
+                    verified.isHidden = true
+                    lineView.isHidden = true
+                    lineView1.isHidden = true
                 } else {
                     isUserProfileHidden = false
                     usernameLabel.isHidden = false
@@ -127,7 +133,9 @@ class ProfileViewController: UIViewController {
                     verifyAccountLabel.isHidden = true
                     verificationInfo.isHidden = true
                     infoBadge.isHidden = true
-                    usernameProfileStack.isHidden = false
+                    verified.isHidden = false
+                    lineView.isHidden = false
+                    lineView1.isHidden = false
             }
         }
     }
@@ -147,6 +155,9 @@ class ProfileViewController: UIViewController {
             verifyApple.isHidden = false
             verifyAccountLabel.isHidden = false
             infoBadge.isHidden = false
+            verified.isHidden = true
+            lineView.isHidden = true
+            lineView1.isHidden = true
             present(Alert(text: "User is signed out", message: "", confirmAction: [UIAlertAction(title: "OK", style: .default)], disableAction: []))
         }
         catch {
@@ -156,7 +167,15 @@ class ProfileViewController: UIViewController {
     
     func setupUI(){
         self.view.addSubview(scrollView)
-        navigationController?.setNavigationBarHidden(true, animated: true)
+        navigationController?.setNavigationBarHidden(false, animated: true)
+        let titleLabel = UILabel()
+        titleLabel.text = "Profile"
+        titleLabel.textColor = UIColor.black
+        titleLabel.font = UIFont.systemFont(ofSize: 24, weight: .medium)
+        titleLabel.sizeToFit()
+        let leftItem = UIBarButtonItem(customView: titleLabel)
+        navigationItem.leftBarButtonItem = leftItem
+
         view.backgroundColor = UIColor.defaultWhiteColor
         UITabBar.appearance().backgroundColor = UIColor.defaultWhiteColor
         scrollView.translatesAutoresizingMaskIntoConstraints = false
@@ -179,23 +198,22 @@ class ProfileViewController: UIViewController {
             container.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
             container.heightAnchor.constraint(equalTo: scrollView.heightAnchor, multiplier: 2)
         ])
+        
         getFireReports()
-        reportListTitleLabel()
+//        reportListTitleLabel()
         verifyAccountLabelUI()
         verifyWithFacebookButtonDesign()
         verifyWithGoogleButtonDesign()
         verifyWithAppleButtonDesign()
-        reportListTitleLabel()
-        setupUsernameUI()
+//        reportListTitleLabel()
         checkAuthenticatedUser()
-        signOutButtonUI()
         setupHorizontalStack()
-        verificationBadgeDesign()
-        verifyInfoUI()
-        infoBadgeUI()
-        setupProfileStack()
-        badgeStackUI()
         setupVerticalStack()
+        infoBadgeUI()
+        verifyInfoUI()
+        verificationBadgeDesign()
+        verifiedLabelDesign()
+        signOutButtonUI()
         myReportsLabelDesign()
         setupTableUI()
     }
@@ -209,11 +227,10 @@ class ProfileViewController: UIViewController {
         verticalStack.translatesAutoresizingMaskIntoConstraints = false
         verticalStack.leadingAnchor.constraint(equalTo: self.container.leadingAnchor, constant: 16).isActive = true
         verticalStack.trailingAnchor.constraint(equalTo: self.container.trailingAnchor, constant: -16).isActive = true
-        verticalStack.topAnchor.constraint(equalTo: self.container.topAnchor, constant: 40).isActive = true
-        verticalStack.addArrangedSubview(profileLabel)
+        verticalStack.topAnchor.constraint(equalTo: self.container.topAnchor, constant: 15).isActive = true
+//        verticalStack.addArrangedSubview(profileLabel)
         verticalStack.addArrangedSubview(verifyAccountLabel)
         verticalStack.addArrangedSubview(horizontalStack)
-        verticalStack.addArrangedSubview(usernameProfileStack)
         verticalStack.addArrangedSubview(badgeStack)
     }
     
@@ -231,53 +248,66 @@ class ProfileViewController: UIViewController {
         tableView.backgroundColor = UIColor.defaultWhiteColor
         tableView.backgroundColor = .white
         tableView.allowsSelection = true
+        tableView.separatorStyle = .none
         tableView.register(ReportListCustomTableViewCell.self, forCellReuseIdentifier: ReportListCustomTableViewCell.identifier)
         checkAuthenticatedUser()
         NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: myReports.bottomAnchor, constant: 20),
+            tableView.topAnchor.constraint(equalTo: verticalStack.bottomAnchor, constant: 80),
             tableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
             tableView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
         ])
     }
     
-    func reportListTitleLabel(){
-        profileLabel = UILabel()
-        profileLabel.translatesAutoresizingMaskIntoConstraints = false
-        profileLabel.text = "Profile"
-        profileLabel.font = profileLabel.font.withSize(30)
-        profileLabel.textColor = UIColor.textColor
-    }
-    
-    
-    func setupUsernameUI(){
-        usernameLabel = UILabel()
-        usernameLabel.translatesAutoresizingMaskIntoConstraints = false
-        usernameLabel.font = usernameLabel.font.withSize(30)
-        checkAuthenticatedUser()
-        usernameLabel.textColor = UIColor.textColor
-        usernameLabel.isHidden = true
-    }
-    
-    func setupProfileStack(){
-        usernameProfileStack.distribution = .fill
-        usernameProfileStack.alignment = .fill
-        usernameProfileStack.spacing = 16
-        usernameProfileStack.translatesAutoresizingMaskIntoConstraints = false
-        usernameProfileStack.addArrangedSubview(usernameLabel)
-        usernameProfileStack.addArrangedSubview(verificationBadge)
-        usernameProfileStack.addArrangedSubview(signOutButton)
-    }
-    
     func verificationBadgeDesign(){
         verificationBadge = UIImageView()
         verificationBadge.translatesAutoresizingMaskIntoConstraints = false
         verificationBadge.isHidden = true
-        checkAuthenticatedUser()
-        verificationBadge.image = UIImage(named:"verificationIcon")
-        self.view.addSubview(verificationBadge)
+        verificationBadge.image = UIImage(named:"checkmark-circle-svg")
+        self.container.addSubview(verificationBadge)
         verificationBadge.heightAnchor.constraint(equalToConstant: 40).isActive = true
         verificationBadge.widthAnchor.constraint(equalToConstant: 40).isActive = true
+        verificationBadge.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        verificationBadge.topAnchor.constraint(equalTo: self.container.topAnchor, constant:10).isActive = true
+    }
+    
+    func verifiedLabelDesign(){
+        verified.translatesAutoresizingMaskIntoConstraints = false
+        verified.font = UIFont.systemFont(ofSize: 17, weight: .bold)
+        verified.textColor = UIColor.textColor
+        verified.isHidden = true
+        self.container.addSubview(verified)
+        verified.text = "You are verified"
+        verified.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        verified.topAnchor.constraint(equalTo: self.container.topAnchor, constant:55).isActive = true
+        
+        lineView1.translatesAutoresizingMaskIntoConstraints = false
+        lineView1.isHidden = true
+        checkAuthenticatedUser()
+        lineView1.backgroundColor = UIColor.lightGray // Change the color as needed
+        self.container.addSubview(lineView1)
+        lineView1.leadingAnchor.constraint(equalTo: self.container.leadingAnchor).isActive = true
+        lineView1.trailingAnchor.constraint(equalTo: self.container.trailingAnchor).isActive = true
+        lineView1.heightAnchor.constraint(equalToConstant: 1).isActive = true
+        lineView1.topAnchor.constraint(equalTo: verified.bottomAnchor, constant: 5).isActive = true
+    }
+    
+    func signOutButtonUI(){
+        signOutButton = UIButton()
+        signOutButton.translatesAutoresizingMaskIntoConstraints = false
+        signOutButton.isHidden = true
+        signOutButton.setImage(UIImage(systemName: "rectangle.portrait.and.arrow.forward"), for: .normal)
+        signOutButton.tintColor = .black
+        checkAuthenticatedUser()
+        self.container.addSubview(signOutButton)
+        signOutButton.addTarget(self, action: #selector(signOutFunction), for: .touchUpInside)
+        signOutButton.widthAnchor.constraint(equalToConstant: 30).isActive = true
+        signOutButton.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        signOutButton.contentVerticalAlignment = .fill
+        signOutButton.contentHorizontalAlignment = .fill
+        signOutButton.topAnchor.constraint(equalTo: self.container.topAnchor, constant:10).isActive = true
+        signOutButton.trailingAnchor.constraint(equalTo: self.container.trailingAnchor, constant:-10).isActive = true
+
     }
     
     func verifyAccountLabelUI(){
@@ -290,6 +320,7 @@ class ProfileViewController: UIViewController {
         checkAuthenticatedUser()
         self.view.addSubview(verifyAccountLabel)
     }
+    
     
     func setupHorizontalStack(){
         horizontalStack = UIStackView()
@@ -307,7 +338,6 @@ class ProfileViewController: UIViewController {
         let facebookImage = UIImage(named:"icons8-facebook-48")
         verifyFacebook.translatesAutoresizingMaskIntoConstraints = false
         verifyFacebook.setImage(facebookImage?.withRenderingMode(.alwaysOriginal), for: .normal)
-//        verifyFacebook.setImage(facebookImage, for: .normal)
         verifyFacebook.backgroundColor = UIColor.defaultWhiteColor
         verifyFacebook.layer.cornerRadius = 20
         verifyFacebook.layer.borderWidth = 1
@@ -346,24 +376,19 @@ class ProfileViewController: UIViewController {
         verifyApple.heightAnchor.constraint(equalToConstant: 50).isActive = true
     }
     
-    func badgeStackUI(){
-        badgeStack.distribution = .fill
-        badgeStack.alignment = .fill
-        badgeStack.spacing = 16
-        badgeStack.translatesAutoresizingMaskIntoConstraints = false
-        badgeStack.addArrangedSubview(infoBadge)
-        badgeStack.addArrangedSubview(verificationInfo)
-    }
-    
     func verifyInfoUI(){
         verificationInfo = UILabel()
         verificationInfo.translatesAutoresizingMaskIntoConstraints = false
         verificationInfo.text = "Verified users are refelcted with their higher level of trustworthines"
-        verificationInfo.font = verificationInfo.font.withSize(11)
+        verificationInfo.font = verificationInfo.font.withSize(10)
         verificationInfo.textColor = UIColor.textColor
         verificationInfo.numberOfLines = 1
         verificationInfo.isHidden = false
         checkAuthenticatedUser()
+        self.container.addSubview(verificationInfo)
+        verificationInfo.topAnchor.constraint(equalTo: self.verticalStack.bottomAnchor, constant:0).isActive = true
+        verificationInfo.leadingAnchor.constraint(equalTo: infoBadge.trailingAnchor, constant: 10).isActive = true
+
     }
     
     func infoBadgeUI(){
@@ -373,29 +398,19 @@ class ProfileViewController: UIViewController {
         infoBadge.image = infoImage
         infoBadge.isHidden = false
         checkAuthenticatedUser()
-    }
-    
-    func signOutButtonUI(){
-        signOutButton = UIButton()
-        signOutButton.translatesAutoresizingMaskIntoConstraints = false
-        signOutButton.setTitle("Sign Out!", for: .normal)
-        signOutButton.backgroundColor = .systemRed
-        signOutButton.layer.cornerRadius = 10
-        signOutButton.isHidden = true
-        checkAuthenticatedUser()
-        self.view.addSubview(signOutButton)
-        signOutButton.addTarget(self, action: #selector(signOutFunction), for: .touchUpInside)
-        signOutButton.widthAnchor.constraint(equalToConstant: 120).isActive = true
+        self.container.addSubview(infoBadge)
+        infoBadge.topAnchor.constraint(equalTo: self.verticalStack.bottomAnchor, constant:-4).isActive = true
+        infoBadge.leadingAnchor.constraint(equalTo: self.container.leadingAnchor, constant: 10).isActive = true
     }
     
     func myReportsLabelDesign(){
         myReports = UILabel()
         myReports.translatesAutoresizingMaskIntoConstraints = false
-        myReports.text = "My Reports"
-        myReports.font = myReports.font.withSize(30)
+        myReports.text = "Reports"
+        myReports.font = UIFont.systemFont(ofSize: 28, weight: .bold)
         myReports.textColor = UIColor.textColor
         self.container.addSubview(myReports)
-        myReports.topAnchor.constraint(equalTo: verticalStack.bottomAnchor, constant:20).isActive = true
+        myReports.topAnchor.constraint(equalTo: verticalStack.bottomAnchor, constant:50).isActive = true
         myReports.leadingAnchor.constraint(equalTo: self.container.leadingAnchor, constant: 20).isActive = true
     }
 }

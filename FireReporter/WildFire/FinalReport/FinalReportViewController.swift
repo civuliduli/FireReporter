@@ -200,7 +200,8 @@ class FinalReportViewController: UIViewController, UITextViewDelegate {
     @objc func putVote(){
         // change here
         var voteWeight = 0
-        isUserVerified = Auth.auth().currentUser?.isEmailVerified
+        isUserVerified = !(Auth.auth().currentUser?.isAnonymous ?? true)
+//        isUserVerified = Auth.auth().currentUser?.isEmailVerified
         if isUserVerified == nil || isUserVerified == false{
             voteWeight = 1
         } else {
@@ -229,7 +230,9 @@ class FinalReportViewController: UIViewController, UITextViewDelegate {
     @objc func removeVote(){
         // change here
         var voteWeight = 0
-        isUserVerified = Auth.auth().currentUser?.isEmailVerified
+        isUserVerified = !(Auth.auth().currentUser?.isAnonymous ?? true)
+
+//        isUserVerified = Auth.auth().currentUser?.isEmailVerified
         if isUserVerified == nil || isUserVerified == false{
             voteWeight = -1
         } else {
@@ -547,7 +550,6 @@ class FinalReportViewController: UIViewController, UITextViewDelegate {
         voteFor.contentHorizontalAlignment = .fill
         voteFor.contentMode = .scaleAspectFill
         voteFor.isHidden = isVoteForHidden
-//        voteFor.isHidden = false
         voteFor.addTarget(self, action: #selector(putVote), for: .touchUpInside)
         voteAgainst = UIButton()
         voteAgainst.translatesAutoresizingMaskIntoConstraints = false
@@ -556,7 +558,6 @@ class FinalReportViewController: UIViewController, UITextViewDelegate {
         voteAgainst.contentVerticalAlignment = .fill
         voteAgainst.contentHorizontalAlignment = .fill
         voteAgainst.isHidden = isVoteAgainstHidden
-//        voteAgainst.isHidden = false
     }
 
     func submitReportButtonDesign(){

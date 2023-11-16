@@ -43,7 +43,7 @@ extension ProfileViewController: ASAuthorizationControllerDelegate, ASAuthorizat
                         defaults.set(fullName, forKey:"appleUsername" )
                         print("User id is \(userIdentifier) \n Full Name is \(String(describing: fullName)) \n Email id is \(String(describing: email))") }
                     self.checkAuthenticatedUser()
-                    self.present(Alert(text: "Success", message: "You're now a Fire Reporter Verified User", confirmAction: [UIAlertAction(title: "OK", style: .default)], disableAction: []))
+//                    self.present(Alert(text: "Success", message: "You're now a Fire Reporter Verified User", confirmAction: [UIAlertAction(title: "OK", style: .default)], disableAction: []))
                 }
             }
         }

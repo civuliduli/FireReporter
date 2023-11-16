@@ -133,20 +133,22 @@ class PreviewReport: UIViewController {
         mapView.trailingAnchor.constraint(equalTo: self.container.trailingAnchor, constant: -20).isActive = true
     }
     
-    func previewImageDesign(){
+    func previewImageDesign() {
         previewImage = UIImageView()
         previewImage.translatesAutoresizingMaskIntoConstraints = false
         previewImage.image = fireImage
         previewImage.isHidden = true
         previewImage.isUserInteractionEnabled = true
-        previewImage.contentMode = .scaleAspectFill
-        previewImage.frame = self.view.bounds
+//        previewImage.contentMode = .scaleToFill
         self.view.addSubview(previewImage)
+
         previewImage.topAnchor.constraint(equalTo: view.topAnchor, constant: 0).isActive = true
         previewImage.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0).isActive = true
         previewImage.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0).isActive = true
         previewImage.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0).isActive = true
     }
+
+
 
     func fireImageDesign(){
         fireImageView = UIImageView()

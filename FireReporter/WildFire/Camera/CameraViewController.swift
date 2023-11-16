@@ -151,7 +151,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
         let queue = DispatchQueue(label: "com.firereporter.capturedQueue")
         dataOutput.setSampleBufferDelegate(self, queue: queue)
 
-        captureSession.commitConfiguration() // Commit configuration after making changes
+        captureSession.commitConfiguration()
 
         DispatchQueue.global(qos: .background).async {
             self.captureSession.startRunning()

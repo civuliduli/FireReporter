@@ -7,32 +7,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "2D302870-06CF-446B-AB55-1774DA99ACB3"
-            shouldBeEnabled = "Yes"
+            uuid = "6E9E52DE-662A-4339-9059-687140ED51D7"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "FireReporter/WildFire/Common/Services/NetworkService/FirebaseService.swift"
+            filePath = "FireReporter/WildFire/FinalReport/FinalReportViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "15"
-            endingLineNumber = "15"
-            landmarkName = "getFireReportsData(completion:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "95A73AF7-4809-41FF-889B-C5750F7E93E9"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "FireReporter/WildFire/ReusableScreens/ReportListCustomTableViewCell.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "45"
-            endingLineNumber = "45"
-            landmarkName = "setupCell(image:descriptionLabel:latitude:longitude:date:address:)"
+            startingLineNumber = "58"
+            endingLineNumber = "58"
+            landmarkName = "sendReport(fireReport:fireImage:success:error:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
