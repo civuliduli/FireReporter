@@ -19,6 +19,7 @@ struct FireReport : Codable {
     var address: String?
     var votes: Int
     var createdByVerifiedUser: Bool
+    var country: String?
  
     
     var dictionary: [String: Any] {
@@ -31,11 +32,12 @@ struct FireReport : Codable {
                 "description": description ?? "",
                 "address": address ?? "",
                 "votes":votes,
-                "createdByVerifiedUser": createdByVerifiedUser
+                "createdByVerifiedUser": createdByVerifiedUser,
+                "country": country ?? ""
         ]
        }
     
-    init(description: String? = nil, id: String, lat: Double = 0.00, long: Double = 0.00, photo: String, timestamp: Date, uniqueIdentifier:String, address:String?, votes:Int,createdByVerifiedUser:Bool ) {
+    init(description: String? = nil, id: String, lat: Double = 0.00, long: Double = 0.00, photo: String, timestamp: Date, uniqueIdentifier:String, address:String?, votes:Int,createdByVerifiedUser:Bool, country:String) {
         self.description = description
         self.id = id
         self.lat = lat
@@ -46,6 +48,7 @@ struct FireReport : Codable {
         self.address = address
         self.votes = votes
         self.createdByVerifiedUser = createdByVerifiedUser
+        self.country = country
     }
     
     enum CodingKeys: CodingKey {
@@ -59,6 +62,7 @@ struct FireReport : Codable {
         case address
         case votes
         case createdByVerifiedUser
+        case country
     }
     
     init(from decoder: Decoder) throws {
@@ -73,6 +77,7 @@ struct FireReport : Codable {
         self.address = try container.decode(String.self, forKey: .address)
         self.votes = try container.decode(Int.self, forKey: .votes)
         self.createdByVerifiedUser = try container.decode(Bool.self, forKey: .createdByVerifiedUser)
+        self.country = try container.decode(String.self, forKey: .country)
     }
     
     func encode(to encoder: Encoder) throws {
@@ -87,5 +92,6 @@ struct FireReport : Codable {
         try container.encode(self.address, forKey: .address)
         try container.encode(self.votes, forKey: .address)
         try container.encode(self.createdByVerifiedUser, forKey: .createdByVerifiedUser)
+        try container.encode(self.country, forKey: .country)
     }
 }

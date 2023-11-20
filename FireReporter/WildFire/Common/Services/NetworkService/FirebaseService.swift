@@ -20,7 +20,7 @@ class FirebaseService {
             self.reportsArray = documents.map({ querryDocumentSnapshot in
                 let data = querryDocumentSnapshot.data()
                 let timestamp = data["timestamp"] as? Timestamp
-                return FireReport(description: data["description"] as? String,id:"",lat: data["lat"] as? Double ?? 0.0, long: data["long"] as? Double ?? 0.0, photo: data["photo"] as? String ?? "pictureNotAvailable", timestamp: timestamp?.dateValue() ?? Date(), uniqueIdentifier: data["uniqueIdentifier"] as? String ?? "", address: data["address"] as? String, votes: data["votes"] as? Int ?? 0, createdByVerifiedUser: (data["createdByVerifiedUser"] != nil) )
+                return FireReport(description: data["description"] as? String,id:"",lat: data["lat"] as? Double ?? 0.0, long: data["long"] as? Double ?? 0.0, photo: data["photo"] as? String ?? "pictureNotAvailable", timestamp: timestamp?.dateValue() ?? Date(), uniqueIdentifier: data["uniqueIdentifier"] as? String ?? "", address: data["address"] as? String, votes: data["votes"] as? Int ?? 0, createdByVerifiedUser: (data["createdByVerifiedUser"] != nil), country: data["country"] as? String ?? "" )
             })
             completion(self.reportsArray, error)
         }
@@ -35,7 +35,7 @@ class FirebaseService {
             mapLocationsArray = documents.map({ querryDocumentSnapshot in
                 let data = querryDocumentSnapshot.data()
                 let timestamp = data["timestamp"] as? Timestamp
-                return FireReport(description: data["description"] as? String,id: data["id"] as? String ?? "",lat: data["lat"] as? Double ?? 0.0, long: data["long"] as? Double ?? 0.0, photo:data["photo"] as? String ?? "pictureNotAvailable", timestamp: timestamp?.dateValue() ?? Date(), uniqueIdentifier: data["uniqueIdentifier"] as? String ?? "", address: "", votes: data["votes"] as? Int ?? 0, createdByVerifiedUser: (data["createdByVerifiedUser"] != nil))
+                return FireReport(description: data["description"] as? String,id: data["id"] as? String ?? "",lat: data["lat"] as? Double ?? 0.0, long: data["long"] as? Double ?? 0.0, photo:data["photo"] as? String ?? "pictureNotAvailable", timestamp: timestamp?.dateValue() ?? Date(), uniqueIdentifier: data["uniqueIdentifier"] as? String ?? "", address: "", votes: data["votes"] as? Int ?? 0, createdByVerifiedUser: (data["createdByVerifiedUser"] != nil), country: data["country"] as? String ?? "")
             })
             completion(mapLocationsArray, error)
         }

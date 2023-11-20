@@ -185,7 +185,18 @@ class FinalReportViewController: UIViewController, UITextViewDelegate {
     }
 
     @objc func sendReport(){
-        finalReportViewModel.sendReport(fireReport: FireReport(description: descriptionTextField.text, id: self.ID ?? "", lat: coordinates.latitude, long: coordinates.longitude, photo: "", timestamp: Date(), uniqueIdentifier: UIDevice.current.identifierForVendor!.uuidString, address: "", votes: 0, createdByVerifiedUser: false), fireImage: fireImage) {
+        let activityIndicator = UIActivityIndicatorView(style: .medium)
+        activityIndicator.startAnimating()
+        view.addSubview(activityIndicator)
+        activityIndicator.widthAnchor.constraint(equalToConstant: 50).isActive = true
+        activityIndicator.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        activityIndicator.center = view.center
+        activityIndicator.startAnimating()
+        activityIndicator.color = .black
+        view.isUserInteractionEnabled = false
+        finalReportViewModel.sendReport(fireReport: FireReport(description: descriptionTextField.text, id: self.ID ?? "", lat: coordinates.latitude, long: coordinates.longitude, photo: "", timestamp: Date(), uniqueIdentifier: UIDevice.current.identifierForVendor!.uuidString, address: "", votes: 0, createdByVerifiedUser: false, country: ""), fireImage: fireImage) {
+            activityIndicator.stopAnimating()
+            self.view.isUserInteractionEnabled = true
             if let scene = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate{
                 scene.photoState = .completed
             }
@@ -193,6 +204,8 @@ class FinalReportViewController: UIViewController, UITextViewDelegate {
             let successView = SuccessMessageViewController()
             self.present(successView, animated: true)
         } error: {
+            self.view.isUserInteractionEnabled = true
+            activityIndicator.stopAnimating()
             self.present(Alert(text: "Error!", message: "Error sending report", confirmAction: [UIAlertAction(title: "Try again", style: .default)], disableAction: []))
         }
     }
@@ -569,7 +582,6 @@ class FinalReportViewController: UIViewController, UITextViewDelegate {
         confirmReportButton.tintColor = .white
         confirmReportButton.layer.cornerRadius = 10
         confirmReportButton.isHidden = isConfirmButtonHidden
-//        confirmReportButton.isHidden = true
         confirmReportButton.addTarget(self, action: #selector(sendReport), for: .touchUpInside)
         self.view.addSubview(confirmReportButton)
         confirmReportButton.heightAnchor.constraint(equalToConstant: 50).isActive = true

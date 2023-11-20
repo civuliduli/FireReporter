@@ -33,25 +33,24 @@ class FinalReportViewModel{
         return nil
     }
     
-    func convertLatLongToAddress(latitude: Double, longitude: Double, completion: @escaping (String) -> Void) {
+    func convertLatLongToAddress(latitude: Double, longitude: Double, completion: @escaping (String, String) -> Void) {
         let geoCoder = CLGeocoder()
         let location = CLLocation(latitude: latitude, longitude: longitude)
         
         geoCoder.reverseGeocodeLocation(location) { (placemarks, error) in
             if let error = error {
                 print("Reverse geocoding error: \(error.localizedDescription)")
-                completion("Address is not available")
-            } else if let placeMark = placemarks?.first, let city = placeMark.locality {
-                completion(city)
+                completion("Address is not available", "Country is not available")
+            } else if let placeMark = placemarks?.first, let city = placeMark.locality, let countryName = placeMark.country {
+                completion(city, countryName)
             } else {
-                completion("Address is not available")
+                completion("Address is not available", "Country is not available")
             }
         }
     }
     
-    // TODO: Set a spinner while waiting for data to be sent
     func sendReport(fireReport:FireReport, fireImage: UIImage, success:@escaping ()-> Void, error:@escaping ()-> Void){
-        convertLatLongToAddress(latitude: fireReport.lat, longitude: fireReport.long) { [self] locationName in
+        convertLatLongToAddress(latitude: fireReport.lat, longitude: fireReport.long) { [self] locationName, countryName  in
             self.addressName = locationName
             var isCreatedVerifiedUser: Bool!
             var isUserVerified: Bool!
@@ -66,7 +65,7 @@ class FinalReportViewModel{
             }
             let myCompressedImage = convertImageToBase64String(img: fireImage)
             let db = Firestore.firestore()
-            let fireReport = FireReport(description: fireReport.description, id:fireReport.id, lat: fireReport.lat, long: fireReport.long, photo: myCompressedImage, timestamp: fireReport.date, uniqueIdentifier: UIDevice.current.identifierForVendor!.uuidString, address: locationName, votes:votes, createdByVerifiedUser: isCreatedVerifiedUser)
+            let fireReport = FireReport(description: fireReport.description, id:fireReport.id, lat: fireReport.lat, long: fireReport.long, photo: myCompressedImage, timestamp: fireReport.date, uniqueIdentifier: UIDevice.current.identifierForVendor!.uuidString, address: locationName, votes:votes, createdByVerifiedUser: isCreatedVerifiedUser, country: countryName)
             print(fireReport)
             db.collection("reports").document(fireReport.id).setData(fireReport.dictionary) { err in
                 if err != nil {
