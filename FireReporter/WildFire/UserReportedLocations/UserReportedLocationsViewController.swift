@@ -67,6 +67,17 @@ class UserReportedLocationsViewController: UIViewController, MKMapViewDelegate {
                 annotation.title = data.description
                 annotation.coordinate = CLLocationCoordinate2D(latitude: data.lat, longitude: data.long)
                    mapView.addAnnotation(annotation)
+                if let annotationView = mapView.view(for: annotation) as? MKMarkerAnnotationView {
+                    if let likes = annotation.likes {
+                        if likes == 0 {
+                            annotationView.markerTintColor = .blue
+                        } else if likes <= 10 {
+                            annotationView.markerTintColor = .yellow
+                        } else {
+                            annotationView.markerTintColor = .red
+                        }
+                    }
+                }
             }
         }
     }
@@ -118,32 +129,6 @@ class UserReportedLocationsViewController: UIViewController, MKMapViewDelegate {
            return nil
        }
     
-//    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-//        let identifier = "Location"
-//        if let customAnnotation = annotation as? CustomPointAnnotation {
-//            var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
-//            if annotationView == nil {
-//                annotationView = MKAnnotationView(annotation: customAnnotation, reuseIdentifier: identifier)
-//                annotationView?.canShowCallout = true
-//                annotationView?.image = UIImage(named: "flame-icon22x29") // Set your image here
-//                annotationView?.backgroundColor = UIColor.clear // Make the background transparent
-//            } else {
-//                annotationView?.annotation = annotation
-//            }
-//            if let likes = customAnnotation.likes {
-//                if likes == 0 {
-//                    annotationView?.tintColor = .blue
-//                } else if likes <= 10 {
-//                    annotationView?.tintColor = .yellow
-//                } else {
-////                    annotationView?.tintColor = .red
-//                }
-//            }
-//            return annotationView
-//        }
-//        return nil
-//    }
-
     func setupMapUI(){
         view.addSubview(mapView)
         mapView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
