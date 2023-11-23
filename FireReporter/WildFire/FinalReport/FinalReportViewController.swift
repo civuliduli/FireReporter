@@ -99,7 +99,8 @@ class FinalReportViewController: UIViewController, UITextViewDelegate {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        self.isUserVerified = Auth.auth().currentUser?.isEmailVerified
+        isUserVerified = !(Auth.auth().currentUser?.isAnonymous ?? true)
+//        self.isUserVerified = Auth.auth().currentUser?.isEmailVerified
         finalReportViewModel.configureLocationManager()
         fireLocation()
         getAllVotes { [weak self] (documents, error) in
@@ -220,6 +221,7 @@ class FinalReportViewController: UIViewController, UITextViewDelegate {
         } else {
             voteWeight = 10
         }
+        print(isUserVerified)
           if updatedUserVote == voteWeight {
               updatedUserVote = 0
               self.voteFor.setImage(UIImage(systemName:"arrow.up.square"), for: .normal)
@@ -251,6 +253,7 @@ class FinalReportViewController: UIViewController, UITextViewDelegate {
         } else {
             voteWeight = -10
         }
+        print(isUserVerified)
         if updatedUserVote == voteWeight {
             updatedUserVote = 0
             self.voteFor.setImage(UIImage(systemName:"arrow.up.square"), for: .normal)
@@ -585,9 +588,9 @@ class FinalReportViewController: UIViewController, UITextViewDelegate {
         confirmReportButton.addTarget(self, action: #selector(sendReport), for: .touchUpInside)
         self.view.addSubview(confirmReportButton)
         confirmReportButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        confirmReportButton.widthAnchor.constraint(equalToConstant: 330).isActive = true
-        confirmReportButton.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-        confirmReportButton.topAnchor.constraint(equalTo: imageDescriptionsStack.bottomAnchor, constant: 100).isActive = true
+        confirmReportButton.leadingAnchor.constraint(equalTo: self.container.leadingAnchor, constant: 16).isActive = true
+        confirmReportButton.trailingAnchor.constraint(equalTo: self.container.trailingAnchor, constant: -16).isActive = true
+        confirmReportButton.topAnchor.constraint(equalTo: imageDescriptionsStack.bottomAnchor, constant: 20).isActive = true
     }
 
     @objc func showPreview(_ sender:AnyObject){

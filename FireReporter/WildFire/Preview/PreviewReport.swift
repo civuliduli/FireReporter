@@ -23,6 +23,7 @@ class PreviewReport: UIViewController {
     var coordinates = CLLocationCoordinate2D()
     var imageURL = ""
     var isTextFieldEditable = true
+    var imageDescriptionsStack = UIStackView()
 
     lazy var mapView: MKMapView = {
         let map = MKMapView()
@@ -110,6 +111,7 @@ class PreviewReport: UIViewController {
         mapViewDesign()
         fireImageDesign()
         descriptionTextFieldDesign()
+        imageDescriptionStack()
         previewImageDesign()
     }
     
@@ -138,16 +140,40 @@ class PreviewReport: UIViewController {
         previewImage.translatesAutoresizingMaskIntoConstraints = false
         previewImage.image = fireImage
         previewImage.isHidden = true
+        previewImage.contentMode = .scaleAspectFill // Use .scaleAspectFill for fullscreen
+        previewImage.clipsToBounds = true // Add this line to clip the image to the bounds
         previewImage.isUserInteractionEnabled = true
-//        previewImage.contentMode = .scaleToFill
         self.view.addSubview(previewImage)
 
+        // Set aspect ratio constraint to make it a square (equal width and height)
+        previewImage.widthAnchor.constraint(equalTo: previewImage.heightAnchor).isActive = true
+
+        // Set other constraints
         previewImage.topAnchor.constraint(equalTo: view.topAnchor, constant: 0).isActive = true
         previewImage.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0).isActive = true
         previewImage.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0).isActive = true
         previewImage.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0).isActive = true
     }
 
+
+
+
+    
+    func imageDescriptionStack() {
+        imageDescriptionsStack = UIStackView()
+        imageDescriptionsStack.axis = .horizontal
+        imageDescriptionsStack.distribution = .fillEqually
+        imageDescriptionsStack.alignment = .fill
+        imageDescriptionsStack.spacing = 16
+        imageDescriptionsStack.translatesAutoresizingMaskIntoConstraints = false
+        imageDescriptionsStack.addArrangedSubview(fireImageView)
+        imageDescriptionsStack.addArrangedSubview(descriptionTextField)
+        self.view.addSubview(imageDescriptionsStack)
+        imageDescriptionsStack.topAnchor.constraint(equalTo: mapView.bottomAnchor, constant: 20).isActive = true
+        imageDescriptionsStack.heightAnchor.constraint(equalToConstant: 200).isActive = true
+        imageDescriptionsStack.leadingAnchor.constraint(equalTo: self.container.leadingAnchor, constant: 16).isActive = true
+        imageDescriptionsStack.trailingAnchor.constraint(equalTo: self.container.trailingAnchor, constant: -16).isActive = true
+    }
 
 
     func fireImageDesign(){
@@ -157,13 +183,6 @@ class PreviewReport: UIViewController {
         fireImageView.translatesAutoresizingMaskIntoConstraints = false
         fireImageView.image = fireImage
         fireImageView.layer.cornerRadius = 10
-        self.view.addSubview(fireImageView)
-        NSLayoutConstraint.activate([
-            fireImageView.heightAnchor.constraint(equalToConstant:200),
-            fireImageView.topAnchor.constraint(equalTo: mapView.bottomAnchor, constant:40),
-            fireImageView.leadingAnchor.constraint(equalTo: self.container.leadingAnchor, constant: 16),
-            fireImageView.trailingAnchor.constraint(equalTo: self.container.trailingAnchor, constant: -200)
-        ])
     }
 
     func descriptionTextFieldDesign(){
@@ -176,13 +195,6 @@ class PreviewReport: UIViewController {
         descriptionTextField.isEditable = false
         descriptionTextField.backgroundColor = UIColor.descriptionBackgroundColor
         descriptionTextField.inputAccessoryView = toolbar
-        self.view.addSubview(descriptionTextField)
-        NSLayoutConstraint.activate([
-            descriptionTextField.heightAnchor.constraint(equalToConstant:200),
-            descriptionTextField.topAnchor.constraint(equalTo: mapView.bottomAnchor, constant: 40),
-            descriptionTextField.leadingAnchor.constraint(equalTo: self.container.leadingAnchor, constant: 240),
-            descriptionTextField.trailingAnchor.constraint(equalTo: self.container.trailingAnchor, constant: -20),
-        ])
     }
     
     @objc func showPreview(_ sender:AnyObject){
