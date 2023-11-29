@@ -69,6 +69,8 @@ class FinalReportViewController: UIViewController, UITextViewDelegate {
     var IDfromKeychain:String?
     var hasSentVote: Bool?
     var hasChanges = false
+    var activityIndicator: UIActivityIndicatorView!
+
     
     lazy var mapView: MKMapView = {
         let map = MKMapView()
@@ -78,6 +80,10 @@ class FinalReportViewController: UIViewController, UITextViewDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        activityIndicator = UIActivityIndicatorView(style: .medium)
+              activityIndicator.center = view.center
+              activityIndicator.hidesWhenStopped = true
+              view.addSubview(activityIndicator)
         if let availableImage = fireImage {
             fireImageView.image = availableImage
         } else {
@@ -89,9 +95,10 @@ class FinalReportViewController: UIViewController, UITextViewDelegate {
             print("UUID from Keychain: \(savedUUID)")
         }
         NotificationCenter.default.addObserver(self, selector: #selector(appWillTerminate), name: UIApplication.willResignActiveNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(isTerminated), name: UIApplication.willTerminateNotification, object: nil)
     }
     deinit {
-        NotificationCenter.default.removeObserver(self)
+        NotificationCenter.default.removeObserver(self, name: UIApplication.willResignActiveNotification, object: nil)
     }
 
     @objc func dismissKeyboard(){
@@ -99,6 +106,8 @@ class FinalReportViewController: UIViewController, UITextViewDelegate {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        activityIndicator.startAnimating()
+        view.isUserInteractionEnabled = false
         isUserVerified = !(Auth.auth().currentUser?.isAnonymous ?? true)
 //        self.isUserVerified = Auth.auth().currentUser?.isEmailVerified
         finalReportViewModel.configureLocationManager()
@@ -117,6 +126,8 @@ class FinalReportViewController: UIViewController, UITextViewDelegate {
                     }
                 }
             }
+            self.activityIndicator.stopAnimating()
+            self.view.isUserInteractionEnabled = true
         }
         getQuantity { [weak self] quantity in
             if let self = self, let quantity = quantity {
@@ -124,6 +135,8 @@ class FinalReportViewController: UIViewController, UITextViewDelegate {
                 updatedUserVote = userVotes
                 print("1111 Quantity in viewDidLoad: \(quantity)")
             }
+            self?.activityIndicator.stopAnimating()
+            self?.view.isUserInteractionEnabled = true
         }
         print("\(String(describing: isUserVerified))is user verified")
         print("\(collectionVotes ?? 0) report votes")
@@ -149,6 +162,8 @@ class FinalReportViewController: UIViewController, UITextViewDelegate {
     
     // TODO: MVVM
     func getQuantity(completion: @escaping (Int?) -> Void){
+        let activityIndicator = UIActivityIndicatorView(style: .medium)
+        activityIndicator.startAnimating()
         let userID = Auth.auth().currentUser
         let uid:String?
         if isUserVerified == nil || isUserVerified == false{
@@ -179,6 +194,7 @@ class FinalReportViewController: UIViewController, UITextViewDelegate {
                        self.voteFor.setImage(UIImage(systemName:"arrow.up.square"), for: .normal)
                    }
                    completion(quantity)
+                   activityIndicator.stopAnimating()
                } else {
                    completion(nil)
                }
@@ -346,7 +362,7 @@ class FinalReportViewController: UIViewController, UITextViewDelegate {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-//        onChange?()
+        onChange?()
         if updatedUserVote == userVotes {
             print("You havent voted yet")
         }else {
@@ -361,6 +377,10 @@ class FinalReportViewController: UIViewController, UITextViewDelegate {
         } else {
             print("You haven't voted yet")
         }
+    }
+    
+    @objc func isTerminated(){
+        print("IS TERMINATED")
     }
 
     

@@ -29,7 +29,6 @@ class FirebaseService {
     func getAllReportsLocations(completion: @escaping(_ myFireReports: [FireReport], Error?) -> Void) {
         let db = Firestore.firestore()
 
-        // Use addSnapshotListener instead of getDocuments
         db.collection("reports").addSnapshotListener { querySnapshot, error in
             guard let documents = querySnapshot?.documents else {
                 print("Error fetching documents: \(error ?? "Unknown error" as! Error)")

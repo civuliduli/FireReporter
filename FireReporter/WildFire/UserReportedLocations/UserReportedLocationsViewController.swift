@@ -13,7 +13,6 @@ class CustomPointAnnotation: MKPointAnnotation {
     var imageString: String!
     var ID: String?
     var likes: Int?
-    var votedFor:Bool?
     var custom_image: Bool = true
 }
 
@@ -21,7 +20,6 @@ class UserReportedLocationsViewController: UIViewController, MKMapViewDelegate {
     
     
     private let firebaseService = FirebaseService()
-    private let keychainService = KeychainService()
 
     lazy var mapView: MKMapView = {
         let map = MKMapView()
@@ -29,7 +27,6 @@ class UserReportedLocationsViewController: UIViewController, MKMapViewDelegate {
         return map
     }()
     
-    var iVoted: Bool?
     let annotation = MKPointAnnotation()
     var coordinates: CLLocationCoordinate2D?
     var myLocations = [FireReport]()
@@ -37,14 +34,27 @@ class UserReportedLocationsViewController: UIViewController, MKMapViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupMapUI()
-        getAllReports()
+        let allAnnotations = self.mapView.annotations
+        self.mapView.removeAnnotations(allAnnotations)
+//        getAllReports()
         self.mapView.delegate = self
         self.mapView.showAnnotations(self.mapView.annotations, animated: true)
         navigationController?.setNavigationBarHidden(true, animated: true)
-
     }
     
-    override func viewDidAppear(_ animated: Bool) {
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: UIApplication.willResignActiveNotification, object: nil)
+    }
+    
+    func presentViewControllerA() {
+            let viewControllerA = FinalReportViewController()
+          viewControllerA.onChange = { [weak self] in
+              self?.getAllReports()
+          }
+            self.present(viewControllerA, animated: true, completion: nil)
+        }
+    
+    override func viewWillAppear(_ animated: Bool) {
         getAllReports()
     }
     
@@ -97,6 +107,9 @@ class UserReportedLocationsViewController: UIViewController, MKMapViewDelegate {
             finalReportVC.voteInfo.text = "\(String(describing: annotation.likes!))"
             finalReportVC.votes = annotation.likes
             finalReportVC.ID = annotation.ID
+            finalReportVC.onChange = { [weak self] in
+                           self?.getAllReports()
+                       }
             mapView.deselectAnnotation(view.annotation, animated: false)
             present(finalReportVC, animated: true)
         }

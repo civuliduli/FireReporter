@@ -14,21 +14,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
     @Published var photoState: State = .notTaken
-    @Published var userState: SignedInState = .initial
     
     enum State {
         case taken
         case notTaken
         case completed
         case notCompleted
-    }
-    
-    enum SignedInState {
-        case initial
-        case signedInUser
-    }
-    
-    
+    }    
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.

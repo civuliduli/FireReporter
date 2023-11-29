@@ -140,25 +140,19 @@ class PreviewReport: UIViewController {
         previewImage.translatesAutoresizingMaskIntoConstraints = false
         previewImage.image = fireImage
         previewImage.isHidden = true
-        previewImage.contentMode = .scaleAspectFill // Use .scaleAspectFill for fullscreen
-        previewImage.clipsToBounds = true // Add this line to clip the image to the bounds
         previewImage.isUserInteractionEnabled = true
+        previewImage.contentMode = .scaleAspectFill
+        previewImage.frame = self.view.bounds
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(hidePreview(_:)))
+        previewImage.isUserInteractionEnabled = true
+        previewImage.addGestureRecognizer(tapGestureRecognizer)
         self.view.addSubview(previewImage)
-
-        // Set aspect ratio constraint to make it a square (equal width and height)
-        previewImage.widthAnchor.constraint(equalTo: previewImage.heightAnchor).isActive = true
-
-        // Set other constraints
         previewImage.topAnchor.constraint(equalTo: view.topAnchor, constant: 0).isActive = true
         previewImage.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0).isActive = true
         previewImage.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0).isActive = true
         previewImage.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0).isActive = true
     }
 
-
-
-
-    
     func imageDescriptionStack() {
         imageDescriptionsStack = UIStackView()
         imageDescriptionsStack.axis = .horizontal
@@ -174,7 +168,6 @@ class PreviewReport: UIViewController {
         imageDescriptionsStack.leadingAnchor.constraint(equalTo: self.container.leadingAnchor, constant: 16).isActive = true
         imageDescriptionsStack.trailingAnchor.constraint(equalTo: self.container.trailingAnchor, constant: -16).isActive = true
     }
-
 
     func fireImageDesign(){
         fireImageView = UIImageView()
